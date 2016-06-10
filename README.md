@@ -18,7 +18,7 @@ Write report to JSON files ($PWD/results/current)
 
 ### Step2. Http Server install ###
 
-Aapache Http Server or Nginx is installed.
+Apache HTTP Server or Nginx is installed.
 
 ### Step3. Zip download ###
 
