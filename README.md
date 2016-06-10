@@ -34,7 +34,7 @@ $ sudo mv ./vulsrepo-master/src /var/www/html/vulsrepo
 
 ````
 $ cd /var/www/html/vulsrepo/
-$ ln -s <VulsHome>/results/current cullent
+$ ln -s <VulsHome>/results/current current
 ````
 
 ## Usage ##
