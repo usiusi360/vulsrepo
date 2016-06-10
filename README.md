@@ -1,7 +1,5 @@
 # VulsRepo #
 
-[![License](https://img.shields.io/github/license/future-architect/vuls.svg?style=flat-square)](https://github.com/future-architect/vuls/blob/master/LICENSE.txt)
-
 VulsRepo is visualized based on the json report output in [vuls](https://github.com/future-architect/vuls).
 
 Demo movie:[https://youtu.be/DIBPoik4owc](https://youtu.be/DIBPoik4owc)
@@ -48,11 +46,11 @@ http://VulsServer/vulsrepo/
 ````
 
 ## Image ##
-![image](https://github.com/usiusi360/vulsrepo/image/image001.png)
+![image](https://github.com/usiusi360/vulsrepo/img/image001.png)
 
-![image](https://github.com/usiusi360/vulsrepo/image/image002.png)
+![image](https://github.com/usiusi360/vulsrepo/img/image002.png)
 
-![image](https://github.com/usiusi360/vulsrepo/image/image003.png)
+![image](https://github.com/usiusi360/vulsrepo/img/image003.png)
 
-![image](https://github.com/usiusi360/vulsrepo/image/image004.png)
+![image](https://github.com/usiusi360/vulsrepo/img/image004.png)
 
