@@ -59,7 +59,7 @@ var getSeverity = function(Score) {
     var severity;
     if (Score >= 7.0) {
 	severity = "High";
-    } else if ((Score <= 7.0) && (Score >= 4.0)) {
+    } else if ((Score < 7.0) && (Score >= 4.0)) {
 	severity = "Medium";
     } else if ((Score < 4.0)) {
 	severity = "Low";
