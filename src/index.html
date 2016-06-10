@@ -1,0 +1,99 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<title>VulsRepo</title>
+
+	<!-- jqueryUI -->
+	<link href="plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<!-- bootstrap -->
+	<link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<!-- c3.js -->
+	<link href="plugins/c3.js/c3.min.css" rel="stylesheet" type="text/css" />
+	<!-- pivot.js -->
+	<link href="plugins/pivot.js/pivot.min.css" rel="stylesheet" type="text/css" />
+	<!-- main.js -->
+	<link href="dist/css/index.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a class="navbar-brand">VulsRepo</a>
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div id="nvd_help">
+			<div class="glyphicon glyphicon-question-sign pull-right" title="test"></div>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-primary" id="save_pivot_conf">
+				Save
+			</button>
+			<button type="submit" class="btn btn-default" id="clear_pivot_conf">
+				Clear
+			</button>
+			<span class="label" id="label_pivot_conf"></span><span class="alert alert-success" id="alert_pivot_conf">Success</span>
+		</div>
+
+		<div id="pivot_base" style="margin: 30px;"></div>
+
+	</div>
+
+	<div class="modal fade  bs-example-modal-lg" id="modal-top" tabindex="-1"  aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog  modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-info">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="modal-label"></h4>
+				</div>
+				<div class="modal-body">
+					<div id="Title"></div>
+					<div></div>
+					<p class="bg-primary">
+						CVSS Score
+					</p>
+					<div id="Score"></div>
+					<p  class="bg-primary">
+						Summary
+					</p>
+					<div id="Summary"></div>
+					<p  class="bg-primary">
+						Links
+					</p>
+					<div id="Link"></div>
+					<p  class="bg-primary">
+						References
+					</p>
+					<div id="References"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<!-- JS -->
+<!-- jquery -->
+<script src="plugins/jquery/jquery-2.2.4.min.js" type="text/javascript"></script>
+<script src="plugins/pathseg/pathseg.js" type="text/javascript"></script>
+<!-- jqueryUI -->
+<script src="plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<!-- bootstrap -->
+<script src="plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<!-- d3.js-->
+<script src="plugins/d3.js/d3.min.js" type="text/javascript"></script>
+<!-- c3.js -->
+<script src="plugins/c3.js/c3.min.js" type="text/javascript"></script>
+<!-- pivot.js -->
+<script src="plugins/pivot.js/pivot.min.js" type="text/javascript"></script>
+<script src="plugins/pivot.js/d3_renderers.min.js" type="text/javascript"></script>
+<script src="plugins/pivot.js/c3_renderers.min.js" type="text/javascript"></script>
+<!-- jquery.blockUI.js -->
+<script src="plugins/jquery.blockUI/jquery.blockUI.js" type="text/javascript"></script>
+<!-- main -->
+<script src="dist/js/vulsrepo.js" type="text/javascript"></script>
+
+</html>

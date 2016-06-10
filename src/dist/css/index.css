@@ -1,0 +1,12 @@
+.modal p {
+	margin-top: 15px;
+}
+
+a {
+	cursor: pointer;
+}
+
+.alert {
+	display: none;
+	margin: 2%;
+}
