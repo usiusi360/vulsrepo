@@ -253,7 +253,9 @@ var createPivotData = function(json_data) {
 	    };
 
 	    if (x_val.Platform.Name !== "") {
+		UnknownObj["Platform"] = x_val.Platform.Name;
 	    } else {
+		UnknownObj["Platform"] = "None";
 	    }
 	    
 	    if (x_val.Container.Name !== "") {
