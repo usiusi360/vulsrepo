@@ -14,6 +14,8 @@ $(document).ready(function() {
     getData().done(function(json_data) {
 	displayPivot(createPivotData(json_data));
 	filterDisp.off("pivot_conf");
+    }).fail(function(jqXHR) {
+	showAlert(jqXHR.status + " " + jqXHR.statusText, jqXHR.responseText);
     });
 
 });
@@ -40,8 +42,14 @@ var filterDisp = {
     }
 };
 
-var alertFade = function(target) {
+var fadeAlert = function(target) {
     $(target).fadeIn(1000).delay(2000).fadeOut(1000);
+};
+
+var showAlert = function(code, text) {
+    $("#alert_error_code").append("<div>" + code + "</div>");
+    $("#alert_responce_text").append("<div>" + text + "</div>");
+    $("#modal-alert").modal('show');
 };
 
 var getData = function() {
@@ -50,7 +58,10 @@ var getData = function() {
 	console.log(json_data);
 	defer.resolve(json_data);
 	vulsrepo.rawData = json_data;
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	defer.reject(jqXHR);
     });
+
     return defer.promise();
 };
 
@@ -75,13 +86,13 @@ var setEvents = function() {
     $("#save_pivot_conf").click(function() {
 	db.set("vulsrepo_pivot_conf", db.get("vulsrepo_pivot_conf_tmp"));
 	filterDisp.on("#label_pivot_conf");
-	alertFade("#alert_pivot_conf");
+	fadeAlert("#alert_pivot_conf");
     });
 
     $("#clear_pivot_conf").click(function() {
 	db.remove("vulsrepo_pivot_conf");
 	filterDisp.off("#label_pivot_conf");
-	alertFade("#alert_pivot_conf");
+	fadeAlert("#alert_pivot_conf");
 
 	getData().done(function(json_data) {
 	    displayPivot(createPivotData(json_data));
@@ -195,7 +206,7 @@ var createPivotData = function(json_data) {
 		} else {
 		    KnownObj["Platform"] = "None";
 		}
-	
+
 		if (x_val.Container.Name !== "") {
 		    KnownObj["Container"] = x_val.Container.Name;
 		} else {
@@ -257,7 +268,7 @@ var createPivotData = function(json_data) {
 	    } else {
 		UnknownObj["Platform"] = "None";
 	    }
-	    
+
 	    if (x_val.Container.Name !== "") {
 		UnknownObj["Container"] = x_val.Container.Name;
 	    } else {
@@ -422,6 +433,6 @@ var displayDetail = function(th) {
 	});
     }
 
-    $("#modal-top").modal('show');
+    $("#modal-detail").modal('show');
 
 };
