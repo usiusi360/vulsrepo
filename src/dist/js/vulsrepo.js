@@ -190,6 +190,18 @@ var createPivotData = function(json_data) {
 		    "Packages" : p_val.Name,
 		};
 
+		if (x_val.Platform.Name !== "") {
+		    KnownObj["Platform"] = x_val.Platform.Name;
+		} else {
+		    KnownObj["Platform"] = "None";
+		}
+	
+		if (x_val.Container.Name !== "") {
+		    KnownObj["Container"] = x_val.Container.Name;
+		} else {
+		    KnownObj["Container"] = "None";
+		}
+
 		if (y_val.CveDetail.Jvn.Score !== 0) {
 		    KnownObj["CVSS Score"] = y_val.CveDetail.Jvn.Score;
 		    KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
@@ -239,6 +251,17 @@ var createPivotData = function(json_data) {
 		"CVSS (I)" : "Unknown",
 		"CVSS (A)" : "Unknown"
 	    };
+
+	    if (x_val.Platform.Name !== "") {
+	    } else {
+	    }
+	    
+	    if (x_val.Container.Name !== "") {
+		UnknownObj["Container"] = x_val.Container.Name;
+	    } else {
+		UnknownObj["Container"] = "None";
+	    }
+
 	    array.push(UnknownObj);
 	});
     });
