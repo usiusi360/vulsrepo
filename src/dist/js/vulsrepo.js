@@ -10,11 +10,14 @@ var vulsrepo = {
 };
 
 $(document).ready(function() {
+    $.blockUI(blockUI_opt_all);
     setEvents();
     getData().done(function(json_data) {
 	displayPivot(createPivotData(json_data));
 	filterDisp.off("pivot_conf");
+	$.unblockUI(blockUI_opt_all);
     }).fail(function(jqXHR) {
+	$.unblockUI(blockUI_opt_all);
 	showAlert(jqXHR.status + " " + jqXHR.statusText, jqXHR.responseText);
     });
 
@@ -50,6 +53,22 @@ var showAlert = function(code, text) {
     $("#alert_error_code").append("<div>" + code + "</div>");
     $("#alert_responce_text").append("<div>" + text + "</div>");
     $("#modal-alert").modal('show');
+};
+
+var blockUI_opt_all = {
+
+    message : '<h4><img src="./dist/img/loading.gif" />　Please Wait...</h4>',
+    fadeIn : 200,
+    fadeOut : 200,
+    css : {
+	border : 'none',
+	padding : '15px',
+	backgroundColor : '#000',
+	'-webkit-border-radius' : '10px',
+	'-moz-border-radius' : '10px',
+	opacity : .5,
+	color : '#fff'
+    }
 };
 
 var getData = function() {
