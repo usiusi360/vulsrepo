@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 32 32" version="1.0">
+  <defs id="defs4">
+    <linearGradient id="linearGradient12771" y2="15.362" gradientUnits="userSpaceOnUse" x2="-40.597" gradientTransform="translate(66.577 9.6558)" y1="-3.6558" x1="-61.54">
+      <stop id="stop12767" stop-color="#ff2700" offset="0"/>
+      <stop id="stop12769" stop-color="#a00200" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient13664" y2="27.278" gradientUnits="userSpaceOnUse" x2="28.43" y1="3.8856" x1="3.351">
+      <stop id="stop13660" stop-color="#fff" offset="0"/>
+      <stop id="stop13662" stop-color="#ebebeb" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g id="layer1">
+    <g id="g13674" transform="matrix(.992 0 0 .992 .059356 .011172)">
+      <path id="rect11855" stroke-linejoin="round" d="m6.9911 0.41071c-0.3874 0.041-0.7526 0.18777-1.0313 0.46875l-5 5.0312c-0.743 0.7493-0.61108 2.1001 0.2813 3l7.0312 7.0623v0.188l-7.1562 7.093c-0.89991 0.893-1.0306 2.226-0.28128 2.969l5.0625 4.969c0.7493 0.743 2.0689 0.642 2.9688-0.25l7.1559-7.125 7.188 7.25c0.892 0.9 2.226 1.03 2.969 0.281l5-5.062c0.743-0.75 0.611-2.069-0.282-2.969l-7.093-7.156v-0.063l7.218-7.156c0.9-0.8924 1.031-2.1945 0.282-2.9375l-5.032-5c-0.749-0.74305-2.1-0.61114-3 0.2812l-7.125 7.0938h-0.062l-7.1564-7.2188c-0.5577-0.56241-1.292-0.81831-1.9375-0.74999z" stroke="#8a0000" stroke-width=".60001" fill="url(#linearGradient13664)"/>
+      <path id="rect11874" d="m7.1875 3.7803c-0.1794-0.0195-0.3462 0.0337-0.4688 0.1563l-2.7812 2.7812c-0.245 0.245-0.1797 0.6953 0.125 1l8.2815 8.2812-8.2815 8.281c-0.3047 0.305-0.37 0.755-0.125 1l2.7812 2.782c0.2451 0.245 0.6953 0.211 1-0.094l8.2813-8.281 8.281 8.281c0.305 0.305 0.755 0.339 1 0.094l2.781-2.782c0.246-0.245 0.18-0.695-0.124-1l-8.282-8.281 8.282-8.2812c0.304-0.3047 0.37-0.755 0.124-1l-2.781-2.7812c-0.245-0.2451-0.695-0.1798-1 0.125l-8.281 8.2814-8.2813-8.2814c-0.1523-0.1524-0.3518-0.2618-0.5312-0.2813z" fill="url(#linearGradient12771)"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>cancel</dc:title>
+        <dc:date>2006-11-27T02:35:43</dc:date>
+        <dc:description>A red cancel icon</dc:description>
+        <dc:source>http://openclipart.org/detail/1645/cancel-by-dagobert83</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>dagobert83</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>button</rdf:li>
+            <rdf:li>cancel</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>cross</rdf:li>
+            <rdf:li>delete</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>media</rdf:li>
+            <rdf:li>negative</rdf:li>
+            <rdf:li>png</rdf:li>
+            <rdf:li>public domain</rdf:li>
+            <rdf:li>red</rdf:li>
+            <rdf:li>svg</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
