@@ -433,7 +433,7 @@ var displayPivot = function(array) {
     var pivot_attr = {
 	renderers : renderers,
 	menuLimit : 3000,
-	rows : [ "ServerName", "CveID" ],
+	rows : [ "ServerName" ],
 	cols : [ "CVSS Severity", "CVSS Score" ],
 	vals : [ "" ],
 	exclusions : "",
@@ -558,8 +558,7 @@ var displayDetail = function(th) {
     addLink("#Link", vulsrepo.link.nvd.url + "?vulnId=" + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
     addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
     addLink("#Link", vulsrepo.link.cve.url + data.CveID, vulsrepo.link.cve.disp, vulsrepo.link.cve.find, "cve");
-    addLink("#Link", vulsrepo.link.cvss.url + "?name=" + data.CveID + "&vector=" + data.Jvn.Vector, vulsrepo.link.cvss.disp, vulsrepo.link.cvss.find,
-	    "cvss");
+    //addLink("#Link", vulsrepo.link.cvss.url + "?name=" + data.CveID + "&vector=" + data.Jvn.Vector, vulsrepo.link.cvss.disp, vulsrepo.link.cvss.find,"cvss");
     addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
 
     if (data.Jvn.JvnLink !== "") {
