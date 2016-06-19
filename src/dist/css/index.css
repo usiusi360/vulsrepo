@@ -10,3 +10,28 @@ a {
 	display: none;
 	margin: 2%;
 }
+
+#Title {
+	margin-bottom: 10px;
+}
+
+#Score {
+	margin-bottom: 10px;
+}
+
+#scoreTable {
+	width: 140px;
+	height: 40px;
+	font-size: 14pt;
+	color: white;
+	text-align: center;
+}
+
+#cvssTable {
+	text-align: center;
+}
+
+.linkCheckIcon {
+	width: 20px;
+	height: 20px;
+}

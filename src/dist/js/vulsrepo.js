@@ -1,12 +1,33 @@
 var vulsrepo = {
-    json_file : "current/all.json",
+    jsonFile : "current/all.json",
     rawData : null,
-    NVD_URL : 'https://web.nvd.nist.gov/view/vuln/detail',
-    MITRE_URL : 'https://cve.mitre.org/cgi-bin/cvename.cgi',
-    CVE_URL : 'http://www.cvedetails.com/cve/',
-    CVSS_URL : 'https://nvd.nist.gov/cvss/v2-calculator',
-    RHEL_URL : 'https://access.redhat.com/security/cve/'
-
+    link : {
+	nvd : {
+	    url : "https://web.nvd.nist.gov/view/vuln/detail",
+	    disp : "NVD",
+	    find : "CVE ID Not Found"
+	},
+	mitre : {
+	    url : "https://cve.mitre.org/cgi-bin/cvename.cgi",
+	    disp : "MITRE",
+	    find : "RESERVED"
+	},
+	cve : {
+	    url : "http://www.cvedetails.com/cve/",
+	    disp : "CveDetails",
+	    find : "Unknown CVE ID"
+	},
+	cvss : {
+	    url : "https://nvd.nist.gov/cvss/v2-calculator",
+	    disp : "CVSSv2 Caluclator",
+	    find : "Warning: Unable to find vulnerability requested."
+	},
+	rhel : {
+	    url : "https://access.redhat.com/security/cve/",
+	    disp : "RHEL-CVE",
+	    find : "Not Found"
+	}
+    }
 };
 
 $(document).ready(function() {
@@ -73,8 +94,11 @@ var blockUI_opt_all = {
 
 var getData = function() {
     var defer = new $.Deferred();
-    $.getJSON(vulsrepo.json_file).done(function(json_data) {
-	console.log(json_data);
+    $.ajaxSetup({
+	timeout : 5 * 1000
+    });
+    $.getJSON(vulsrepo.jsonFile).done(function(json_data) {
+	//console.log(json_data);
 	defer.resolve(json_data);
 	vulsrepo.rawData = json_data;
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -85,17 +109,13 @@ var getData = function() {
 };
 
 var getSeverity = function(Score) {
-
-    var severity;
     if (Score >= 7.0) {
-	severity = "High";
+	return Array("High", "red");
     } else if ((Score < 7.0) && (Score >= 4.0)) {
-	severity = "Medium";
+	return Array("Medium", "orange");
     } else if ((Score < 4.0)) {
-	severity = "Low";
+	return Array("Low", "#e6e600");
     }
-
-    return severity;
 };
 
 var setEvents = function() {
@@ -118,88 +138,187 @@ var setEvents = function() {
 	});
     });
 
+    $("#Setting").click(function() {
+	$("#modal-setting").modal('show');
+    });
+
+    $("[name='chkAheadUrl']").bootstrapSwitch();
+
+    var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+    if (chkAheadUrl === "true") {
+	$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
+    }
+
+    $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
+	if (state === true) {
+	    db.set("vulsrepo_chkAheadUrl", "true");
+	} else {
+	    db.remove("vulsrepo_chkAheadUrl");
+	}
+    });
+
 };
 
 var getSplitArray = function(full_vector) {
     return full_vector.replace(/\(|\)/g, '').split("/");
 };
 
-var getVector = function(vector) {
+var getVector = {
 
-    var subscore = vector.split(":");
+    jvn : function(vector) {
+	var subscore = vector.split(":");
 
-    switch (subscore[0]) {
-    case 'AV':
-	switch (subscore[1]) {
-	case 'L':
-	    return "LOCAL";
-	    break;
+	switch (subscore[0]) {
+	case 'AV':
+	    switch (subscore[1]) {
+	    case 'L':
+		return Array("LOCAL", "info");
+		break;
+	    case 'A':
+		return Array("ADJACENT_NETWORK", "warning");
+		break;
+	    case 'N':
+		return Array("NETWORK", "danger");
+		break;
+	    }
+	case 'AC':
+	    switch (subscore[1]) {
+	    case 'H':
+		return Array("HIGH", "info");
+		break;
+	    case 'M':
+		return Array("MEDIUM", "warning");
+		break;
+	    case 'L':
+		return Array("LOW", "danger");
+		break;
+	    }
+	case 'Au':
+	    switch (subscore[1]) {
+	    case 'N':
+		return Array("NONE", "danger");
+		break;
+	    case 'S':
+		return Array("SINGLE_INSTANCE", "warning");
+		break;
+	    case 'M':
+		return Array("MULTIPLE_INSTANCES", "info");
+		break;
+	    }
+	case 'C':
+	    switch (subscore[1]) {
+	    case 'N':
+		return Array("NONE", "info");
+		break;
+	    case 'P':
+		return Array("PARTIAL", "warning");
+		break;
+	    case 'C':
+		return Array("COMPLETE", "danger");
+		break;
+	    }
+	case 'I':
+	    switch (subscore[1]) {
+	    case 'N':
+		return Array("NONE", "info");
+		break;
+	    case 'P':
+		return Array("PARTIAL", "warning");
+		break;
+	    case 'C':
+		return Array("COMPLETE", "danger");
+		break;
+	    }
 	case 'A':
-	    return "ADJACENT_NETWORK";
-	    break;
-	case 'N':
-	    return "NETWORK";
-	    break;
+	    switch (subscore[1]) {
+	    case 'N':
+		return Array("NONE", "info");
+		break;
+	    case 'P':
+		return Array("PARTIAL", "warning");
+		break;
+	    case 'C':
+		return Array("COMPLETE", "danger");
+		break;
+	    }
 	}
-    case 'AC':
-	switch (subscore[1]) {
-	case 'H':
-	    return "HIGH";
-	    break;
-	case 'M':
-	    return "MEDIUM";
-	    break;
-	case 'L':
-	    return "LOW";
-	    break;
-	}
-    case 'Au':
-	switch (subscore[1]) {
-	case 'N':
-	    return "NONE";
-	    break;
-	case 'S':
-	    return "SINGLE_INSTANCE";
-	    break;
-	case 'M':
-	    return "MULTIPLE_INSTANCES";
-	    break;
-	}
-    case 'C':
-	switch (subscore[1]) {
-	case 'N':
-	    return "NONE";
-	    break;
-	case 'P':
-	    return "PARTIAL";
-	    break;
+    },
+
+    nvd : function(category, impact) {
+
+	switch (category) {
+	case 'AV':
+	    switch (impact) {
+	    case 'LOCAL':
+		return "info";
+		break;
+	    case 'ADJACENT_NETWORK':
+		return "warning";
+		break;
+	    case 'NETWORK':
+		return "danger";
+		break;
+	    }
+	case 'AC':
+	    switch (impact) {
+	    case 'HIGH':
+		return "info";
+		break;
+	    case 'MEDIUM':
+		return "warning";
+		break;
+	    case 'LOW':
+		return "danger";
+		break;
+	    }
+	case 'Au':
+	    switch (impact) {
+	    case 'NONE':
+		return "danger";
+		break;
+	    case 'SINGLE_INSTANCE':
+		return "warning";
+		break;
+	    case 'MULTIPLE_INSTANCES':
+		return "info";
+		break;
+	    }
 	case 'C':
-	    return "COMPLETE";
-	    break;
-	}
-    case 'I':
-	switch (subscore[1]) {
-	case 'N':
-	    return "NONE";
-	    break;
-	case 'P':
-	    return "PARTIAL";
-	    break;
-	case 'C':
-	    return "COMPLETE";
-	    break;
-	}
-    case 'A':
-	switch (subscore[1]) {
-	case 'N':
-	    return "NONE";
-	    break;
-	case 'P':
-	    return "PARTIAL";
-	    break;
-	case 'C':
-	    return "COMPLETE";
-	    break;
+	    switch (impact) {
+	    case 'NONE':
+		return "info";
+		break;
+	    case 'PARTIAL':
+		return "warning";
+		break;
+	    case 'COMPLETE':
+		return "danger";
+		break;
+	    }
+	case 'I':
+	    switch (impact) {
+	    case 'NONE':
+		return "info";
+		break;
+	    case 'PARTIAL':
+		return "warning";
+		break;
+	    case 'COMPLETE':
+		return "danger";
+		break;
+	    }
+	case 'A':
+	    switch (impact) {
+	    case 'NONE':
+		return "info";
+		break;
+	    case 'PARTIAL':
+		return "warning";
+		break;
+	    case 'COMPLETE':
+		return "danger";
+		break;
+	    }
 	}
     }
 };
@@ -237,17 +356,18 @@ var createPivotData = function(json_data) {
 		    KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
 		    KnownObj["Summary"] = y_val.CveDetail.Jvn.Title;
 
-		    // ex) CveDetail.Jvn.Vector (AV:A/AC:H/Au:N/C:N/I:P/A:N)
+		    // ex) CveDetail.Jvn.Vector
+		    // (AV:A/AC:H/Au:N/C:N/I:P/A:N)
 		    var arrayVector = getSplitArray(y_val.CveDetail.Jvn.Vector);
-		    KnownObj["CVSS (AV)"] = getVector(arrayVector[0]);
-		    KnownObj["CVSS (AC)"] = getVector(arrayVector[1]);
-		    KnownObj["CVSS (Au)"] = getVector(arrayVector[2]);
-		    KnownObj["CVSS (C)"] = getVector(arrayVector[3]);
-		    KnownObj["CVSS (I)"] = getVector(arrayVector[4]);
-		    KnownObj["CVSS (A)"] = getVector(arrayVector[5]);
+		    KnownObj["CVSS (AV)"] = getVector.jvn(arrayVector[0])[0];
+		    KnownObj["CVSS (AC)"] = getVector.jvn(arrayVector[1])[0];
+		    KnownObj["CVSS (Au)"] = getVector.jvn(arrayVector[2])[0];
+		    KnownObj["CVSS (C)"] = getVector.jvn(arrayVector[3])[0];
+		    KnownObj["CVSS (I)"] = getVector.jvn(arrayVector[4])[0];
+		    KnownObj["CVSS (A)"] = getVector.jvn(arrayVector[5])[0];
 		} else if (y_val.CveDetail.Nvd.Score !== 0) {
 		    KnownObj["CVSS Score"] = y_val.CveDetail.Nvd.Score;
-		    KnownObj["CVSS Severity"] = getSeverity(y_val.CveDetail.Nvd.Score);
+		    KnownObj["CVSS Severity"] = getSeverity(y_val.CveDetail.Nvd.Score)[0];
 		    KnownObj["Summary"] = y_val.CveDetail.Nvd.Summary;
 		    KnownObj["CVSS (AV)"] = y_val.CveDetail.Nvd.AccessVector;
 		    KnownObj["CVSS (AC)"] = y_val.CveDetail.Nvd.AccessComplexity;
@@ -313,7 +433,7 @@ var displayPivot = function(array) {
     var pivot_attr = {
 	renderers : renderers,
 	menuLimit : 3000,
-	rows : [ "ServerName" ],
+	rows : [ "ServerName", "CveID" ],
 	cols : [ "CVSS Severity", "CVSS Score" ],
 	vals : [ "" ],
 	exclusions : "",
@@ -378,45 +498,55 @@ var createDetailData = function(th) {
 
 var displayDetail = function(th) {
 
-    var data = createDetailData(th);
-
     $("#modal-label").text("");
     $("#Title").empty();
-    $("#Score").empty();
+    $("#scoreText").text("").css('background-color', 'gray');
     $("#Summary").empty();
     $("#Link").empty();
     $("#References").empty();
+    $("#cvss_av").removeClass().text("");
+    $("#cvss_ac").removeClass().text("");
+    $("#cvss_au").removeClass().text("");
+    $("#cvss_c").removeClass().text("");
+    $("#cvss_i").removeClass().text("");
+    $("#cvss_a").removeClass().text("");
 
+    var data = createDetailData(th);
     $("#modal-label").text(data.CveID);
     if (data.Jvn.Title !== "") {
 	$("#Title").append("<div>" + data.Jvn.Title + "<div>");
     } else if (data.Nvd.Summary !== "") {
-	// Do not put anything because it is the same as the summary in the case
+	// Do not put anything because it is the same as the summary in
+	// the case
 	// of NVD
     } else {
 	$("#Title").append("<div>Unknown<div>");
     }
 
     if (data.Jvn.Score !== 0) {
-	// $("#Score").append("<div>" + data.Jvn.Score + " (" +
-	// data.Jvn.Severity + ") " + data.Jvn.Vector + "</div>");
 	var arrayVector = getSplitArray(data.Jvn.Vector);
-
-	$("#Score").append(
-		"<div>" + data.Jvn.Score + " (" + data.Jvn.Severity + ") " + " (AV:" + getVector(arrayVector[0]) + " /AC:"
-			+ getVector(arrayVector[1]) + " /Au:" + getVector(arrayVector[2]) + " /C:" + getVector(arrayVector[3]) + " /I:"
-			+ getVector(arrayVector[4]) + " /A:" + getVector(arrayVector[5]) + ")</div>");
+	$("#scoreText").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
+	$("#cvss_av").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
+	$("#cvss_ac").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
+	$("#cvss_au").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
+	$("#cvss_c").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
+	$("#cvss_i").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
+	$("#cvss_a").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
 
 	$("#Summary").append("<div>" + data.Jvn.Summary + "<div>");
 	$("#Summary").append("<br>");
 
     } else if (data.Nvd.Score !== 0) {
-	$("#Score").append(
-		"<div>" + data.Nvd.Score + " (" + getSeverity(data.Nvd.Score) + ") " + " (AV:" + data.Nvd.AccessVector + " /AC:"
-			+ data.Nvd.AccessComplexity + " /Au:" + data.Nvd.Authentication + " /C:" + data.Nvd.ConfidentialityImpact + " /I:"
-			+ data.Nvd.IntegrityImpact + " /A:" + data.Nvd.AvailabilityImpact + ")</div>");
+	$("#scoreText").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
+	$("#cvss_av").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
+	$("#cvss_ac").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
+	$("#cvss_au").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
+	$("#cvss_c").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
+	$("#cvss_i").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
+	$("#cvss_a").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
+
     } else {
-	$("#Score").append("<div>Unknown</div>");
+	$("#scoreText").text("Unknown");
     }
 
     if (data.Nvd.Summary !== "") {
@@ -425,20 +555,20 @@ var displayDetail = function(th) {
 	$("#Summary").append("<div>Unknown<div>");
     }
 
-    $("#Link").append("<a href=\"" + vulsrepo.NVD_URL + "?vulnId=" + data.CveID + "\" target='_blank'>NVD</a>");
-    $("#Link").append("<span> / </span>");
-    $("#Link").append("<a href=\"" + vulsrepo.MITRE_URL + "?name=" + data.CveID + "\" target='_blank'>MITRE</a>");
-    $("#Link").append("<span> / </span>");
-    $("#Link").append("<a href=\"" + vulsrepo.CVE_URL + data.CveID + "\" target='_blank'>CveDetais</a>");
-    $("#Link").append("<span> / </span>");
-    $("#Link").append(
-	    "<a href=\"" + vulsrepo.CVSS_URL + "?name=" + data.CveID + "&vector=" + data.Jvn.Vector + "\" target='_blank'>CVSSv2 Caluclator</a>");
-    $("#Link").append("<span> / </span>");
-    $("#Link").append("<a href=\"" + vulsrepo.RHEL_URL + data.CveID + "\" target='_blank'>RHEL-CVE</a>");
+    addLink("#Link", vulsrepo.link.nvd.url + "?vulnId=" + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
+    addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
+    addLink("#Link", vulsrepo.link.cve.url + data.CveID, vulsrepo.link.cve.disp, vulsrepo.link.cve.find, "cve");
+    addLink("#Link", vulsrepo.link.cvss.url + "?name=" + data.CveID + "&vector=" + data.Jvn.Vector, vulsrepo.link.cvss.disp, vulsrepo.link.cvss.find,
+	    "cvss");
+    addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
 
     if (data.Jvn.JvnLink !== "") {
-	$("#Link").append("<span> / </span>");
-	$("#Link").append("<a href=\"" + data.Jvn.JvnLink + "\" target='_blank'>JVN</a>");
+	$("#Link").append("<a href=\"" + data.Jvn.JvnLink + "\" target='_blank'>JVN </a>");
+
+	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+	if (chkAheadUrl === "true") {
+	    $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/ok.svg\"></img>");
+	}
     }
 
     if (data.Jvn.References !== null) {
@@ -453,5 +583,46 @@ var displayDetail = function(th) {
     }
 
     $("#modal-detail").modal('show');
+
+};
+
+var addLink = function(target, url, disp, find, imgIdTarget) {
+    $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
+    var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+    if (chkAheadUrl === "true") {
+	$(target).append("<img class='linkCheckIcon' id=imgId_" + imgIdTarget + " src=\"dist/img/loading_small.gif\"></img>");
+	checkLink(url, find, "#imgId_" + imgIdTarget);
+    }
+    $(target).append("<span> / </span>");
+
+};
+
+var checkLink = function(url, find, imgId) {
+    $.ajaxSetup({
+	timeout : 30 * 1000
+    });
+    $.get(url).done(function(data, textStatus, jqXHR) {
+	// console.log("done:" + imgID);
+	// console.log(data);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	// console.log("fail:" + imgId);
+	// console.log(jqXHR);
+    }).always(function(data, textStatus, jqXHR) {
+	// console.log("always:" + imgId);
+	// console.log(data);
+
+	var result_text = data.results[0];
+	if (result_text !== undefined) {
+	    if (result_text.indexOf(find) !== -1) {
+		console.log(imgId + " / " + find + " / " + "find!");
+		$(imgId).attr("src", "dist/img/error.svg");
+	    } else {
+		console.log(imgId + " / " + find + " / " + "not find!");
+		$(imgId).attr("src", "dist/img/ok.svg");
+	    }
+	} else {
+	    $(imgId).attr("src", "dist/img/error.svg");
+	}
+    });
 
 };
