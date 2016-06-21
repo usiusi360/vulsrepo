@@ -1,5 +1,6 @@
 .modal p {
 	margin-top: 15px;
+	text-indent:5px
 }
 
 a {
@@ -9,6 +10,19 @@ a {
 .alert {
 	display: none;
 	margin: 2%;
+}
+
+
+.cvss-info {
+	background-color: lightskyblue;
+}
+
+.cvss-warning {
+	background-color: orange;
+}
+
+.cvss-danger {
+	background-color: indianred;
 }
 
 #Title {

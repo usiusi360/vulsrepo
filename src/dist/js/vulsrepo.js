@@ -187,73 +187,73 @@ var getVector = {
 		case 'AV':
 			switch (subscore[1]) {
 			case 'L':
-				return Array("LOCAL", "info");
+				return Array("LOCAL", "cvss-info");
 				break;
 			case 'A':
-				return Array("ADJACENT_NETWORK", "warning");
+				return Array("ADJACENT_NETWORK", "cvss-warning");
 				break;
 			case 'N':
-				return Array("NETWORK", "danger");
+				return Array("NETWORK", "cvss-danger");
 				break;
 			}
 		case 'AC':
 			switch (subscore[1]) {
 			case 'H':
-				return Array("HIGH", "info");
+				return Array("HIGH", "cvss-info");
 				break;
 			case 'M':
-				return Array("MEDIUM", "warning");
+				return Array("MEDIUM", "cvss-warning");
 				break;
 			case 'L':
-				return Array("LOW", "danger");
+				return Array("LOW", "cvss-danger");
 				break;
 			}
 		case 'Au':
 			switch (subscore[1]) {
 			case 'N':
-				return Array("NONE", "danger");
+				return Array("NONE", "cvss-danger");
 				break;
 			case 'S':
-				return Array("SINGLE_INSTANCE", "warning");
+				return Array("SINGLE_INSTANCE", "cvss-warning");
 				break;
 			case 'M':
-				return Array("MULTIPLE_INSTANCES", "info");
+				return Array("MULTIPLE_INSTANCES", "cvss-info");
 				break;
 			}
 		case 'C':
 			switch (subscore[1]) {
 			case 'N':
-				return Array("NONE", "info");
+				return Array("NONE", "cvss-info");
 				break;
 			case 'P':
-				return Array("PARTIAL", "warning");
+				return Array("PARTIAL", "cvss-warning");
 				break;
 			case 'C':
-				return Array("COMPLETE", "danger");
+				return Array("COMPLETE", "cvss-danger");
 				break;
 			}
 		case 'I':
 			switch (subscore[1]) {
 			case 'N':
-				return Array("NONE", "info");
+				return Array("NONE", "cvss-info");
 				break;
 			case 'P':
-				return Array("PARTIAL", "warning");
+				return Array("PARTIAL", "cvss-warning");
 				break;
 			case 'C':
-				return Array("COMPLETE", "danger");
+				return Array("COMPLETE", "cvss-danger");
 				break;
 			}
 		case 'A':
 			switch (subscore[1]) {
 			case 'N':
-				return Array("NONE", "info");
+				return Array("NONE", "cvss-info");
 				break;
 			case 'P':
-				return Array("PARTIAL", "warning");
+				return Array("PARTIAL", "cvss-warning");
 				break;
 			case 'C':
-				return Array("COMPLETE", "danger");
+				return Array("COMPLETE", "cvss-danger");
 				break;
 			}
 		}
@@ -265,73 +265,73 @@ var getVector = {
 		case 'AV':
 			switch (impact) {
 			case 'LOCAL':
-				return "info";
+				return "cvss-info";
 				break;
 			case 'ADJACENT_NETWORK':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'NETWORK':
-				return "danger";
+				return "cvss-danger";
 				break;
 			}
 		case 'AC':
 			switch (impact) {
 			case 'HIGH':
-				return "info";
+				return "cvss-info";
 				break;
 			case 'MEDIUM':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'LOW':
-				return "danger";
+				return "cvss-danger";
 				break;
 			}
 		case 'Au':
 			switch (impact) {
 			case 'NONE':
-				return "danger";
+				return "cvss-danger";
 				break;
 			case 'SINGLE_INSTANCE':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'MULTIPLE_INSTANCES':
-				return "info";
+				return "cvss-info";
 				break;
 			}
 		case 'C':
 			switch (impact) {
 			case 'NONE':
-				return "info";
+				return "cvss-info";
 				break;
 			case 'PARTIAL':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'COMPLETE':
-				return "danger";
+				return "cvss-danger";
 				break;
 			}
 		case 'I':
 			switch (impact) {
 			case 'NONE':
-				return "info";
+				return "cvss-info";
 				break;
 			case 'PARTIAL':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'COMPLETE':
-				return "danger";
+				return "cvss-danger";
 				break;
 			}
 		case 'A':
 			switch (impact) {
 			case 'NONE':
-				return "info";
+				return "cvss-info";
 				break;
 			case 'PARTIAL':
-				return "warning";
+				return "cvss-warning";
 				break;
 			case 'COMPLETE':
-				return "danger";
+				return "cvss-danger";
 				break;
 			}
 		}
@@ -529,9 +529,7 @@ var displayDetail = function(th) {
 	if (data.Jvn.Title !== "") {
 		$("#Title").append("<div>" + data.Jvn.Title + "<div>");
 	} else if (data.Nvd.Summary !== "") {
-		// Do not put anything because it is the same as the summary in
-		// the case
-		// of NVD
+		// Do not put anything because it is the same as the summary in the case of NVD
 	} else {
 		$("#Title").append("<div>Unknown<div>");
 	}
