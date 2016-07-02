@@ -23,7 +23,7 @@
 		<div class="navbar-header">
 			<a class="navbar-brand">VulsRepo</a>
 		</div>
-		<div class="collapse navbar-collapse" id="navbarEexample1">
+		<div class="collapse navbar-collapse">
 			<button id="Setting" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-wrench pull-right"></button>
 		</div>
 	</nav>
@@ -32,14 +32,27 @@
 			<div class="glyphicon glyphicon-question-sign pull-right" title="test"></div>
 		</div>
 		<div>
-			<button type="submit" class="btn btn-primary" id="save_pivot_conf">
-				Save
-			</button>
-			<button type="submit" class="btn btn-default" id="clear_pivot_conf">
-				Clear
-			</button>
-			<span class="label" id="label_pivot_conf"></span>
-			<span class="alert alert-success" id="alert_pivot_conf">Success</span>
+			<div class="dropdown box">
+				<div class="btn-group btn-default my-input-pos">
+					<button type="button" class="btn btn-default">
+						<span id="drop_topmenu_visibleValue">Select setting</span>
+					</button>
+					<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu" id="drop_topmenu"></ul>
+					<input type="hidden" id="drop_topmenu_hiddenValue" value="">
+				</div>
+
+				<button type="submit" class="btn btn-primary  my-button" id="save_pivot_conf">
+					Save
+				</button>
+				<button type="submit" class="btn btn-default my-button" id="clear_pivot_conf">
+					Delete
+				</button>
+				<span class="label" id="label_pivot_conf"></span>
+				<span class="alert alert-success" id="alert_pivot_conf">Success</span>
+			</div>
 		</div>
 		<div id="pivot_base" style="margin: 30px;"></div>
 	</div>
@@ -156,6 +169,69 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="modal-saveDiag" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-default">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h5 class="modal-title" id="modal-label">SAVE</h5>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								Save new setting
+							</div>
+							<div class="panel-body">
+								<div class="radio">
+									<input type="radio" name="radio_setting" checked="checked">
+									<input type="text" id="input_saveDiag" class="form-control my-input my-input-pos" placeholder="Input setting name">
+									<label><span class="label label-warning" id="alert_saveDiag_textbox" style="display: none">Setting name cannot be empty.</span></label>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								Update setting
+							</div>
+							<div class="panel-body">
+								<div class="radio">
+									<input type="radio" name="radio_setting">
+									<div class="btn-group btn-default my-input-pos" id="drop_saveDiag_buttonGroup">
+										<button type="button" class="btn btn-default" disabled>
+											<span id="drop_saveDiag_visibleValue">Select setting</span>
+										</button>
+										<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" disabled>
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" role="menu" id="drop_saveDiag"></ul>
+										<input type="hidden" id="drop_saveDiag_hiddenValue" value="">
+									</div>
+									
+								</div>
+								<label><span class="label label-warning" id="alert_saveDiag_dropdown" style="display: none">Select setting.</span></label>
+							</div>
+						</div>
+					</div>
+
+					<div class="pull-right">
+						<button type="submit" class="btn btn-info my-button" id="ok_saveDiag">
+							OK
+						</button>
+						<button type="submit" class="btn btn-default my-button" id="cancel_saveDiag">
+							Cancel
+						</button>
+					</div>
+					<br>
+					<br>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 
 <!-- JS -->
