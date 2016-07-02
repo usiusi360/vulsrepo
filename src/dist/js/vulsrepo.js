@@ -46,18 +46,24 @@ var vulsrepo = {
 };
 
 $(document).ready(function() {
-	$.blockUI(blockUI_opt_all);
 	setEvents();
+	pivotInitialize();
+
+});
+
+var pivotInitialize = function() {
+	$.blockUI(blockUI_opt_all);
 	getData().done(function(json_data) {
 		displayPivot(createPivotData(json_data));
+		setPulldown("#drop_topmenu");
+		setPulldownDisplayChangeEvent("#drop_topmenu");
 		filterDisp.off("pivot_conf");
 		$.unblockUI(blockUI_opt_all);
 	}).fail(function(jqXHR) {
 		$.unblockUI(blockUI_opt_all);
 		showAlert(jqXHR.status + " " + jqXHR.statusText, jqXHR.responseText);
 	});
-
-});
+};
 
 var db = {
 	set : function(key, obj) {
@@ -68,6 +74,24 @@ var db = {
 	},
 	remove : function(key) {
 		localStorage.removeItem(key);
+	},
+	setPivotConf : function(key, obj) {
+		localStorage.setItem("vulsrepo_pivot_conf_user_" + key, JSON.stringify(obj));
+	},
+	getPivotConf : function(key) {
+		return JSON.parse(localStorage.getItem("vulsrepo_pivot_conf_user_" + key));
+	},
+	removePivotConf : function(key) {
+		localStorage.removeItem("vulsrepo_pivot_conf_user_" + key);
+	},
+	listPivotConf : function(key) {
+		var array = [];
+		for (var i = 0; i < localStorage.length; i++) {
+			if (localStorage.key(i).indexOf('vulsrepo_pivot_conf_user_') != -1) {
+				array.push(localStorage.key(i).replace(/vulsrepo_pivot_conf_user_/g, ''));
+			}
+		}
+		return array;
 	}
 };
 
@@ -113,7 +137,6 @@ var getData = function() {
 		timeout : 5 * 1000
 	});
 	$.getJSON(vulsrepo.jsonFile).done(function(json_data) {
-		// console.log(json_data);
 		defer.resolve(json_data);
 		vulsrepo.rawData = json_data;
 	}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -133,24 +156,98 @@ var getSeverity = function(Score) {
 	}
 };
 
+var setPulldown = function(target) {
+	$(target).empty();
+	$.each(db.listPivotConf(), function(index, val) {
+		$(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
+	});
+
+	$(target + ' a').off('click');
+	$(target + ' a').on('click', function() {
+		$(target + "_visibleValue").html($(this).attr('value'));
+		$(target + "_hiddenValue").val($(this).attr('value'));
+	});
+
+};
+
+var setPulldownDisplayChangeEvent = function(target) {
+	$(target + ' a').on('click', function() {
+		var value = db.getPivotConf($(this).attr('value'));
+		db.set("vulsrepo_pivot_conf", value);
+		pivotInitialize();
+	});
+};
+
 var setEvents = function() {
 	$("#nvd_help").tooltip({});
 	// $("a[data-toggle=popover]").popover();
 
 	$("#save_pivot_conf").click(function() {
-		db.set("vulsrepo_pivot_conf", db.get("vulsrepo_pivot_conf_tmp"));
+		$("#alert_saveDiag_textbox").css("display", "none");
+		$("#alert_saveDiag_dropdown").css("display", "none");
+		$("#input_saveDiag").val("");
+		$("#drop_saveDiag_visibleValue").html("Select setting");
+		$("#drop_saveDiag_hiddenValue").val("");
+
+		setPulldown("#drop_saveDiag");
+		$("#modal-saveDiag").modal('show');
+	});
+
+	$('input[name=radio_setting]:eq(0)').click(function() {
+		$("#input_saveDiag").prop("disabled", false);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", true);
+	});
+
+	$('input[name=radio_setting]:eq(1)').click(function() {
+		$("#input_saveDiag").prop("disabled", true);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", false);
+	});
+
+	$("#ok_saveDiag").click(function() {
+		var configName;
+		if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
+			configName = $("#input_saveDiag").val();
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_textbox").css("display", "");
+				return;
+			}
+		} else {
+			configName = $("#drop_saveDiag_hiddenValue").attr('value');
+
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_dropdown").css("display", "");
+				return;
+			}
+
+		}
+
+		setPulldown("#drop_topmenu");
+		setPulldownDisplayChangeEvent("#drop_topmenu");
+		$("#drop_topmenu_visibleValue").html(configName);
+		$("#drop_topnemu_hiddenValue").val(configName);
+
+		$("#modal-saveDiag").modal('hide');
 		filterDisp.on("#label_pivot_conf");
 		fadeAlert("#alert_pivot_conf");
+
+	});
+
+	$("#cancel_saveDiag").click(function() {
+		$("#modal-saveDiag").modal('hide');
 	});
 
 	$("#clear_pivot_conf").click(function() {
+		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
 		db.remove("vulsrepo_pivot_conf");
+		$("#drop_topmenu_visibleValue").html("Select setting");
+		$("#drop_topnemu_hiddenValue").val("");
 		filterDisp.off("#label_pivot_conf");
 		fadeAlert("#alert_pivot_conf");
-
-		getData().done(function(json_data) {
-			displayPivot(createPivotData(json_data));
-		});
+		pivotInitialize();
 	});
 
 	$("#Setting").click(function() {
@@ -158,7 +255,6 @@ var setEvents = function() {
 	});
 
 	$("[name='chkAheadUrl']").bootstrapSwitch();
-
 	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
 	if (chkAheadUrl === "true") {
 		$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
@@ -633,10 +729,8 @@ var checkLink = function(url, find, imgId) {
 		var result_text = data.results[0];
 		if (result_text !== undefined) {
 			if (result_text.indexOf(find) !== -1) {
-				console.log(imgId + " / " + find + " / " + "find!");
 				$(imgId).attr("src", "dist/img/error.svg");
 			} else {
-				console.log(imgId + " / " + find + " / " + "not find!");
 				$(imgId).attr("src", "dist/img/ok.svg");
 			}
 		} else {

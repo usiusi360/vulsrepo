@@ -1,6 +1,23 @@
+.my-button {
+	width: 70px;
+}
+
+.my-input {
+	width: 500px;
+}
+
+.my-input-pos {
+	margin-left: 15px;
+}
+
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+	margin-left: -5px;
+	margin-top: 11px;
+}
+
 .modal p {
 	margin-top: 15px;
-	text-indent:5px
+	text-indent: 5px
 }
 
 a {
@@ -11,7 +28,6 @@ a {
 	display: none;
 	margin: 2%;
 }
-
 
 .cvss-info {
 	background-color: lightskyblue;
