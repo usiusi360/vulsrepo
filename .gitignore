@@ -1,4 +1,2 @@
 .project
-current/all.json
-src/current/all.json
-*.json
+src/current/all.json*

@@ -494,37 +494,38 @@ var createPivotData = function(json_data) {
 		});
 
 		$.each(x_val.UnknownCves, function(y, y_val) {
+			$.each(y_val.Packages, function(p, p_val) {
+				var UnknownObj = {
+					"ServerName" : x_val.ServerName,
+					"Family" : x_val.Family,
+					"Release" : x_val.Release,
+					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+					"Packages" : p_val.Name,
+					"CVSS Score" : "Unknown",
+					"CVSS Severity" : "Unknown",
+					"Summary" : "Unknown",
+					"CVSS (AV)" : "Unknown",
+					"CVSS (AC)" : "Unknown",
+					"CVSS (Au)" : "Unknown",
+					"CVSS (C)" : "Unknown",
+					"CVSS (I)" : "Unknown",
+					"CVSS (A)" : "Unknown"
+				};
 
-			var UnknownObj = {
-				"ServerName" : x_val.ServerName,
-				"Family" : x_val.Family,
-				"Release" : x_val.Release,
-				"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
-				"Packages" : "Unknown",
-				"CVSS Score" : "Unknown",
-				"CVSS Severity" : "Unknown",
-				"Summary" : "Unknown",
-				"CVSS (AV)" : "Unknown",
-				"CVSS (AC)" : "Unknown",
-				"CVSS (Au)" : "Unknown",
-				"CVSS (C)" : "Unknown",
-				"CVSS (I)" : "Unknown",
-				"CVSS (A)" : "Unknown"
-			};
+				if (x_val.Platform.Name !== "") {
+					UnknownObj["Platform"] = x_val.Platform.Name;
+				} else {
+					UnknownObj["Platform"] = "None";
+				}
 
-			if (x_val.Platform.Name !== "") {
-				UnknownObj["Platform"] = x_val.Platform.Name;
-			} else {
-				UnknownObj["Platform"] = "None";
-			}
+				if (x_val.Container.Name !== "") {
+					UnknownObj["Container"] = x_val.Container.Name;
+				} else {
+					UnknownObj["Container"] = "None";
+				}
 
-			if (x_val.Container.Name !== "") {
-				UnknownObj["Container"] = x_val.Container.Name;
-			} else {
-				UnknownObj["Container"] = "None";
-			}
-
-			array.push(UnknownObj);
+				array.push(UnknownObj);
+			});
 		});
 	});
 
