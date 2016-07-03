@@ -442,9 +442,14 @@ var createPivotData = function(json_data) {
 	$.each(json_data, function(x, x_val) {
 		$.each(x_val.KnownCves, function(y, y_val) {
 
-			if ( y_val.Packages !== null )
+			var knownValue;
+			if ( y_val.CpeNames.length !== 0 ) {
+				knownValue = y_val.CpeNames; 
+			} else {
+				knownValue = y_val.Packages; 
+			}
 			
-			$.each(y_val.Packages, function(p, p_val) {
+			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
 					"ServerName" : x_val.ServerName,
 					"Family" : x_val.Family,
@@ -497,7 +502,15 @@ var createPivotData = function(json_data) {
 		});
 
 		$.each(x_val.UnknownCves, function(y, y_val) {
-			$.each(y_val.Packages, function(p, p_val) {
+			
+			var unknownValue;
+			if ( y_val.CpeNames !== null ) {
+				unknownValue = y_val.CpeNames; 
+			} else {
+				unknownValue = y_val.Packages; 
+			}
+			
+			$.each(unknownValue, function(p, p_val) {
 				var UnknownObj = {
 					"ServerName" : x_val.ServerName,
 					"Family" : x_val.Family,
