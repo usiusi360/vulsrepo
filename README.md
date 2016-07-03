@@ -1,5 +1,7 @@
 # VulsRepo #
 
+[![license](https://img.shields.io/github/license/usiusi360/vulsrepo.svg?style=flat-square)](https://github.com/usiusi360/vulsrepo/blob/master/LICENSE.txt)
+
 VulsRepo is visualized based on the json report output in [vuls](https://github.com/future-architect/vuls).
 
 Demo movie:[https://youtu.be/DIBPoik4owc](https://youtu.be/DIBPoik4owc)
@@ -7,10 +9,10 @@ Demo movie:[https://youtu.be/DIBPoik4owc](https://youtu.be/DIBPoik4owc)
 
 ## Installation ##
 
-### Step1. To create a json report of vuls ###
+### Step1. Create a json report of vuls ###
 
 ````
-$ vuls scan -report-json
+$ vuls scan -report-json --cve-dictionary-dbpath=<VulsHome>/cve.sqlite3
 ````
 
 Write report to JSON files ($PWD/results/current)
@@ -30,7 +32,7 @@ $ unzip master.zip
 $ sudo mv ./vulsrepo-master/src /var/www/html/vulsrepo
 ````
 
-### Step4. To link to json report ###
+### Step4. Link to json report ###
 
 ````
 $ cd /var/www/html/vulsrepo/
@@ -39,7 +41,7 @@ $ ln -s <VulsHome>/results/current current
 
 ## Usage ##
 
-To access the browser
+Access the browser
 
 ````
 http://VulsServer/vulsrepo/
