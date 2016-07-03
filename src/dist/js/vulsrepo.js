@@ -47,6 +47,7 @@ var vulsrepo = {
 
 $(document).ready(function() {
 	setEvents();
+	db.remove("vulsrepo_pivot_conf");
 	pivotInitialize();
 
 });
@@ -441,7 +442,14 @@ var createPivotData = function(json_data) {
 	$.each(json_data, function(x, x_val) {
 		$.each(x_val.KnownCves, function(y, y_val) {
 
-			$.each(y_val.Packages, function(p, p_val) {
+			var knownValue;
+			if ( y_val.CpeNames.length !== 0 ) {
+				knownValue = y_val.CpeNames; 
+			} else {
+				knownValue = y_val.Packages; 
+			}
+			
+			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
 					"ServerName" : x_val.ServerName,
 					"Family" : x_val.Family,
@@ -494,37 +502,46 @@ var createPivotData = function(json_data) {
 		});
 
 		$.each(x_val.UnknownCves, function(y, y_val) {
-
-			var UnknownObj = {
-				"ServerName" : x_val.ServerName,
-				"Family" : x_val.Family,
-				"Release" : x_val.Release,
-				"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
-				"Packages" : "Unknown",
-				"CVSS Score" : "Unknown",
-				"CVSS Severity" : "Unknown",
-				"Summary" : "Unknown",
-				"CVSS (AV)" : "Unknown",
-				"CVSS (AC)" : "Unknown",
-				"CVSS (Au)" : "Unknown",
-				"CVSS (C)" : "Unknown",
-				"CVSS (I)" : "Unknown",
-				"CVSS (A)" : "Unknown"
-			};
-
-			if (x_val.Platform.Name !== "") {
-				UnknownObj["Platform"] = x_val.Platform.Name;
+			
+			var unknownValue;
+			if ( y_val.CpeNames !== null ) {
+				unknownValue = y_val.CpeNames; 
 			} else {
-				UnknownObj["Platform"] = "None";
+				unknownValue = y_val.Packages; 
 			}
+			
+			$.each(unknownValue, function(p, p_val) {
+				var UnknownObj = {
+					"ServerName" : x_val.ServerName,
+					"Family" : x_val.Family,
+					"Release" : x_val.Release,
+					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+					"Packages" : p_val.Name,
+					"CVSS Score" : "Unknown",
+					"CVSS Severity" : "Unknown",
+					"Summary" : "Unknown",
+					"CVSS (AV)" : "Unknown",
+					"CVSS (AC)" : "Unknown",
+					"CVSS (Au)" : "Unknown",
+					"CVSS (C)" : "Unknown",
+					"CVSS (I)" : "Unknown",
+					"CVSS (A)" : "Unknown"
+				};
 
-			if (x_val.Container.Name !== "") {
-				UnknownObj["Container"] = x_val.Container.Name;
-			} else {
-				UnknownObj["Container"] = "None";
-			}
+				if (x_val.Platform.Name !== "") {
+					UnknownObj["Platform"] = x_val.Platform.Name;
+				} else {
+					UnknownObj["Platform"] = "None";
+				}
 
-			array.push(UnknownObj);
+				if (x_val.Container.Name !== "") {
+					UnknownObj["Container"] = x_val.Container.Name;
+				} else {
+					UnknownObj["Container"] = "None";
+				}
+
+				array.push(UnknownObj);
+			});
 		});
 	});
 
