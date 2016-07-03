@@ -47,6 +47,7 @@ var vulsrepo = {
 
 $(document).ready(function() {
 	setEvents();
+	db.remove("vulsrepo_pivot_conf");
 	pivotInitialize();
 
 });
@@ -441,6 +442,8 @@ var createPivotData = function(json_data) {
 	$.each(json_data, function(x, x_val) {
 		$.each(x_val.KnownCves, function(y, y_val) {
 
+			if ( y_val.Packages !== null )
+			
 			$.each(y_val.Packages, function(p, p_val) {
 				var KnownObj = {
 					"ServerName" : x_val.ServerName,
