@@ -4,8 +4,12 @@
 
 VulsRepo is visualized based on the json report output in [vuls](https://github.com/future-architect/vuls).
 
-Demo movie:[https://youtu.be/DIBPoik4owc](https://youtu.be/DIBPoik4owc)
+YouTube:
 
+[![vulsrepo](http://img.youtube.com/vi/DIBPoik4owc/0.jpg)](https://youtu.be/DIBPoik4owc)
+
+## Online Demo
+http://usiusi360.github.io/vulsrepo/
 
 ## Installation ##
 
