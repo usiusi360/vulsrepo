@@ -45,7 +45,22 @@ var vulsrepo = {
 	}
 };
 
+var demo = [
+		{
+			key : '1. Graph:ServerName->Score',
+			value : '{"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["Container"],"rows":["CVSS Severity"],"vals":[],"exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter results","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter results","totals":"Totals","vs":"vs","by":"by"},"aggregatorName":"Count","rendererName":"Stacked Bar Chart","inclusionsInfo":{}}'
+		},
+		{
+			key : '2. Pivot:Packages->CveID->Summary',
+			value : '{"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["Container"],"rows":["Packages","CveID"],"vals":[],"exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter results","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter results","totals":"Totals","vs":"vs","by":"by"},"aggregatorName":"Count","rendererName":"Heatmap","inclusionsInfo":{}}'
+		} ];
+
 $(document).ready(function() {
+
+	$.each(demo, function(index, val) {
+		localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
+	});
+
 	setEvents();
 	db.remove("vulsrepo_pivot_conf");
 	pivotInitialize();
@@ -443,12 +458,12 @@ var createPivotData = function(json_data) {
 		$.each(x_val.KnownCves, function(y, y_val) {
 
 			var knownValue;
-			if ( y_val.CpeNames.length !== 0 ) {
-				knownValue = y_val.CpeNames; 
+			if (y_val.CpeNames.length !== 0) {
+				knownValue = y_val.CpeNames;
 			} else {
-				knownValue = y_val.Packages; 
+				knownValue = y_val.Packages;
 			}
-			
+
 			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
 					"ServerName" : x_val.ServerName,
@@ -502,14 +517,14 @@ var createPivotData = function(json_data) {
 		});
 
 		$.each(x_val.UnknownCves, function(y, y_val) {
-			
+
 			var unknownValue;
-			if ( y_val.CpeNames !== null ) {
-				unknownValue = y_val.CpeNames; 
+			if (y_val.CpeNames !== null) {
+				unknownValue = y_val.CpeNames;
 			} else {
-				unknownValue = y_val.Packages; 
+				unknownValue = y_val.Packages;
 			}
-			
+
 			$.each(unknownValue, function(p, p_val) {
 				var UnknownObj = {
 					"ServerName" : x_val.ServerName,
@@ -559,7 +574,7 @@ var displayPivot = function(array) {
 	var pivot_attr = {
 		renderers : renderers,
 		menuLimit : 3000,
-		rows : [ "ServerName" ],
+		rows : [ "ServerName", "Container" ],
 		cols : [ "CVSS Severity", "CVSS Score" ],
 		vals : [ "" ],
 		exclusions : "",
