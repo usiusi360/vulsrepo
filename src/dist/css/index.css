@@ -65,3 +65,16 @@ a {
 	width: 20px;
 	height: 20px;
 }
+
+#pivot_base {
+	margin: 30px;
+}
+
+#submitSelectfile {
+	margin-bottom: 10px;
+}
+
+#title {
+	padding-left: 65px;
+}
+

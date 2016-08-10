@@ -1,0 +1,5 @@
+<Directory "/var/www/html/vulsrepo/dist/cgi/">
+    Options +ExecCGI
+    AddHandler cgi-script cgi
+</Directory>
+

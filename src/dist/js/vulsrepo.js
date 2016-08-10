@@ -1,6 +1,5 @@
 var vulsrepo = {
-	jsonFile : "current/all.json",
-	rawData : null,
+	detailRawData : null,
 	link : {
 		mitre : {
 			url : "https://cve.mitre.org/cgi-bin/cvename.cgi",
@@ -47,23 +46,31 @@ var vulsrepo = {
 
 $(document).ready(function() {
 	setEvents();
+	createFolderTree();
 	db.remove("vulsrepo_pivot_conf");
-	pivotInitialize();
-
+	$('#drawerLeft').drawer('show');
 });
 
-var pivotInitialize = function() {
+var initPivotTable = function() {
+
 	$.blockUI(blockUI_opt_all);
-	getData().done(function(json_data) {
-		displayPivot(createPivotData(json_data));
+	getData().done(function(resultArray) {
+		displayPivot(createPivotData(resultArray));
+		
+		vulsrepo.detailRawData = resultArray; 
 		setPulldown("#drop_topmenu");
 		setPulldownDisplayChangeEvent("#drop_topmenu");
 		filterDisp.off("pivot_conf");
 		$.unblockUI(blockUI_opt_all);
-	}).fail(function(jqXHR) {
+	}).fail(function(result) {
 		$.unblockUI(blockUI_opt_all);
-		showAlert(jqXHR.status + " " + jqXHR.statusText, jqXHR.responseText);
+		if (result === "notSelect") {
+			showAlert("Not Selected", "File is not selected.");
+		} else {
+			showAlert(result.status + " " + result.statusText, result.responseText);
+		}
 	});
+
 };
 
 var db = {
@@ -111,6 +118,8 @@ var fadeAlert = function(target) {
 };
 
 var showAlert = function(code, text) {
+	$("#alert_error_code").empty();
+	$("#alert_responce_text").empty();
 	$("#alert_error_code").append("<div>" + code + "</div>");
 	$("#alert_responce_text").append("<div>" + text + "</div>");
 	$("#modal-alert").modal('show');
@@ -133,18 +142,51 @@ var blockUI_opt_all = {
 };
 
 var getData = function() {
-	var defer = new $.Deferred();
+
 	$.ajaxSetup({
 		timeout : 5 * 1000
 	});
-	$.getJSON(vulsrepo.jsonFile).done(function(json_data) {
-		defer.resolve(json_data);
-		vulsrepo.rawData = json_data;
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		defer.reject(jqXHR);
-	});
 
+	var kickCount = 0;
+	var endCount = 0;
+	var resultArray = [];
+	var defer = new $.Deferred();
+
+	var selectedFile = getSelectedFile();
+
+	if (selectedFile.length === 0) {
+		defer.reject("notSelect");
+		return defer.promise();
+	}
+
+	$.each(selectedFile, function(key, value) {
+
+		$.getJSON("results/" + value).done(function(json_data) {
+			endCount++;
+			var folder = value.split("/");
+			var resultMap = {
+				folderName : folder[0],
+				data : json_data
+			};
+			resultArray.push(resultMap);
+			if (kickCount == endCount) {
+				defer.resolve(resultArray);
+			}
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			defer.reject(jqXHR);
+		});
+		kickCount++;
+	});
 	return defer.promise();
+};
+
+var getSelectedFile = function() {
+	var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
+		if (node.data.isFolder === false) {
+			return (node.parent.data.title + "/" + node.data.title);
+		}
+	});
+	return selectedFile;
 };
 
 var getSeverity = function(Score) {
@@ -155,120 +197,6 @@ var getSeverity = function(Score) {
 	} else if ((Score < 4.0)) {
 		return Array("Low", "#e6e600");
 	}
-};
-
-var setPulldown = function(target) {
-	$(target).empty();
-	$.each(db.listPivotConf(), function(index, val) {
-		$(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
-	});
-
-	$(target + ' a').off('click');
-	$(target + ' a').on('click', function() {
-		$(target + "_visibleValue").html($(this).attr('value'));
-		$(target + "_hiddenValue").val($(this).attr('value'));
-	});
-
-};
-
-var setPulldownDisplayChangeEvent = function(target) {
-	$(target + ' a').on('click', function() {
-		var value = db.getPivotConf($(this).attr('value'));
-		db.set("vulsrepo_pivot_conf", value);
-		pivotInitialize();
-	});
-};
-
-var setEvents = function() {
-	$("#nvd_help").tooltip({});
-	// $("a[data-toggle=popover]").popover();
-
-	$("#save_pivot_conf").click(function() {
-		$("#alert_saveDiag_textbox").css("display", "none");
-		$("#alert_saveDiag_dropdown").css("display", "none");
-		$("#input_saveDiag").val("");
-		$("#drop_saveDiag_visibleValue").html("Select setting");
-		$("#drop_saveDiag_hiddenValue").val("");
-
-		setPulldown("#drop_saveDiag");
-		$("#modal-saveDiag").modal('show');
-	});
-
-	$('input[name=radio_setting]:eq(0)').click(function() {
-		$("#input_saveDiag").prop("disabled", false);
-		$('#drop_saveDiag_buttonGroup button').prop("disabled", true);
-	});
-
-	$('input[name=radio_setting]:eq(1)').click(function() {
-		$("#input_saveDiag").prop("disabled", true);
-		$('#drop_saveDiag_buttonGroup button').prop("disabled", false);
-	});
-
-	$("#ok_saveDiag").click(function() {
-		var configName;
-		if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
-			configName = $("#input_saveDiag").val();
-			if (configName !== "") {
-				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
-			} else {
-				$("#alert_saveDiag_textbox").css("display", "");
-				return;
-			}
-		} else {
-			configName = $("#drop_saveDiag_hiddenValue").attr('value');
-
-			if (configName !== "") {
-				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
-			} else {
-				$("#alert_saveDiag_dropdown").css("display", "");
-				return;
-			}
-
-		}
-
-		setPulldown("#drop_topmenu");
-		setPulldownDisplayChangeEvent("#drop_topmenu");
-		$("#drop_topmenu_visibleValue").html(configName);
-		$("#drop_topnemu_hiddenValue").val(configName);
-
-		$("#modal-saveDiag").modal('hide');
-		filterDisp.on("#label_pivot_conf");
-		fadeAlert("#alert_pivot_conf");
-
-	});
-
-	$("#cancel_saveDiag").click(function() {
-		$("#modal-saveDiag").modal('hide');
-	});
-
-	$("#clear_pivot_conf").click(function() {
-		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
-		db.remove("vulsrepo_pivot_conf");
-		$("#drop_topmenu_visibleValue").html("Select setting");
-		$("#drop_topnemu_hiddenValue").val("");
-		filterDisp.off("#label_pivot_conf");
-		fadeAlert("#alert_pivot_conf");
-		pivotInitialize();
-	});
-
-	$("#Setting").click(function() {
-		$("#modal-setting").modal('show');
-	});
-
-	$("[name='chkAheadUrl']").bootstrapSwitch();
-	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-	if (chkAheadUrl === "true") {
-		$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
-	}
-
-	$('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
-		if (state === true) {
-			db.set("vulsrepo_chkAheadUrl", "true");
-		} else {
-			db.remove("vulsrepo_chkAheadUrl");
-		}
-	});
-
 };
 
 var getSplitArray = function(full_vector) {
@@ -435,37 +363,195 @@ var getVector = {
 	}
 };
 
-var createPivotData = function(json_data) {
+var setPulldown = function(target) {
+	$(target).empty();
+	$.each(db.listPivotConf(), function(index, val) {
+		$(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
+	});
+
+	$(target + ' a').off('click');
+	$(target + ' a').on('click', function() {
+		$(target + "_visibleValue").html($(this).attr('value'));
+		$(target + "_hiddenValue").val($(this).attr('value'));
+	});
+
+};
+
+var setPulldownDisplayChangeEvent = function(target) {
+	$(target + ' a').on('click', function() {
+		var value = db.getPivotConf($(this).attr('value'));
+		db.set("vulsrepo_pivot_conf", value);
+		initPivotTable();
+	});
+};
+
+var setEvents = function() {
+	$("#submitSelectfile").click(function() {
+		$('#drawerLeft').drawer('hide');
+		setTimeout(initPivotTable, 500);
+	});
+
+	$("#btnSelectAll").click(function() {
+		$("#folderTree").dynatree("getRoot").visit(function(node) {
+			node.select(true);
+		});
+		return false;
+	});
+
+	$("#btnDeselectAll").click(function() {
+		$("#folderTree").dynatree("getRoot").visit(function(node) {
+			node.select(false);
+		});
+		return false;
+	});
+
+	// $("#nvd_help").tooltip({});
+	// $("a[data-toggle=popover]").popover();
+
+	$("#save_pivot_conf").click(function() {
+		$("#alert_saveDiag_textbox").css("display", "none");
+		$("#alert_saveDiag_dropdown").css("display", "none");
+		$("#input_saveDiag").val("");
+		$("#drop_saveDiag_visibleValue").html("Select setting");
+		$("#drop_saveDiag_hiddenValue").val("");
+
+		setPulldown("#drop_saveDiag");
+		$("#modal-saveDiag").modal('show');
+	});
+
+	$('input[name=radio_setting]:eq(0)').click(function() {
+		$("#input_saveDiag").prop("disabled", false);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", true);
+	});
+
+	$('input[name=radio_setting]:eq(1)').click(function() {
+		$("#input_saveDiag").prop("disabled", true);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", false);
+	});
+
+	$("#ok_saveDiag").click(function() {
+		var configName;
+		if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
+			configName = $("#input_saveDiag").val();
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_textbox").css("display", "");
+				return;
+			}
+		} else {
+			configName = $("#drop_saveDiag_hiddenValue").attr('value');
+
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_dropdown").css("display", "");
+				return;
+			}
+
+		}
+
+		setPulldown("#drop_topmenu");
+		setPulldownDisplayChangeEvent("#drop_topmenu");
+		$("#drop_topmenu_visibleValue").html(configName);
+		$("#drop_topnemu_hiddenValue").val(configName);
+
+		$("#modal-saveDiag").modal('hide');
+		filterDisp.on("#label_pivot_conf");
+		fadeAlert("#alert_pivot_conf");
+
+	});
+
+	$("#cancel_saveDiag").click(function() {
+		$("#modal-saveDiag").modal('hide');
+	});
+
+	$("#clear_pivot_conf").click(function() {
+		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
+		db.remove("vulsrepo_pivot_conf");
+		$("#drop_topmenu_visibleValue").html("Select setting");
+		$("#drop_topnemu_hiddenValue").val("");
+		filterDisp.off("#label_pivot_conf");
+		fadeAlert("#alert_pivot_conf");
+		initPivotTable();
+	});
+
+	$("#Setting").click(function() {
+		$("#modal-setting").modal('show');
+	});
+
+	$("[name='chkAheadUrl']").bootstrapSwitch();
+	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+	if (chkAheadUrl === "true") {
+		$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
+	}
+
+	$('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
+		if (state === true) {
+			db.set("vulsrepo_chkAheadUrl", "true");
+		} else {
+			db.remove("vulsrepo_chkAheadUrl");
+		}
+	});
+
+};
+
+var createFolderTree = function() {
+	var tree = $("#folderTree").dynatree({
+		initAjax : {
+		  url : "dist/cgi/getfilelist.cgi"
+		},
+		ajaxDefaults : {
+			cache : false,
+			timeout : 5000,
+			dataType : "json"
+		},
+		minExpandLevel : 1,
+		persist : false,
+		clickFolderMode : 2,
+		checkbox : true,
+		selectMode : 3,
+		fx : {
+			height : "toggle",
+			duration : 200
+		},
+		noLink : false,
+		debugLevel : 0
+	});
+};
+
+var createPivotData = function(resultArray) {
 
 	var array = [];
 
-	$.each(json_data, function(x, x_val) {
-		$.each(x_val.KnownCves, function(y, y_val) {
+	$.each(resultArray, function(x, x_val) {
+		$.each(x_val.data.KnownCves, function(y, y_val) {
 
 			var knownValue;
-			if ( y_val.CpeNames.length !== 0 ) {
-				knownValue = y_val.CpeNames; 
+			if (y_val.CpeNames.length !== 0) {
+				knownValue = y_val.CpeNames;
 			} else {
-				knownValue = y_val.Packages; 
+				knownValue = y_val.Packages;
 			}
-			
+
 			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
-					"ServerName" : x_val.ServerName,
-					"Family" : x_val.Family,
-					"Release" : x_val.Release,
+					"ScanTime" : x_val.folderName,
+					"ServerName" : x_val.data.ServerName,
+					"Family" : x_val.data.Family,
+					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
 					"Packages" : p_val.Name,
 				};
 
-				if (x_val.Platform.Name !== "") {
-					KnownObj["Platform"] = x_val.Platform.Name;
+				if (x_val.data.Platform.Name !== "") {
+					KnownObj["Platform"] = x_val.data.Platform.Name;
 				} else {
 					KnownObj["Platform"] = "None";
 				}
 
-				if (x_val.Container.Name !== "") {
-					KnownObj["Container"] = x_val.Container.Name;
+				if (x_val.data.Container.Name !== "") {
+					KnownObj["Container"] = x_val.data.Container.Name;
 				} else {
 					KnownObj["Container"] = "None";
 				}
@@ -501,20 +587,21 @@ var createPivotData = function(json_data) {
 
 		});
 
-		$.each(x_val.UnknownCves, function(y, y_val) {
-			
+		$.each(x_val.data.UnknownCves, function(y, y_val) {
+
 			var unknownValue;
-			if ( y_val.CpeNames !== null ) {
-				unknownValue = y_val.CpeNames; 
+			if (y_val.CpeNames !== null) {
+				unknownValue = y_val.CpeNames;
 			} else {
-				unknownValue = y_val.Packages; 
+				unknownValue = y_val.Packages;
 			}
-			
+
 			$.each(unknownValue, function(p, p_val) {
 				var UnknownObj = {
-					"ServerName" : x_val.ServerName,
-					"Family" : x_val.Family,
-					"Release" : x_val.Release,
+					"ScanTime" : x_val.folderName,
+					"ServerName" : x_val.data.ServerName,
+					"Family" : x_val.data.Family,
+					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
 					"Packages" : p_val.Name,
 					"CVSS Score" : "Unknown",
@@ -528,20 +615,21 @@ var createPivotData = function(json_data) {
 					"CVSS (A)" : "Unknown"
 				};
 
-				if (x_val.Platform.Name !== "") {
-					UnknownObj["Platform"] = x_val.Platform.Name;
+				if (x_val.data.Platform.Name !== "") {
+					UnknownObj["Platform"] = x_val.data.Platform.Name;
 				} else {
 					UnknownObj["Platform"] = "None";
 				}
 
-				if (x_val.Container.Name !== "") {
-					UnknownObj["Container"] = x_val.Container.Name;
+				if (x_val.data.Container.Name !== "") {
+					UnknownObj["Container"] = x_val.data.Container.Name;
 				} else {
 					UnknownObj["Container"] = "None";
 				}
 
 				array.push(UnknownObj);
 			});
+
 		});
 	});
 
@@ -559,7 +647,7 @@ var displayPivot = function(array) {
 	var pivot_attr = {
 		renderers : renderers,
 		menuLimit : 3000,
-		rows : [ "ServerName" ],
+		rows : [ "ScanTime", "ServerName" ],
 		cols : [ "CVSS Severity", "CVSS Score" ],
 		vals : [ "" ],
 		exclusions : "",
@@ -601,17 +689,15 @@ var displayPivot = function(array) {
 };
 
 var createDetailData = function(th) {
-
 	var targetObj;
-
-	$.each(vulsrepo.rawData, function(x, x_val) {
-		$.each(x_val.KnownCves, function(y, y_val) {
+	$.each(vulsrepo.detailRawData, function(x, x_val) {
+		$.each(x_val.data.KnownCves, function(y, y_val) {
 			if (th === y_val.CveDetail.CveID) {
 				targetObj = y_val.CveDetail;
 			}
 		});
 
-		$.each(x_val.UnknownCves, function(y, y_val) {
+		$.each(x_val.data.UnknownCves, function(y, y_val) {
 			if (th === y_val.CveDetail.CveID) {
 				targetObj = y_val.CveDetail;
 			}
@@ -619,7 +705,6 @@ var createDetailData = function(th) {
 	});
 
 	return targetObj;
-
 };
 
 var displayDetail = function(th) {
@@ -636,7 +721,7 @@ var displayDetail = function(th) {
 	$("#cvss_c").removeClass().text("");
 	$("#cvss_i").removeClass().text("");
 	$("#cvss_a").removeClass().text("");
-
+	
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
 	if (data.Jvn.Title !== "") {
