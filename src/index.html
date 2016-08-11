@@ -56,7 +56,7 @@
 	<nav class="navbar navbar-inverse">
 
 		<div class="navbar-header">
-			<a id="title" class="navbar-brand">VulsRepo</a>
+			<a id="toolName" class="navbar-brand">VulsRepo</a>
 		</div>
 		<div class="collapse navbar-collapse">
 			<button id="Setting" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-wrench pull-right"></button>
@@ -109,45 +109,103 @@
 					<h4 class="modal-title" id="modal-label"></h4>
 				</div>
 				<div class="modal-body">
-					<div id="Title"></div>
 
-					<p class="bg-primary">
-						CVSS Score
-					</p>
-					<div id="Score">
-						<table id='scoreTable'>
-							<tr>
-								<td  id='scoreText'></td>
-							</tr>
-						</table>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a href="#tab_jvn" data-toggle="tab">JVN</a>
+								</li>
+								<li>
+									<a href="#tab_nvd" data-toggle="tab">NVD</a>
+								</li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="tab_jvn">
+
+									<div id="detailTitle_jvn" class="detailTitle"></div>
+									<p class="bg-primary">
+										CVSS Score
+									</p>
+									<div class="detailScore">
+										<table class='detailScoreTable'>
+											<tr>
+												<td  id='scoreText_jvn'></td>
+											</tr>
+										</table>
+									</div>
+
+									<div>
+										<table class="table table-condensed table-bordered detailCvssTable">
+											<tr class="active">
+												<th>Access Vector</th>
+												<th>Access Complexity</th>
+												<th>Authentication</th>
+												<th>Confidentiality Impact</th>
+												<th>Integrity Impact</th>
+												<th>Availability Impact</th>
+											</tr>
+											<tr>
+												<td id="cvss_av_jvn"></td>
+												<td id="cvss_ac_jvn"></td>
+												<td id="cvss_au_jvn"></td>
+												<td id="cvss_c_jvn"></td>
+												<td id="cvss_i_jvn"></td>
+												<td id="cvss_a_jvn"></td>
+											</tr>
+										</table>
+									</div>
+
+									<p class="bg-primary">
+										Summary
+									</p>
+									<div id="Summary_jvn"></div>
+								</div>
+
+								<div class="tab-pane" id="tab_nvd">
+									<div id="detailTitle_nvd" class="detailTitle"></div>
+									<p class="bg-primary">
+										CVSS Score
+									</p>
+									<div class="detailScore">
+										<table class='detailScoreTable'>
+											<tr>
+												<td  id='scoreText_nvd'></td>
+											</tr>
+										</table>
+									</div>
+
+									<div>
+										<table class="table table-condensed table-bordered detailCvssTable">
+											<tr class="active">
+												<th>Access Vector</th>
+												<th>Access Complexity</th>
+												<th>Authentication</th>
+												<th>Confidentiality Impact</th>
+												<th>Integrity Impact</th>
+												<th>Availability Impact</th>
+											</tr>
+											<tr>
+												<td id="cvss_av_nvd"></td>
+												<td id="cvss_ac_nvd"></td>
+												<td id="cvss_au_nvd"></td>
+												<td id="cvss_c_nvd"></td>
+												<td id="cvss_i_nvd"></td>
+												<td id="cvss_a_nvd"></td>
+											</tr>
+										</table>
+									</div>
+
+									<p class="bg-primary">
+										Summary
+									</p>
+									<div id="Summary_nvd"></div>
+
+								</div>
+							</div>
+						</div>
 					</div>
-
-					<div>
-						<table  id="cvssTable" class="table table-condensed table-bordered">
-							<tr class="active">
-								<th>Access Vector</th>
-								<th>Access Complexity</th>
-								<th>Authentication</th>
-								<th>Confidentiality Impact</th>
-								<th>Integrity Impact</th>
-								<th>Availability Impact</th>
-							</tr>
-							<tr>
-								<td id="cvss_av"></td>
-								<td id="cvss_ac"></td>
-								<td id="cvss_au"></td>
-								<td id="cvss_c"></td>
-								<td id="cvss_i"></td>
-								<td id="cvss_a"></td>
-							</tr>
-						</table>
-					</div>
-
-					<p class="bg-primary">
-						Summary
-					</p>
-					<div id="Summary"></div>
-
 					<p  class="bg-primary">
 						Links
 					</p>

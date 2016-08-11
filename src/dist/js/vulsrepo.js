@@ -56,8 +56,8 @@ var initPivotTable = function() {
 	$.blockUI(blockUI_opt_all);
 	getData().done(function(resultArray) {
 		displayPivot(createPivotData(resultArray));
-		
-		vulsrepo.detailRawData = resultArray; 
+
+		vulsrepo.detailRawData = resultArray;
 		setPulldown("#drop_topmenu");
 		setPulldownDisplayChangeEvent("#drop_topmenu");
 		filterDisp.off("pivot_conf");
@@ -499,7 +499,7 @@ var setEvents = function() {
 var createFolderTree = function() {
 	var tree = $("#folderTree").dynatree({
 		initAjax : {
-		  url : "dist/cgi/getfilelist.cgi"
+			url : "dist/cgi/getfilelist.cgi"
 		},
 		ajaxDefaults : {
 			cache : false,
@@ -710,58 +710,71 @@ var createDetailData = function(th) {
 var displayDetail = function(th) {
 
 	$("#modal-label").text("");
-	$("#Title").empty();
-	$("#scoreText").text("").css('background-color', 'gray');
-	$("#Summary").empty();
 	$("#Link").empty();
 	$("#References").empty();
-	$("#cvss_av").removeClass().text("");
-	$("#cvss_ac").removeClass().text("");
-	$("#cvss_au").removeClass().text("");
-	$("#cvss_c").removeClass().text("");
-	$("#cvss_i").removeClass().text("");
-	$("#cvss_a").removeClass().text("");
-	
+
+	$("#detailTitle_jvn").empty();
+	$("#scoreText_jvn").text("").css('background-color', 'gray');
+	$("#cvss_av_jvn").removeClass().text("");
+	$("#cvss_ac_jvn").removeClass().text("");
+	$("#cvss_au_jvn").removeClass().text("");
+	$("#cvss_c_jvn").removeClass().text("");
+	$("#cvss_i_jvn").removeClass().text("");
+	$("#cvss_a_jvn").removeClass().text("");
+	$("#Summary_jvn").empty();
+
+	$("#detailTitle_nvd").empty();
+	$("#scoreText_nvd").text("").css('background-color', 'gray');
+	$("#cvss_av_nvd").removeClass().text("");
+	$("#cvss_ac_nvd").removeClass().text("");
+	$("#cvss_au_nvd").removeClass().text("");
+	$("#cvss_c_nvd").removeClass().text("");
+	$("#cvss_i_nvd").removeClass().text("");
+	$("#cvss_a_nvd").removeClass().text("");
+	$("#Summary_nvd").empty();
+
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
-	if (data.Jvn.Title !== "") {
-		$("#Title").append("<div>" + data.Jvn.Title + "<div>");
-	} else if (data.Nvd.Summary !== "") {
-		// Do not put anything because it is the same as the summary in the case of NVD
-	} else {
-		$("#Title").append("<div>Unknown<div>");
-	}
 
-	if (data.Jvn.Score !== 0) {
+	// TODO erase
+	// if (data.Jvn.Title !== "") {
+	// $("#detailTitle_jvn").append("<div>" + data.Jvn.Title + "<div>");
+	// } else {
+	// $("#detailTitle_jvn").append("<div>NO DATA<div>");
+	// }
+	//	
+	// // Do not put anything because it is the same as the summary in the case of NVD
+	// $("#detailTitle_nvd").append("<div> <div>");
+
+	if (data.Jvn.Summary !== "") {
 		var arrayVector = getSplitArray(data.Jvn.Vector);
-		$("#scoreText").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
-		$("#cvss_av").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
-		$("#cvss_ac").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
-		$("#cvss_au").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
-		$("#cvss_c").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
-		$("#cvss_i").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
-		$("#cvss_a").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
-
-		$("#Summary").append("<div>" + data.Jvn.Summary + "<div>");
-		$("#Summary").append("<br>");
-
-	} else if (data.Nvd.Score !== 0) {
-		$("#scoreText").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
-		$("#cvss_av").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
-		$("#cvss_ac").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
-		$("#cvss_au").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
-		$("#cvss_c").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
-		$("#cvss_i").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
-		$("#cvss_a").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
+		$("#scoreText_jvn").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
+		$("#cvss_av_jvn").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
+		$("#cvss_ac_jvn").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
+		$("#cvss_au_jvn").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
+		$("#cvss_c_jvn").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
+		$("#cvss_i_jvn").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
+		$("#cvss_a_jvn").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
+		$("#Summary_jvn").append("<div>" + data.Jvn.Summary + "<div>");
 
 	} else {
-		$("#scoreText").text("Unknown");
+		$("#scoreText_jvn").text("NO DATA");
+		$("#Summary_jvn").append("NO DATA");
 	}
 
 	if (data.Nvd.Summary !== "") {
-		$("#Summary").append("<div>" + data.Nvd.Summary + "<div>");
+		$("#scoreText_nvd").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
+		$("#cvss_av_nvd").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
+		$("#cvss_ac_nvd").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
+		$("#cvss_au_nvd").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
+		$("#cvss_c_nvd").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
+		$("#cvss_i_nvd").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
+		$("#cvss_a_nvd").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
+		$("#Summary_nvd").append("<div>" + data.Nvd.Summary + "<div>");
+
 	} else {
-		$("#Summary").append("<div>Unknown<div>");
+		$("#scoreText_nvd").text("NO DATA");
+		$("#Summary_nvd").append("NO DATA");
 	}
 
 	addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");

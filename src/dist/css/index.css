@@ -41,15 +41,16 @@ a {
 	background-color: indianred;
 }
 
-#Title {
+.detailTitle {
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-#Score {
+.detailScore {
 	margin-bottom: 10px;
 }
 
-#scoreTable {
+.detailScoreTable {
 	width: 140px;
 	height: 40px;
 	font-size: 14pt;
@@ -57,7 +58,7 @@ a {
 	text-align: center;
 }
 
-#cvssTable {
+.detailCvssTable {
 	text-align: center;
 }
 
@@ -74,7 +75,7 @@ a {
 	margin-bottom: 10px;
 }
 
-#title {
+#toolName {
 	padding-left: 65px;
 }
 
