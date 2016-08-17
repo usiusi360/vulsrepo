@@ -5,23 +5,17 @@ use warnings;
 use Data::Dumper;
 use JSON;
 use CGI;
+use FindBin;
+use Cwd;
 
-
-#=================================
-
-my $resultPath = "/opt/vuls/results";
-
-#=================================
-
-
-if (!(chdir $resultPath)) {
+my $scriptDir = $FindBin::Bin;
+if (!(chdir $scriptDir . "/../../results/")) {
   print "Status: 404 Not Found\n"; 
   print CGI::header(-type => 'application/json', -charset => 'UTF-8');
   exit(1);
 };
 
-
-
+my $resultPath = Cwd::getcwd();
 my @json = ();
 my @folders = glob "*";
 
