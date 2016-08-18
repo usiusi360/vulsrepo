@@ -1,5 +1,6 @@
 var vulsrepo = {
 	detailRawData : null,
+	timeOut : 300 * 1000,
 	link : {
 		mitre : {
 			url : "https://cve.mitre.org/cgi-bin/cvename.cgi",
@@ -144,7 +145,7 @@ var blockUI_opt_all = {
 var getData = function() {
 
 	$.ajaxSetup({
-		timeout : 5 * 1000
+		timeout : vulsrepo.timeOut
 	});
 
 	var kickCount = 0;
@@ -152,20 +153,19 @@ var getData = function() {
 	var resultArray = [];
 	var defer = new $.Deferred();
 
-	var selectedFile = getSelectedFile();
+	var selectedFiles = getSelectedFile();
 
-	if (selectedFile.length === 0) {
+	if (selectedFiles.length === 0) {
 		defer.reject("notSelect");
 		return defer.promise();
 	}
 
-	$.each(selectedFile, function(key, value) {
-
-		$.getJSON("results/" + value).done(function(json_data) {
+	$.each(selectedFiles, function(key, value) {
+		var url = value.url;
+		$.getJSON(url).done(function(json_data) {
 			endCount++;
-			var folder = value.split("/");
 			var resultMap = {
-				folderName : folder[0],
+				scanTime : value.parent_title,
 				data : json_data
 			};
 			resultArray.push(resultMap);
@@ -183,7 +183,12 @@ var getData = function() {
 var getSelectedFile = function() {
 	var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
 		if (node.data.isFolder === false) {
-			return (node.parent.data.title + "/" + node.data.title);
+			var data = {
+				title : node.data.title,
+				url : "results" + node.data.url,
+				parent_title : node.parent.data.title
+			};
+			return (data);
 		}
 	});
 	return selectedFile;
@@ -536,7 +541,7 @@ var createPivotData = function(resultArray) {
 
 			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
-					"ScanTime" : x_val.folderName,
+					"ScanTime" : x_val.scanTime,
 					"ServerName" : x_val.data.ServerName,
 					"Family" : x_val.data.Family,
 					"Release" : x_val.data.Release,
