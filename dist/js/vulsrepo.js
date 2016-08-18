@@ -603,7 +603,7 @@ var createPivotData = function(resultArray) {
 
 			$.each(unknownValue, function(p, p_val) {
 				var UnknownObj = {
-					"ScanTime" : x_val.folderName,
+					"ScanTime" : x_val.scanTime,
 					"ServerName" : x_val.data.ServerName,
 					"Family" : x_val.data.Family,
 					"Release" : x_val.data.Release,
