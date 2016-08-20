@@ -652,7 +652,7 @@ var displayPivot = function(array) {
 	var pivot_attr = {
 		renderers : renderers,
 		menuLimit : 3000,
-		rows : [ "ScanTime", "ServerName" ],
+		rows : [ "ScanTime" ],
 		cols : [ "CVSS Severity", "CVSS Score" ],
 		vals : [ "" ],
 		exclusions : "",
