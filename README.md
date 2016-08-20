@@ -76,7 +76,7 @@ http://VulsServer/vulsrepo/
 ````
 
 ## Gallery ##
-![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/img/image001.png)
-![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/img/image002.png)
-![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/img/image003.png)
-![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/img/image004.png)
+![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
+![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image002.png)
+![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image003.png)
+![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image004.png)
