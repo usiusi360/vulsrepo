@@ -11,36 +11,60 @@ YouTube:
 ## Online Demo
 http://usiusi360.github.io/vulsrepo/
 
-## Installation ##
+## Installation
+*A home folder of vuls is explained as /opt/vuls.*
 
-### Step1. Create a json report of vuls ###
+### Step1. Create a json report of vuls
 
 ````
-$ vuls scan -report-json --cve-dictionary-dbpath=<VulsHome>/cve.sqlite3
+$ vuls scan -report-json --cve-dictionary-dbpath=/opt/vuls/cve.sqlite3
 ````
 
-Write report to JSON files ($PWD/results/current)
+Output to a JSON files (/opt/vuls/results/current)
 
+### Step2. Install Http Server. 
+Apache HTTP Server is mentioned as installed one.
 
-### Step2. Http Server install ###
+### Step3. Installation
+2 ways to setup.
 
-Apache HTTP Server or Nginx is installed.
+#### A. Zip download
 
-### Step3. Zip download ###
-
-zip is downloaded and developed in a home directories of an http server.
+zip is downloaded and developed in a home folder of http server.
 
 ````
 $ wget https://github.com/usiusi360/vulsrepo/archive/master.zip
 $ unzip master.zip
-$ sudo mv ./vulsrepo-master/src /var/www/html/vulsrepo
+$ sudo cp -Rp ./vulsrepo-master /var/www/html/vulsrepo
 ````
 
-### Step4. Link to json report ###
+#### B. Git clone
+
+````
+$ cd /var/www/html
+$ sudo git clone https://github.com/usiusi360/vulsrepo.git
+````
+
+### Step4. The setting to make a CGI operate
+
+1. Copy the sample configuration file for apache configuration folder.
+ - vulsrepo/dist/cgi/vulsrepo.conf.sample
+
+2. Install library for perl. (CGI.pm/JSON.pm) 
+ - In the case of RHEL or CentOS  
+    - Install perl-CGI and perl-JSON with the yum.
+
+ - In the case of Debian or Ubuntu.  
+    - Install libcgi-pm-perl and libjson-perl with the apt-get.  
+    - Enabling module cgid.(a2enmod cgid)
+
+3. Restart http server
+
+### Step5. Link to vuls results folder
 
 ````
 $ cd /var/www/html/vulsrepo/
-$ ln -s <VulsHome>/results/current current
+$ ln -s <VulsHome>/results results
 ````
 
 ## Usage ##

@@ -1,2 +1,5 @@
 .project
-src/current/all.json*
+dist/cgi/test.json
+results/*
+
+

@@ -1,6 +1,6 @@
 var vulsrepo = {
-	jsonFile : "current/all.json",
-	rawData : null,
+	detailRawData : null,
+	timeOut : 300 * 1000,
 	link : {
 		mitre : {
 			url : "https://cve.mitre.org/cgi-bin/cvename.cgi",
@@ -47,23 +47,31 @@ var vulsrepo = {
 
 $(document).ready(function() {
 	setEvents();
+	createFolderTree();
 	db.remove("vulsrepo_pivot_conf");
-	pivotInitialize();
-
+	$('#drawerLeft').drawer('show');
 });
 
-var pivotInitialize = function() {
+var initPivotTable = function() {
+
 	$.blockUI(blockUI_opt_all);
-	getData().done(function(json_data) {
-		displayPivot(createPivotData(json_data));
+	getData().done(function(resultArray) {
+		displayPivot(createPivotData(resultArray));
+
+		vulsrepo.detailRawData = resultArray;
 		setPulldown("#drop_topmenu");
 		setPulldownDisplayChangeEvent("#drop_topmenu");
 		filterDisp.off("pivot_conf");
 		$.unblockUI(blockUI_opt_all);
-	}).fail(function(jqXHR) {
+	}).fail(function(result) {
 		$.unblockUI(blockUI_opt_all);
-		showAlert(jqXHR.status + " " + jqXHR.statusText, jqXHR.responseText);
+		if (result === "notSelect") {
+			showAlert("Not Selected", "File is not selected.");
+		} else {
+			showAlert(result.status + " " + result.statusText, result.responseText);
+		}
 	});
+
 };
 
 var db = {
@@ -111,6 +119,8 @@ var fadeAlert = function(target) {
 };
 
 var showAlert = function(code, text) {
+	$("#alert_error_code").empty();
+	$("#alert_responce_text").empty();
 	$("#alert_error_code").append("<div>" + code + "</div>");
 	$("#alert_responce_text").append("<div>" + text + "</div>");
 	$("#modal-alert").modal('show');
@@ -133,18 +143,55 @@ var blockUI_opt_all = {
 };
 
 var getData = function() {
-	var defer = new $.Deferred();
+
 	$.ajaxSetup({
-		timeout : 5 * 1000
-	});
-	$.getJSON(vulsrepo.jsonFile).done(function(json_data) {
-		defer.resolve(json_data);
-		vulsrepo.rawData = json_data;
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		defer.reject(jqXHR);
+		timeout : vulsrepo.timeOut
 	});
 
+	var kickCount = 0;
+	var endCount = 0;
+	var resultArray = [];
+	var defer = new $.Deferred();
+
+	var selectedFiles = getSelectedFile();
+
+	if (selectedFiles.length === 0) {
+		defer.reject("notSelect");
+		return defer.promise();
+	}
+
+	$.each(selectedFiles, function(key, value) {
+		var url = value.url;
+		$.getJSON(url).done(function(json_data) {
+			endCount++;
+			var resultMap = {
+				scanTime : value.parent_title,
+				data : json_data
+			};
+			resultArray.push(resultMap);
+			if (kickCount == endCount) {
+				defer.resolve(resultArray);
+			}
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			defer.reject(jqXHR);
+		});
+		kickCount++;
+	});
 	return defer.promise();
+};
+
+var getSelectedFile = function() {
+	var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
+		if (node.data.isFolder === false) {
+			var data = {
+				title : node.data.title,
+				url : "results" + node.data.url,
+				parent_title : node.parent.data.title
+			};
+			return (data);
+		}
+	});
+	return selectedFile;
 };
 
 var getSeverity = function(Score) {
@@ -155,120 +202,6 @@ var getSeverity = function(Score) {
 	} else if ((Score < 4.0)) {
 		return Array("Low", "#e6e600");
 	}
-};
-
-var setPulldown = function(target) {
-	$(target).empty();
-	$.each(db.listPivotConf(), function(index, val) {
-		$(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
-	});
-
-	$(target + ' a').off('click');
-	$(target + ' a').on('click', function() {
-		$(target + "_visibleValue").html($(this).attr('value'));
-		$(target + "_hiddenValue").val($(this).attr('value'));
-	});
-
-};
-
-var setPulldownDisplayChangeEvent = function(target) {
-	$(target + ' a').on('click', function() {
-		var value = db.getPivotConf($(this).attr('value'));
-		db.set("vulsrepo_pivot_conf", value);
-		pivotInitialize();
-	});
-};
-
-var setEvents = function() {
-	$("#nvd_help").tooltip({});
-	// $("a[data-toggle=popover]").popover();
-
-	$("#save_pivot_conf").click(function() {
-		$("#alert_saveDiag_textbox").css("display", "none");
-		$("#alert_saveDiag_dropdown").css("display", "none");
-		$("#input_saveDiag").val("");
-		$("#drop_saveDiag_visibleValue").html("Select setting");
-		$("#drop_saveDiag_hiddenValue").val("");
-
-		setPulldown("#drop_saveDiag");
-		$("#modal-saveDiag").modal('show');
-	});
-
-	$('input[name=radio_setting]:eq(0)').click(function() {
-		$("#input_saveDiag").prop("disabled", false);
-		$('#drop_saveDiag_buttonGroup button').prop("disabled", true);
-	});
-
-	$('input[name=radio_setting]:eq(1)').click(function() {
-		$("#input_saveDiag").prop("disabled", true);
-		$('#drop_saveDiag_buttonGroup button').prop("disabled", false);
-	});
-
-	$("#ok_saveDiag").click(function() {
-		var configName;
-		if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
-			configName = $("#input_saveDiag").val();
-			if (configName !== "") {
-				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
-			} else {
-				$("#alert_saveDiag_textbox").css("display", "");
-				return;
-			}
-		} else {
-			configName = $("#drop_saveDiag_hiddenValue").attr('value');
-
-			if (configName !== "") {
-				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
-			} else {
-				$("#alert_saveDiag_dropdown").css("display", "");
-				return;
-			}
-
-		}
-
-		setPulldown("#drop_topmenu");
-		setPulldownDisplayChangeEvent("#drop_topmenu");
-		$("#drop_topmenu_visibleValue").html(configName);
-		$("#drop_topnemu_hiddenValue").val(configName);
-
-		$("#modal-saveDiag").modal('hide');
-		filterDisp.on("#label_pivot_conf");
-		fadeAlert("#alert_pivot_conf");
-
-	});
-
-	$("#cancel_saveDiag").click(function() {
-		$("#modal-saveDiag").modal('hide');
-	});
-
-	$("#clear_pivot_conf").click(function() {
-		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
-		db.remove("vulsrepo_pivot_conf");
-		$("#drop_topmenu_visibleValue").html("Select setting");
-		$("#drop_topnemu_hiddenValue").val("");
-		filterDisp.off("#label_pivot_conf");
-		fadeAlert("#alert_pivot_conf");
-		pivotInitialize();
-	});
-
-	$("#Setting").click(function() {
-		$("#modal-setting").modal('show');
-	});
-
-	$("[name='chkAheadUrl']").bootstrapSwitch();
-	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-	if (chkAheadUrl === "true") {
-		$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
-	}
-
-	$('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
-		if (state === true) {
-			db.set("vulsrepo_chkAheadUrl", "true");
-		} else {
-			db.remove("vulsrepo_chkAheadUrl");
-		}
-	});
-
 };
 
 var getSplitArray = function(full_vector) {
@@ -435,37 +368,195 @@ var getVector = {
 	}
 };
 
-var createPivotData = function(json_data) {
+var setPulldown = function(target) {
+	$(target).empty();
+	$.each(db.listPivotConf(), function(index, val) {
+		$(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
+	});
+
+	$(target + ' a').off('click');
+	$(target + ' a').on('click', function() {
+		$(target + "_visibleValue").html($(this).attr('value'));
+		$(target + "_hiddenValue").val($(this).attr('value'));
+	});
+
+};
+
+var setPulldownDisplayChangeEvent = function(target) {
+	$(target + ' a').on('click', function() {
+		var value = db.getPivotConf($(this).attr('value'));
+		db.set("vulsrepo_pivot_conf", value);
+		initPivotTable();
+	});
+};
+
+var setEvents = function() {
+	$("#submitSelectfile").click(function() {
+		$('#drawerLeft').drawer('hide');
+		setTimeout(initPivotTable, 500);
+	});
+
+	$("#btnSelectAll").click(function() {
+		$("#folderTree").dynatree("getRoot").visit(function(node) {
+			node.select(true);
+		});
+		return false;
+	});
+
+	$("#btnDeselectAll").click(function() {
+		$("#folderTree").dynatree("getRoot").visit(function(node) {
+			node.select(false);
+		});
+		return false;
+	});
+
+	// $("#nvd_help").tooltip({});
+	// $("a[data-toggle=popover]").popover();
+
+	$("#save_pivot_conf").click(function() {
+		$("#alert_saveDiag_textbox").css("display", "none");
+		$("#alert_saveDiag_dropdown").css("display", "none");
+		$("#input_saveDiag").val("");
+		$("#drop_saveDiag_visibleValue").html("Select setting");
+		$("#drop_saveDiag_hiddenValue").val("");
+
+		setPulldown("#drop_saveDiag");
+		$("#modal-saveDiag").modal('show');
+	});
+
+	$('input[name=radio_setting]:eq(0)').click(function() {
+		$("#input_saveDiag").prop("disabled", false);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", true);
+	});
+
+	$('input[name=radio_setting]:eq(1)').click(function() {
+		$("#input_saveDiag").prop("disabled", true);
+		$('#drop_saveDiag_buttonGroup button').prop("disabled", false);
+	});
+
+	$("#ok_saveDiag").click(function() {
+		var configName;
+		if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
+			configName = $("#input_saveDiag").val();
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_textbox").css("display", "");
+				return;
+			}
+		} else {
+			configName = $("#drop_saveDiag_hiddenValue").attr('value');
+
+			if (configName !== "") {
+				db.setPivotConf(configName, db.get("vulsrepo_pivot_conf_tmp"));
+			} else {
+				$("#alert_saveDiag_dropdown").css("display", "");
+				return;
+			}
+
+		}
+
+		setPulldown("#drop_topmenu");
+		setPulldownDisplayChangeEvent("#drop_topmenu");
+		$("#drop_topmenu_visibleValue").html(configName);
+		$("#drop_topnemu_hiddenValue").val(configName);
+
+		$("#modal-saveDiag").modal('hide');
+		filterDisp.on("#label_pivot_conf");
+		fadeAlert("#alert_pivot_conf");
+
+	});
+
+	$("#cancel_saveDiag").click(function() {
+		$("#modal-saveDiag").modal('hide');
+	});
+
+	$("#clear_pivot_conf").click(function() {
+		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
+		db.remove("vulsrepo_pivot_conf");
+		$("#drop_topmenu_visibleValue").html("Select setting");
+		$("#drop_topnemu_hiddenValue").val("");
+		filterDisp.off("#label_pivot_conf");
+		fadeAlert("#alert_pivot_conf");
+		initPivotTable();
+	});
+
+	$("#Setting").click(function() {
+		$("#modal-setting").modal('show');
+	});
+
+	$("[name='chkAheadUrl']").bootstrapSwitch();
+	var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+	if (chkAheadUrl === "true") {
+		$('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
+	}
+
+	$('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
+		if (state === true) {
+			db.set("vulsrepo_chkAheadUrl", "true");
+		} else {
+			db.remove("vulsrepo_chkAheadUrl");
+		}
+	});
+
+};
+
+var createFolderTree = function() {
+	var tree = $("#folderTree").dynatree({
+		initAjax : {
+			url : "dist/cgi/getfilelist.cgi"
+		},
+		ajaxDefaults : {
+			cache : false,
+			timeout : 5000,
+			dataType : "json"
+		},
+		minExpandLevel : 1,
+		persist : false,
+		clickFolderMode : 2,
+		checkbox : true,
+		selectMode : 3,
+		fx : {
+			height : "toggle",
+			duration : 200
+		},
+		noLink : false,
+		debugLevel : 0
+	});
+};
+
+var createPivotData = function(resultArray) {
 
 	var array = [];
 
-	$.each(json_data, function(x, x_val) {
-		$.each(x_val.KnownCves, function(y, y_val) {
+	$.each(resultArray, function(x, x_val) {
+		$.each(x_val.data.KnownCves, function(y, y_val) {
 
 			var knownValue;
-			if ( y_val.CpeNames.length !== 0 ) {
-				knownValue = y_val.CpeNames; 
+			if (y_val.CpeNames.length !== 0) {
+				knownValue = y_val.CpeNames;
 			} else {
-				knownValue = y_val.Packages; 
+				knownValue = y_val.Packages;
 			}
-			
+
 			$.each(knownValue, function(p, p_val) {
 				var KnownObj = {
-					"ServerName" : x_val.ServerName,
-					"Family" : x_val.Family,
-					"Release" : x_val.Release,
+					"ScanTime" : x_val.scanTime,
+					"ServerName" : x_val.data.ServerName,
+					"Family" : x_val.data.Family,
+					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
 					"Packages" : p_val.Name,
 				};
 
-				if (x_val.Platform.Name !== "") {
-					KnownObj["Platform"] = x_val.Platform.Name;
+				if (x_val.data.Platform.Name !== "") {
+					KnownObj["Platform"] = x_val.data.Platform.Name;
 				} else {
 					KnownObj["Platform"] = "None";
 				}
 
-				if (x_val.Container.Name !== "") {
-					KnownObj["Container"] = x_val.Container.Name;
+				if (x_val.data.Container.Name !== "") {
+					KnownObj["Container"] = x_val.data.Container.Name;
 				} else {
 					KnownObj["Container"] = "None";
 				}
@@ -501,20 +592,21 @@ var createPivotData = function(json_data) {
 
 		});
 
-		$.each(x_val.UnknownCves, function(y, y_val) {
-			
+		$.each(x_val.data.UnknownCves, function(y, y_val) {
+
 			var unknownValue;
-			if ( y_val.CpeNames !== null ) {
-				unknownValue = y_val.CpeNames; 
+			if (y_val.CpeNames !== null) {
+				unknownValue = y_val.CpeNames;
 			} else {
-				unknownValue = y_val.Packages; 
+				unknownValue = y_val.Packages;
 			}
-			
+
 			$.each(unknownValue, function(p, p_val) {
 				var UnknownObj = {
-					"ServerName" : x_val.ServerName,
-					"Family" : x_val.Family,
-					"Release" : x_val.Release,
+					"ScanTime" : x_val.scanTime,
+					"ServerName" : x_val.data.ServerName,
+					"Family" : x_val.data.Family,
+					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
 					"Packages" : p_val.Name,
 					"CVSS Score" : "Unknown",
@@ -528,20 +620,21 @@ var createPivotData = function(json_data) {
 					"CVSS (A)" : "Unknown"
 				};
 
-				if (x_val.Platform.Name !== "") {
-					UnknownObj["Platform"] = x_val.Platform.Name;
+				if (x_val.data.Platform.Name !== "") {
+					UnknownObj["Platform"] = x_val.data.Platform.Name;
 				} else {
 					UnknownObj["Platform"] = "None";
 				}
 
-				if (x_val.Container.Name !== "") {
-					UnknownObj["Container"] = x_val.Container.Name;
+				if (x_val.data.Container.Name !== "") {
+					UnknownObj["Container"] = x_val.data.Container.Name;
 				} else {
 					UnknownObj["Container"] = "None";
 				}
 
 				array.push(UnknownObj);
 			});
+
 		});
 	});
 
@@ -559,7 +652,7 @@ var displayPivot = function(array) {
 	var pivot_attr = {
 		renderers : renderers,
 		menuLimit : 3000,
-		rows : [ "ServerName" ],
+		rows : [ "ScanTime" ],
 		cols : [ "CVSS Severity", "CVSS Score" ],
 		vals : [ "" ],
 		exclusions : "",
@@ -601,17 +694,15 @@ var displayPivot = function(array) {
 };
 
 var createDetailData = function(th) {
-
 	var targetObj;
-
-	$.each(vulsrepo.rawData, function(x, x_val) {
-		$.each(x_val.KnownCves, function(y, y_val) {
+	$.each(vulsrepo.detailRawData, function(x, x_val) {
+		$.each(x_val.data.KnownCves, function(y, y_val) {
 			if (th === y_val.CveDetail.CveID) {
 				targetObj = y_val.CveDetail;
 			}
 		});
 
-		$.each(x_val.UnknownCves, function(y, y_val) {
+		$.each(x_val.data.UnknownCves, function(y, y_val) {
 			if (th === y_val.CveDetail.CveID) {
 				targetObj = y_val.CveDetail;
 			}
@@ -619,64 +710,76 @@ var createDetailData = function(th) {
 	});
 
 	return targetObj;
-
 };
 
 var displayDetail = function(th) {
 
 	$("#modal-label").text("");
-	$("#Title").empty();
-	$("#scoreText").text("").css('background-color', 'gray');
-	$("#Summary").empty();
 	$("#Link").empty();
 	$("#References").empty();
-	$("#cvss_av").removeClass().text("");
-	$("#cvss_ac").removeClass().text("");
-	$("#cvss_au").removeClass().text("");
-	$("#cvss_c").removeClass().text("");
-	$("#cvss_i").removeClass().text("");
-	$("#cvss_a").removeClass().text("");
+
+	$("#detailTitle_jvn").empty();
+	$("#scoreText_jvn").text("").css('background-color', 'gray');
+	$("#cvss_av_jvn").removeClass().text("");
+	$("#cvss_ac_jvn").removeClass().text("");
+	$("#cvss_au_jvn").removeClass().text("");
+	$("#cvss_c_jvn").removeClass().text("");
+	$("#cvss_i_jvn").removeClass().text("");
+	$("#cvss_a_jvn").removeClass().text("");
+	$("#Summary_jvn").empty();
+
+	$("#detailTitle_nvd").empty();
+	$("#scoreText_nvd").text("").css('background-color', 'gray');
+	$("#cvss_av_nvd").removeClass().text("");
+	$("#cvss_ac_nvd").removeClass().text("");
+	$("#cvss_au_nvd").removeClass().text("");
+	$("#cvss_c_nvd").removeClass().text("");
+	$("#cvss_i_nvd").removeClass().text("");
+	$("#cvss_a_nvd").removeClass().text("");
+	$("#Summary_nvd").empty();
 
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
-	if (data.Jvn.Title !== "") {
-		$("#Title").append("<div>" + data.Jvn.Title + "<div>");
-	} else if (data.Nvd.Summary !== "") {
-		// Do not put anything because it is the same as the summary in the case of NVD
-	} else {
-		$("#Title").append("<div>Unknown<div>");
-	}
 
-	if (data.Jvn.Score !== 0) {
+	// TODO erase
+	// if (data.Jvn.Title !== "") {
+	// $("#detailTitle_jvn").append("<div>" + data.Jvn.Title + "<div>");
+	// } else {
+	// $("#detailTitle_jvn").append("<div>NO DATA<div>");
+	// }
+	//	
+	// // Do not put anything because it is the same as the summary in the case of NVD
+	// $("#detailTitle_nvd").append("<div> <div>");
+
+	if (data.Jvn.Summary !== "") {
 		var arrayVector = getSplitArray(data.Jvn.Vector);
-		$("#scoreText").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
-		$("#cvss_av").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
-		$("#cvss_ac").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
-		$("#cvss_au").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
-		$("#cvss_c").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
-		$("#cvss_i").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
-		$("#cvss_a").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
-
-		$("#Summary").append("<div>" + data.Jvn.Summary + "<div>");
-		$("#Summary").append("<br>");
-
-	} else if (data.Nvd.Score !== 0) {
-		$("#scoreText").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
-		$("#cvss_av").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
-		$("#cvss_ac").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
-		$("#cvss_au").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
-		$("#cvss_c").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
-		$("#cvss_i").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
-		$("#cvss_a").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
+		$("#scoreText_jvn").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
+		$("#cvss_av_jvn").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
+		$("#cvss_ac_jvn").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
+		$("#cvss_au_jvn").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
+		$("#cvss_c_jvn").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
+		$("#cvss_i_jvn").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
+		$("#cvss_a_jvn").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
+		$("#Summary_jvn").append("<div>" + data.Jvn.Summary + "<div>");
 
 	} else {
-		$("#scoreText").text("Unknown");
+		$("#scoreText_jvn").text("NO DATA");
+		$("#Summary_jvn").append("NO DATA");
 	}
 
 	if (data.Nvd.Summary !== "") {
-		$("#Summary").append("<div>" + data.Nvd.Summary + "<div>");
+		$("#scoreText_nvd").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
+		$("#cvss_av_nvd").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
+		$("#cvss_ac_nvd").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
+		$("#cvss_au_nvd").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
+		$("#cvss_c_nvd").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
+		$("#cvss_i_nvd").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
+		$("#cvss_a_nvd").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
+		$("#Summary_nvd").append("<div>" + data.Nvd.Summary + "<div>");
+
 	} else {
-		$("#Summary").append("<div>Unknown<div>");
+		$("#scoreText_nvd").text("NO DATA");
+		$("#Summary_nvd").append("NO DATA");
 	}
 
 	addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
