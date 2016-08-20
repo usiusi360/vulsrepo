@@ -28,7 +28,7 @@ Apache HTTP Server is mentioned as installed one.
 ### Step3. Installation
 2 ways to setup.
 
-##### A. Zip download
+#### A. Zip download
 
 zip is downloaded and developed in a home folder of http server.
 
@@ -38,7 +38,7 @@ $ unzip master.zip
 $ sudo cp -Rp ./vulsrepo-master /var/www/html/vulsrepo
 ````
 
-##### B. Git clone
+#### B. Git clone
 
 ````
 $ cd /var/www/html
@@ -51,12 +51,12 @@ $ sudo git clone https://github.com/usiusi360/vulsrepo.git
  - vulsrepo/dist/cgi/vulsrepo.conf.sample
 
 2. Install library for perl. (CGI.pm/JSON.pm) 
- - In the case of RHEL or CentOS
-  -- Install perl-CGI and perl-JSON with the yum.
+ - In the case of RHEL or CentOS  
+    - Install perl-CGI and perl-JSON with the yum.
 
- - In the case of Debian or Ubuntu.
-  -- Install libcgi-pm-perl and libjson-perl with the apt-get.
-  -- Enabling module cgid.(a2enmod cgid)
+ - In the case of Debian or Ubuntu.  
+    - Install libcgi-pm-perl and libjson-perl with the apt-get.  
+    - Enabling module cgid.(a2enmod cgid)
 
 3. Restart http server
 
