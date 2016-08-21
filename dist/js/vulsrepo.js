@@ -57,7 +57,6 @@ var initPivotTable = function() {
 	$.blockUI(blockUI_opt_all);
 	getData().done(function(resultArray) {
 		displayPivot(createPivotData(resultArray));
-
 		vulsrepo.detailRawData = resultArray;
 		setPulldown("#drop_topmenu");
 		setPulldownDisplayChangeEvent("#drop_topmenu");
@@ -636,6 +635,41 @@ var createPivotData = function(resultArray) {
 			});
 
 		});
+
+		if ((x_val.data.KnownCves.length === 0) && (x_val.data.UnknownCves === null)) {
+			var nothingObj = {
+				"ScanTime" : x_val.scanTime,
+				"ServerName" : x_val.data.ServerName,
+				"Family" : x_val.data.Family,
+				"Release" : x_val.data.Release,
+				"CveID" : "healthy",
+				"Packages" : "healthy",
+				"CVSS Score" : "healthy",
+				"CVSS Severity" : "healthy",
+				"Summary" : "healthy",
+				"CVSS (AV)" : "healthy",
+				"CVSS (AC)" : "healthy",
+				"CVSS (Au)" : "healthy",
+				"CVSS (C)" : "healthy",
+				"CVSS (I)" : "healthy",
+				"CVSS (A)" : "healthy"
+			};
+
+			if (x_val.data.Platform.Name !== "") {
+				nothingObj["Platform"] = x_val.data.Platform.Name;
+			} else {
+				nothingObj["Platform"] = "None";
+			}
+
+			if (x_val.data.Container.Name !== "") {
+				nothingObj["Container"] = x_val.data.Container.Name;
+			} else {
+				nothingObj["Container"] = "None";
+			}
+
+			array.push(nothingObj);
+
+		}
 	});
 
 	return array;
