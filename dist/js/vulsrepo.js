@@ -2,6 +2,12 @@ var vulsrepo = {
 	detailRawData : null,
 	timeOut : 300 * 1000,
 	link : {
+		cwe_nvd : {
+			url : "https://cwe.mitre.org/data/definitions/",
+		},
+		cwe_jvn : {
+			url : "http://jvndb.jvn.jp/ja/cwe/",
+		},
 		mitre : {
 			url : "https://cve.mitre.org/cgi-bin/cvename.cgi",
 			disp : "MITRE",
@@ -545,8 +551,14 @@ var createPivotData = function(resultArray) {
 					"Family" : x_val.data.Family,
 					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
-					"Packages" : p_val.Name,
+					"Packages" : p_val.Name
 				};
+
+				if (y_val.CveDetail.Nvd.CweID === "" || y_val.CveDetail.Nvd.CweID === undefined) {
+					KnownObj["CweID"] = "Unknown";
+				} else {
+					KnownObj["CweID"] = y_val.CveDetail.Nvd.CweID;
+				}
 
 				if (x_val.data.Platform.Name !== "") {
 					KnownObj["Platform"] = x_val.data.Platform.Name;
@@ -607,6 +619,7 @@ var createPivotData = function(resultArray) {
 					"Family" : x_val.data.Family,
 					"Release" : x_val.data.Release,
 					"CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+					"CweID" : "Unknown",
 					"Packages" : p_val.Name,
 					"CVSS Score" : "Unknown",
 					"CVSS Severity" : "Unknown",
@@ -643,6 +656,7 @@ var createPivotData = function(resultArray) {
 				"Family" : x_val.data.Family,
 				"Release" : x_val.data.Release,
 				"CveID" : "healthy",
+				"CweID" : "healthy",
 				"Packages" : "healthy",
 				"CVSS Score" : "healthy",
 				"CVSS Severity" : "healthy",
@@ -749,6 +763,7 @@ var createDetailData = function(th) {
 var displayDetail = function(th) {
 
 	$("#modal-label").text("");
+	$("#CweID").empty();
 	$("#Link").empty();
 	$("#References").empty();
 
@@ -774,16 +789,6 @@ var displayDetail = function(th) {
 
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
-
-	// TODO erase
-	// if (data.Jvn.Title !== "") {
-	// $("#detailTitle_jvn").append("<div>" + data.Jvn.Title + "<div>");
-	// } else {
-	// $("#detailTitle_jvn").append("<div>NO DATA<div>");
-	// }
-	//	
-	// // Do not put anything because it is the same as the summary in the case of NVD
-	// $("#detailTitle_nvd").append("<div> <div>");
 
 	if (data.Jvn.Summary !== "") {
 		var arrayVector = getSplitArray(data.Jvn.Vector);
@@ -814,6 +819,16 @@ var displayDetail = function(th) {
 	} else {
 		$("#scoreText_nvd").text("NO DATA");
 		$("#Summary_nvd").append("NO DATA");
+	}
+
+	if (data.Nvd.CweID === "" || data.Nvd.CweID === undefined) {
+		$("#CweID").append("<span>NO DATA</span>");
+	} else {
+		$("#CweID").append("<span>[" + data.Nvd.CweID + "] </span>");
+		CweID_num = data.Nvd.CweID.split("-");
+		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + CweID_num[1] + "\" target='_blank'>MITRE</a>");
+		$("#CweID").append("<span> / </span>");
+		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
 	}
 
 	addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
