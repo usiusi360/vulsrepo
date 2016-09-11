@@ -509,8 +509,7 @@ var setEvents = function() {
 var createFolderTree = function() {
 	var tree = $("#folderTree").dynatree({
 		initAjax : {
-			// url : "dist/cgi/getfilelist.cgi"
-			url : "dist/cgi/test.json"
+			url : "dist/cgi/getfilelist.cgi"
 		},
 		ajaxDefaults : {
 			cache : false,
@@ -555,7 +554,7 @@ var createPivotData = function(resultArray) {
 					"Packages" : p_val.Name
 				};
 
-				if (y_val.CveDetail.Nvd.CweID === "" || y_val.CveDetail.Nvd.CweID === undefined ) {
+				if (y_val.CveDetail.Nvd.CweID === "" || y_val.CveDetail.Nvd.CweID === undefined) {
 					KnownObj["CweID"] = "Unknown";
 				} else {
 					KnownObj["CweID"] = y_val.CveDetail.Nvd.CweID;
@@ -791,16 +790,6 @@ var displayDetail = function(th) {
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
 
-	// TODO erase
-	// if (data.Jvn.Title !== "") {
-	// $("#detailTitle_jvn").append("<div>" + data.Jvn.Title + "<div>");
-	// } else {
-	// $("#detailTitle_jvn").append("<div>NO DATA<div>");
-	// }
-	//	
-	// // Do not put anything because it is the same as the summary in the case of NVD
-	// $("#detailTitle_nvd").append("<div> <div>");
-
 	if (data.Jvn.Summary !== "") {
 		var arrayVector = getSplitArray(data.Jvn.Vector);
 		$("#scoreText_jvn").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
@@ -832,11 +821,15 @@ var displayDetail = function(th) {
 		$("#Summary_nvd").append("NO DATA");
 	}
 
-	$("#CweID").append("<span>[" + data.Nvd.CweID + "] </span>");
-	CweID_num = data.Nvd.CweID.split("-");
-	$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + CweID_num[1] + "\" target='_blank'>MITRE</a>");
-	$("#CweID").append("<span> / </span>");
-	$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
+	if (data.Nvd.CweID === "" || data.Nvd.CweID === undefined) {
+		$("#CweID").append("<span>NO DATA</span>");
+	} else {
+		$("#CweID").append("<span>[" + data.Nvd.CweID + "] </span>");
+		CweID_num = data.Nvd.CweID.split("-");
+		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + CweID_num[1] + "\" target='_blank'>MITRE</a>");
+		$("#CweID").append("<span> / </span>");
+		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
+	}
 
 	addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
 	addLink("#Link", vulsrepo.link.cve.url + data.CveID, vulsrepo.link.cve.disp, vulsrepo.link.cve.find, "cve");
