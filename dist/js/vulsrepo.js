@@ -396,6 +396,22 @@ var setPulldownDisplayChangeEvent = function(target) {
 };
 
 var setEvents = function() {
+
+	if (db.get("vulsrepo_detailLastTab") === null) {
+		db.set("vulsrepo_detailLastTab", "jvn");
+	}
+
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+		var tabName = e.target.href;
+		var items = tabName.split("#");
+
+		if (items[1] === "tab_nvd") {
+			db.set("vulsrepo_detailLastTab", "nvd");
+		} else {
+			db.set("vulsrepo_detailLastTab", "jvn");
+		}
+	});
+
 	$("#submitSelectfile").click(function() {
 		$('#drawerLeft').drawer('hide');
 		setTimeout(initPivotTable, 500);
@@ -787,6 +803,12 @@ var displayDetail = function(th) {
 	$("#cvss_a_nvd").removeClass().text("");
 	$("#Summary_nvd").empty();
 
+	if (db.get("vulsrepo_detailLastTab") === "nvd") {
+		$('a[href="#tab_nvd"]').tab('show');
+	} else {
+		$('a[href="#tab_jvn"]').tab('show');
+	}
+
 	var data = createDetailData(th);
 	$("#modal-label").text(data.CveID);
 
@@ -850,7 +872,6 @@ var displayDetail = function(th) {
 	}
 	$("#Link").append("<span> / </span>");
 
-	// addLink("#Link", vulsrepo.link.cvss.url + "?name=" + data.CveID + "&vector=" + data.Jvn.Vector, vulsrepo.link.cvss.disp, vulsrepo.link.cvss.find,"cvss");
 	addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
 	addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
 	addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
