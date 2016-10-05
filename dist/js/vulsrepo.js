@@ -724,7 +724,11 @@ var displayPivot = function(array) {
 		rendererName : "Heatmap",
 		sorters : function(attr) {
 			if (attr == "CVSS Severity") {
-				return sortAs([ "Low", "Medium", "High", "Unknown" ]);
+				return sortAs([ "healthy", "Low", "Medium", "High", "Unknown" ]);
+			}
+
+			if (attr == "CveID" || attr == "CweID" || attr == "Packages" || attr == "CVSS Score" || attr == "Summary" || attr == "CVSS (AV)" || attr == "CVSS (AC)" || attr == "CVSS (Au)" || attr == "CVSS (C)" || attr == "CVSS (I)" || attr == "CVSS(I)") {
+				return sortAs([ "healthy" ]);
 			}
 
 		},
