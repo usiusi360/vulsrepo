@@ -79,3 +79,16 @@ a {
 	padding-left: 65px;
 }
 
+.dateDisplay {
+	margin-top: 20px;
+	font-size: small;
+}
+
+.dateDisplay_title {
+	font-weight: bold;
+}
+
+.dateDisplay_date {
+	width: 100px;
+}
+

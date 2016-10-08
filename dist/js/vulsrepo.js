@@ -790,6 +790,8 @@ var displayDetail = function(th) {
 	$("#References").empty();
 
 	$("#detailTitle_jvn").empty();
+	$("#publishedDateJvn").text("------");
+	$("#lastModifiedDateJvn").text("------");			
 	$("#scoreText_jvn").text("").css('background-color', 'gray');
 	$("#cvss_av_jvn").removeClass().text("");
 	$("#cvss_ac_jvn").removeClass().text("");
@@ -800,6 +802,8 @@ var displayDetail = function(th) {
 	$("#Summary_jvn").empty();
 
 	$("#detailTitle_nvd").empty();
+	$("#publishedDateNvd").text("------");
+	$("#lastModifiedDateNvd").text("------");			
 	$("#scoreText_nvd").text("").css('background-color', 'gray');
 	$("#cvss_av_nvd").removeClass().text("");
 	$("#cvss_ac_nvd").removeClass().text("");
@@ -819,6 +823,9 @@ var displayDetail = function(th) {
 	$("#modal-label").text(data.CveID);
 
 	if (data.Jvn.Summary !== "") {
+		$("#publishedDateJvn").text(data.Jvn.PublishedDate.split("T")[0]);
+		$("#lastModifiedDateJvn").text(data.Jvn.LastModifiedDate.split("T")[0]);
+		
 		var arrayVector = getSplitArray(data.Jvn.Vector);
 		$("#scoreText_jvn").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
 		$("#cvss_av_jvn").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
@@ -835,6 +842,9 @@ var displayDetail = function(th) {
 	}
 
 	if (data.Nvd.Summary !== "") {
+		$("#publishedDateNvd").text(data.Nvd.PublishedDate.split("T")[0]);
+		$("#lastModifiedDateNvd").text(data.Nvd.LastModifiedDate.split("T")[0]);		
+		
 		$("#scoreText_nvd").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
 		$("#cvss_av_nvd").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
 		$("#cvss_ac_nvd").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
@@ -853,8 +863,7 @@ var displayDetail = function(th) {
 		$("#CweID").append("<span>NO DATA</span>");
 	} else {
 		$("#CweID").append("<span>[" + data.Nvd.CweID + "] </span>");
-		CweID_num = data.Nvd.CweID.split("-");
-		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + CweID_num[1] + "\" target='_blank'>MITRE</a>");
+		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.Nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
 		$("#CweID").append("<span> / </span>");
 		$("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
 	}
