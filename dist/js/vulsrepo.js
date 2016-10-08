@@ -738,6 +738,8 @@ var displayPivot = function(array) {
 				displayDetail(this.text);
 			});
 			$("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
+			$("#pivot_base").find(".pvtRowLabel:contains('healthy')").css("background-color", "lightskyblue");
+			$("#pivot_base").find(".pvtColLabel:contains('healthy')").css("background-color", "lightskyblue");
 		}
 
 	};
