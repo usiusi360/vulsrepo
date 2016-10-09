@@ -492,7 +492,7 @@ var setEvents = function() {
 		$("#modal-saveDiag").modal('hide');
 	});
 
-	$("#clear_pivot_conf").click(function() {
+	$("#delete_pivot_conf").click(function() {
 		db.removePivotConf($("#drop_topmenu_hiddenValue").attr('value'));
 		db.remove("vulsrepo_pivot_conf");
 		$("#drop_topmenu_visibleValue").html("Select setting");
@@ -501,6 +501,15 @@ var setEvents = function() {
 		fadeAlert("#alert_pivot_conf");
 		initPivotTable();
 	});
+	
+	$("#clear_pivot_conf").click(function() {
+		db.remove("vulsrepo_pivot_conf");
+		$("#drop_topmenu_visibleValue").html("Select setting");
+		$("#drop_topnemu_hiddenValue").val("");
+		filterDisp.off("#label_pivot_conf");
+		fadeAlert("#alert_pivot_conf");
+		initPivotTable();
+	});	
 
 	$("#Setting").click(function() {
 		$("#modal-setting").modal('show');
