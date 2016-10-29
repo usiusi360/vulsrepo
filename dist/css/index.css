@@ -41,15 +41,16 @@ a {
 	background-color: indianred;
 }
 
-#Title {
+.detailTitle {
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-#Score {
+.detailScore {
 	margin-bottom: 10px;
 }
 
-#scoreTable {
+.detailScoreTable {
 	width: 140px;
 	height: 40px;
 	font-size: 14pt;
@@ -57,7 +58,7 @@ a {
 	text-align: center;
 }
 
-#cvssTable {
+.detailCvssTable {
 	text-align: center;
 }
 
@@ -65,3 +66,29 @@ a {
 	width: 20px;
 	height: 20px;
 }
+
+#pivot_base {
+	margin: 30px;
+}
+
+#submitSelectfile {
+	margin-bottom: 10px;
+}
+
+#toolName {
+	padding-left: 65px;
+}
+
+.dateDisplay {
+	margin-top: 20px;
+	font-size: small;
+}
+
+.dateDisplay_title {
+	font-weight: bold;
+}
+
+.dateDisplay_date {
+	width: 100px;
+}
+
