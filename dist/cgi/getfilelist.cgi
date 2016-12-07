@@ -2,7 +2,6 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 use JSON;
 use CGI;
 use FindBin;
