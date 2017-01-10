@@ -17,7 +17,8 @@ http://usiusi360.github.io/vulsrepo/
 ### Step1. Create a json report of vuls
 
 ````
-$ vuls scan -report-json --cve-dictionary-dbpath=/opt/vuls/cve.sqlite3
+$ vuls scan 
+$ vuls report -to-localfile -format-json --cvedb-path=/opt/vuls/cve.sqlite3  
 ````
 
 Output to a JSON files (/opt/vuls/results/current)
