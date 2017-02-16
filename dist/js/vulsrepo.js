@@ -910,12 +910,12 @@ var displayDetail = function(th) {
   addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
   addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
 
-  if (data.Jvn.References !== null) {
+  if (isCheckNull(data.Jvn.References) === false) {
     $.each(data.Jvn.References, function(x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
     });
   }
-  if (data.Nvd.References !== null) {
+  if (isCheckNull(data.Nvd.References) === false) {
     $.each(data.Nvd.References, function(x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
     });
