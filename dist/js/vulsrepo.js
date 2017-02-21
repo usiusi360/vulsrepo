@@ -587,8 +587,14 @@ var createPivotData = function(resultArray) {
           "Family" : x_val.data.Family,
           "Release" : x_val.data.Release,
           "CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
-          "Packages" : p_val.Name
         };
+
+        if (p_val.Name !== undefined) {
+          KnownObj["Packages"] = p_val.Name;
+        } else {
+          KnownObj["Packages"] = p_val;
+        }
+
 
         if (y_val.CveDetail.Nvd.CweID === "" || y_val.CveDetail.Nvd.CweID === undefined) {
           KnownObj["CweID"] = "Unknown";
@@ -656,7 +662,6 @@ var createPivotData = function(resultArray) {
           "Release" : x_val.data.Release,
           "CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
           "CweID" : "Unknown",
-          "Packages" : p_val.Name,
           "CVSS Score" : "Unknown",
           "CVSS Severity" : "Unknown",
           "Summary" : "Unknown",
@@ -667,6 +672,12 @@ var createPivotData = function(resultArray) {
           "CVSS (I)" : "Unknown",
           "CVSS (A)" : "Unknown"
         };
+
+        if (p_val.Name !== undefined) {
+          UnknownObj["Packages"] = p_val.Name;
+        } else {
+          UnknownObj["Packages"] = p_val;
+        }
 
         if (x_val.data.Platform.Name !== "") {
           UnknownObj["Platform"] = x_val.data.Platform.Name;
