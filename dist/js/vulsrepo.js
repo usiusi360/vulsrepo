@@ -587,6 +587,8 @@ var createPivotData = function(resultArray) {
           "Family" : x_val.data.Family,
           "Release" : x_val.data.Release,
           "CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+          "Confidence.Score" :  y_val.Confidence.Score,
+          "Confidence.DetectionMethod" :  y_val.Confidence.DetectionMethod,
         };
 
         if (p_val.Name !== undefined) {
@@ -661,6 +663,8 @@ var createPivotData = function(resultArray) {
           "Family" : x_val.data.Family,
           "Release" : x_val.data.Release,
           "CveID" : '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+          "Confidence.Score" :  y_val.Confidence.Score,
+          "Confidence.DetectionMethod" :  y_val.Confidence.DetectionMethod,
           "CweID" : "Unknown",
           "CVSS Score" : "Unknown",
           "CVSS Severity" : "Unknown",
