@@ -1,4 +1,5 @@
 <!doctype html>
+
 <head>
 	<meta charset="utf-8">
 	<title>VulsRepo</title>
@@ -28,7 +29,8 @@
 
 	<div id="drawerLeft" class="drawer dw-xs-6 dw-sm-4 dw-md-2 fold" aria-labelledby="drawerLeft">
 		<div class="drawer-controls">
-			<a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded" aria-expanded="false"><i class="fa fa-align-justify"></i></a>
+			<a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded"
+				aria-expanded="false"><i class="fa fa-align-justify"></i></a>
 		</div>
 		<div class="drawer-contents">
 			<div class="drawer-heading">
@@ -71,38 +73,40 @@
 		<table>
 			<tr>
 				<td>
-				<div>
-					<div class="dropdown box">
-						<div class="btn-group btn-default my-input-pos">
-							<button type="button" class="btn btn-default">
+					<div>
+						<div class="dropdown box">
+							<div class="btn-group btn-default my-input-pos">
+								<button type="button" class="btn btn-default">
 								<span id="drop_topmenu_visibleValue">Select setting</span>
 							</button>
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+								<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
-							<ul class="dropdown-menu" role="menu" id="drop_topmenu"></ul>
-							<input type="hidden" id="drop_topmenu_hiddenValue" value="">
-						</div>
+								<ul class="dropdown-menu" role="menu" id="drop_topmenu"></ul>
+								<input type="hidden" id="drop_topmenu_hiddenValue" value="">
+							</div>
 
-						<button type="submit" class="btn btn-primary  my-button" id="save_pivot_conf">
+							<button type="submit" class="btn btn-primary  my-button" id="save_pivot_conf">
 							Save
 						</button>
-						<button type="submit" class="btn btn-default my-button" id="delete_pivot_conf">
+							<button type="submit" class="btn btn-default my-button" id="delete_pivot_conf">
 							Delete
 						</button>
-						<button type="submit" class="btn btn-default my-button" id="clear_pivot_conf" style="margin-left: 15px;">
+							<button type="submit" class="btn btn-default my-button" id="clear_pivot_conf" style="margin-left: 15px;">
 							Clear
 						</button>
-						<span class="label" id="label_pivot_conf"></span>
-						<span class="alert alert-success" id="alert_pivot_conf">Success</span>
+							<span class="label" id="label_pivot_conf"></span>
+							<span class="alert alert-success" id="alert_pivot_conf">Success</span>
+						</div>
 					</div>
-				</div><div id="pivot_base"></div></td>
+					<div id="pivot_base"></div>
+				</td>
 
 			</tr>
 		</table>
 	</div>
 
-	<div class="modal fade  bs-example-modal-lg" id="modal-detail" tabindex="-1"  aria-labelledby="myLargeModalLabel">
+	<div class="modal fade  bs-example-modal-lg" id="modal-detail" tabindex="-1" aria-labelledby="myLargeModalLabel">
 		<div class="modal-dialog  modal-lg">
 			<div class="modal-content">
 				<div class="modal-header bg-info">
@@ -144,7 +148,7 @@
 									<div class="detailScore">
 										<table class='detailScoreTable'>
 											<tr>
-												<td  id='scoreText_jvn'></td>
+												<td id='scoreText_jvn'></td>
 											</tr>
 										</table>
 									</div>
@@ -193,7 +197,7 @@
 									<div class="detailScore">
 										<table class='detailScoreTable'>
 											<tr>
-												<td  id='scoreText_nvd'></td>
+												<td id='scoreText_nvd'></td>
 											</tr>
 										</table>
 									</div>
@@ -228,15 +232,15 @@
 							</div>
 						</div>
 					</div>
-					<p  class="bg-primary">
+					<p class="bg-primary">
 						CweID
 					</p>
 					<div id="CweID"></div>
-					<p  class="bg-primary">
+					<p class="bg-primary">
 						Links
 					</p>
 					<div id="Link"></div>
-					<p  class="bg-primary">
+					<p class="bg-primary">
 						References
 					</p>
 					<div id="References"></div>
@@ -263,7 +267,7 @@
 					<p class="bg-danger">
 						Response Text
 					</p>
-					<div  id="alert_responce_text"></div>
+					<div id="alert_responce_text"></div>
 				</div>
 			</div>
 		</div>
