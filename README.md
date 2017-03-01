@@ -5,7 +5,7 @@
 VulsRepo is visualized based on the json report output in [vuls](https://github.com/future-architect/vuls).
 
 
-<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/demo.gif" width="60%">
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/demo.gif" width="75%">
 
 ## Online Demo
 http://usiusi360.github.io/vulsrepo/
