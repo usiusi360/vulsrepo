@@ -758,17 +758,17 @@ var displayPivot = function (array) {
 
 };
 
-var createDetailData = function (th) {
+var createDetailData = function (cveID) {
   var targetObj;
   $.each(vulsrepo.detailRawData, function (x, x_val) {
     $.each(x_val.data.KnownCves, function (y, y_val) {
-      if (th === y_val.CveDetail.CveID) {
+      if (cveID === y_val.CveDetail.CveID) {
         targetObj = y_val.CveDetail;
       }
     });
 
     $.each(x_val.data.UnknownCves, function (y, y_val) {
-      if (th === y_val.CveDetail.CveID) {
+      if (cveID === y_val.CveDetail.CveID) {
         targetObj = y_val.CveDetail;
       }
     });
