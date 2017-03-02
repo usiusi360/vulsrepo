@@ -541,6 +541,9 @@ var createPivotData = function (resultArray) {
         if (y_val.Confidence !== undefined) {
           KnownObj["Confidence.Score"] = y_val.Confidence.Score;
           KnownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
+        } else {
+          KnownObj["Confidence.Score"] = "Unknown";
+          KnownObj["Confidence.DetectionMethod"] = "Unknown";
         }
 
         if (p_val.Name !== undefined) {
@@ -630,6 +633,9 @@ var createPivotData = function (resultArray) {
         if (y_val.Confidence !== undefined) {
           UnknownObj["Confidence.Score"] = y_val.Confidence.Score;
           UnknownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
+        } else {
+          UnknownObj["Confidence.Score"] = "Unknown";
+          UnknownObj["Confidence.DetectionMethod"] = "Unknown";
         }
 
         if (p_val.Name !== undefined) {
