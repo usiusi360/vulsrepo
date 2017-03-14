@@ -29,6 +29,8 @@ var initPivotTable = function () {
 
 };
 
+var packageTable = $("#table-package").DataTable();
+
 var db = {
   set: function (key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
@@ -798,8 +800,11 @@ var displayDetail = function (th) {
   }
 
   var data = createDetailData(th);
+
+  // ---Tab main
   $("#modal-label").text(data.CveID);
 
+  // ---Tab JVN---
   if (data.Jvn.Summary !== "") {
     $("#publishedDateJvn").text(data.Jvn.PublishedDate.split("T")[0]);
     $("#lastModifiedDateJvn").text(data.Jvn.LastModifiedDate.split("T")[0]);
@@ -819,6 +824,7 @@ var displayDetail = function (th) {
     $("#Summary_jvn").append("NO DATA");
   }
 
+  // ---Tab NVD---
   if (data.Nvd.Summary !== "") {
     $("#publishedDateNvd").text(data.Nvd.PublishedDate.split("T")[0]);
     $("#lastModifiedDateNvd").text(data.Nvd.LastModifiedDate.split("T")[0]);
@@ -837,6 +843,7 @@ var displayDetail = function (th) {
     $("#Summary_nvd").append("NO DATA");
   }
 
+  // ---Link---
   if (data.Nvd.CweID === "" || data.Nvd.CweID === undefined) {
     $("#CweID").append("<span>NO DATA</span>");
   } else {
@@ -869,6 +876,7 @@ var displayDetail = function (th) {
   addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
   addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
 
+  // ---References---
   if (isCheckNull(data.Jvn.References) === false) {
     $.each(data.Jvn.References, function (x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
@@ -879,6 +887,50 @@ var displayDetail = function (th) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
     });
   }
+
+
+  // ---Tab Package
+  var pkgData = createDetailPackageData(th);
+  packageTable.destroy();
+  packageTable = $("#table-package").DataTable({
+    retrieve: true,
+    scrollX: true,
+    autoWidth: true,
+    data: pkgData,
+    columns: [{
+      data: "ScanTime"
+    }, {
+      data: "ServerName"
+    }, {
+      data: "ContainerName"
+    }, {
+      data: "PackageName"
+    }, {
+      data: "PackageVersion"
+    }, {
+      data: "PackageRelease"
+    }, {
+      data: "PackageNewVersion"
+    }, {
+      data: "PackageNewRelease"
+    }]
+  });
+
+
+  $("#table-package td").off("click");
+  $('#table-package td').on("click", function () {
+    var row = $(this).closest('tr').index();
+    var col = this.cellIndex;
+    console.log('Row: ' + row + ', Column: ' + col);
+
+    var trs = $('#table-package tr')
+    console.log(trs);
+
+
+    //console.log(tds[row].textContent);
+
+    //console.log($(this).text());
+  });
 
   $("#modal-detail").modal('show');
 
@@ -922,3 +974,62 @@ var checkLink = function (url, find, imgId) {
   });
 
 };
+
+
+var createDetailPackageData = function (cveID) {
+  var array = [];
+  $.each(vulsrepo.detailRawData, function (x, x_val) {
+    $.each(x_val.data.KnownCves, function (y, y_val) {
+      if (cveID === y_val.CveDetail.CveID) {
+        $.each(y_val.Packages, function (z, z_val) {
+          var tmp_Map = {
+            ScanTime: x_val.scanTime,
+            ServerName: x_val.data.ServerName,
+            ContainerName: x_val.data.Container.Name,
+            PackageName: '<a class="detail-package-name">' + z_val.Name + '</a>',
+            PackageVersion: z_val.Version,
+            PackageRelease: z_val.Release,
+            PackageNewVersion: z_val.NewVersion,
+            PackageNewRelease: z_val.NewRelease
+          };
+          array.push(tmp_Map);
+        });
+      }
+    });
+
+    $.each(x_val.data.UnknownCves, function (y, y_val) {
+      if (cveID === y_val.CveDetail.CveID) {
+        $.each(y_val.Packages, function (z, z_val) {
+          var tmp_Map = {
+            ScanTime: x_val.scanTime,
+            ServerName: x_val.data.ServerName,
+            ContainerName: x_val.data.Container.Name,
+            PackageName: '<a class="detail-package-name">' + z_val.Name + '</a>',
+            PackageVersion: z_val.Version,
+            PackageRelease: z_val.Release,
+            PackageNewVersion: z_val.NewVersion,
+            PackageNewRelease: z_val.NewRelease
+          };
+          array.push(tmp_Map);
+        });
+      }
+    });
+  });
+
+  return array;
+};
+
+var getChangeLog = function (scanTime, hostName, packageName) {
+  var targetObj;
+
+  $.each(vulsrepo.detailRawData, function (x, x_val) {
+    if ((x_val.scanTime === scanTime) && (x_val.data.ServerName === hostName)) {
+      $.each(x_val, function (y, y_val) {
+        if (y_val.Name === packageName) {
+          return y_val.Changelog
+        }
+      });
+    }
+  });
+};
+
