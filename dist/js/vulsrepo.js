@@ -361,7 +361,7 @@ var setEvents = function () {
     }
   });
 
-  $("#submitSelectfile").click(function () {
+  $(".submitSelectfile").click(function () {
     $('#drawerLeft').drawer('hide');
     setTimeout(initPivotTable, 500);
   });
