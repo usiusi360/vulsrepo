@@ -892,49 +892,46 @@ var displayDetail = function (th) {
   // ---Tab Package
   var pkgData = createDetailPackageData(th);
   packageTable.destroy();
-  packageTable = $("#table-package").DataTable({
-    retrieve: true,
-    scrollX: true,
-    autoWidth: true,
-    data: pkgData,
-    columns: [{
-      data: "ScanTime"
-    }, {
-      data: "ServerName"
-    }, {
-      data: "ContainerName"
-    }, {
-      data: "PackageName"
-    }, {
-      data: "PackageVersion"
-    }, {
-      data: "PackageRelease"
-    }, {
-      data: "PackageNewVersion"
-    }, {
-      data: "PackageNewRelease"
-    }]
-  });
+  packageTable = $("#table-package")
+    .DataTable({
+      retrieve: true,
+      scrollX: true,
+      autoWidth: true,
+      data: pkgData,
+      columns: [{
+        data: "ScanTime"
+      }, {
+        data: "ServerName"
+      }, {
+        data: "ContainerName"
+      }, {
+        data: "PackageName"
+      }, {
+        data: "PackageVersion"
+      }, {
+        data: "PackageRelease"
+      }, {
+        data: "PackageNewVersion"
+      }, {
+        data: "PackageNewRelease"
+      }]
+    });
 
-
-  $("#table-package td").off("click");
-  $('#table-package td').on("click", function () {
-    var row = $(this).closest('tr').index();
-    var col = this.cellIndex;
-    console.log('Row: ' + row + ', Column: ' + col);
-
-    var trs = $('#table-package tr')
-    console.log(trs);
-
-
-    //console.log(tds[row].textContent);
-
-    //console.log($(this).text());
+  // ---package changelog event
+  $('.lightbox').colorbox({
+    inline: true,
+    href: "#changelog-content",
+    speed: 100,
+    opacity: 0.2,
+    onComplete: function () {
+      createDetailChangelog(this)
+    }
   });
 
   $("#modal-detail").modal('show');
 
 };
+
 
 var addLink = function (target, url, disp, find, imgIdTarget) {
   $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
@@ -979,57 +976,68 @@ var checkLink = function (url, find, imgId) {
 var createDetailPackageData = function (cveID) {
   var array = [];
   $.each(vulsrepo.detailRawData, function (x, x_val) {
-    $.each(x_val.data.KnownCves, function (y, y_val) {
-      if (cveID === y_val.CveDetail.CveID) {
-        $.each(y_val.Packages, function (z, z_val) {
-          var tmp_Map = {
-            ScanTime: x_val.scanTime,
-            ServerName: x_val.data.ServerName,
-            ContainerName: x_val.data.Container.Name,
-            PackageName: '<a class="detail-package-name">' + z_val.Name + '</a>',
-            PackageVersion: z_val.Version,
-            PackageRelease: z_val.Release,
-            PackageNewVersion: z_val.NewVersion,
-            PackageNewRelease: z_val.NewRelease
-          };
-          array.push(tmp_Map);
-        });
-      }
-    });
-
-    $.each(x_val.data.UnknownCves, function (y, y_val) {
-      if (cveID === y_val.CveDetail.CveID) {
-        $.each(y_val.Packages, function (z, z_val) {
-          var tmp_Map = {
-            ScanTime: x_val.scanTime,
-            ServerName: x_val.data.ServerName,
-            ContainerName: x_val.data.Container.Name,
-            PackageName: '<a class="detail-package-name">' + z_val.Name + '</a>',
-            PackageVersion: z_val.Version,
-            PackageRelease: z_val.Release,
-            PackageNewVersion: z_val.NewVersion,
-            PackageNewRelease: z_val.NewRelease
-          };
-          array.push(tmp_Map);
-        });
-      }
-    });
+    array = createMapPackageData(cveID, array, x_val.data.KnownCves, x_val);
+    array = createMapPackageData(cveID, array, x_val.data.UnknownCves, x_val);
   });
-
   return array;
 };
 
-var getChangeLog = function (scanTime, hostName, packageName) {
-  var targetObj;
+var createMapPackageData = function (cveID, array, cves, x_val) {
+  $.each(cves, function (y, y_val) {
+    if (cveID === y_val.CveDetail.CveID) {
+      $.each(y_val.Packages, function (z, z_val) {
+        var tmp_Map = {
+          ScanTime: x_val.scanTime,
+          ServerName: x_val.data.ServerName,
+          ContainerName: x_val.data.Container.Name,
+          PackageVersion: z_val.Version,
+          PackageRelease: z_val.Release,
+          PackageNewVersion: z_val.NewVersion,
+          PackageNewRelease: z_val.NewRelease
+        };
+        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val.Name + '">' + z_val.Name + '</a>';
+        array.push(tmp_Map);
+      });
+    }
+  });
+  return array
+}
 
+var createDetailChangelog = function (ankerData) {
+  $("#changelog-method, #changelog-contents").empty();
+  var changelog = getChangeLog($(ankerData).attr('data-scantime'), $(ankerData).attr('data-server'), $(ankerData).attr('data-container'), $(ankerData).attr('data-package'));
+  if (changelog.Method !== "") {
+    $("#changelog-method").append(changelog.Method);
+  } else {
+    $("#changelog-method").append("- NO DATA");
+  }
+  if (changelog.Contents !== "") {
+    $("#changelog-contents").append(highlightCveID($(ankerData).attr('data-cveid'), changeNR(changelog.Contents)));
+  } else {
+    $("#changelog-contents").append("- NO DATA");
+  }
+}
+
+var getChangeLog = function (scanTime, hostName, containerName, packageName) {
+  var changelog;
   $.each(vulsrepo.detailRawData, function (x, x_val) {
-    if ((x_val.scanTime === scanTime) && (x_val.data.ServerName === hostName)) {
-      $.each(x_val, function (y, y_val) {
+    if ((x_val.scanTime === scanTime) && (x_val.data.ServerName === hostName) && (x_val.data.Container.Name === containerName)) {
+      $.each(x_val.data.Packages, function (y, y_val) {
         if (y_val.Name === packageName) {
-          return y_val.Changelog
+          changelog = y_val.Changelog;
         }
       });
     }
   });
+  return changelog;
 };
+
+var changeNR = function (changelog) {
+  return changelog.replace(/\n/g, "<br>");
+}
+
+var highlightCveID = function (cveid, changelog) {
+  var regExp = new RegExp(cveid, "g");
+  return changelog.replace(regExp, '<span class="highlight-cveid">' + cveid + '</span>');
+}
 
