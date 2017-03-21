@@ -92,3 +92,20 @@ a {
     margin-top: 10px;
 	margin-bottom: 10px;
 }
+
+
+#changelog-content {
+	width: 800px;
+	height: 600px;
+}
+
+#changelog-method {
+	margin-bottom: 10px;
+}
+
+.highlight-cveid {
+	font-weight: bold;
+	background-color:#FFC107
+}
+
+
