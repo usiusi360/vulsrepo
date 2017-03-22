@@ -922,7 +922,9 @@ var displayDetail = function (th) {
     inline: true,
     href: "#changelog-content",
     speed: 100,
+    fadeOut: 100,
     opacity: 0.2,
+    closeButton: false,
     onComplete: function () {
       createDetailChangelog(this)
     }
@@ -1004,17 +1006,20 @@ var createMapPackageData = function (cveID, array, cves, x_val) {
 }
 
 var createDetailChangelog = function (ankerData) {
-  $("#changelog-method, #changelog-contents").empty();
   var changelog = getChangeLog($(ankerData).attr('data-scantime'), $(ankerData).attr('data-server'), $(ankerData).attr('data-container'), $(ankerData).attr('data-package'));
+
+  $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-contents").empty();
+  $("#changelog-cveid").append($(ankerData).attr('data-cveid'));
+  $("#changelog-servername").append($(ankerData).attr('data-server'));
+  $("#changelog-containername").append($(ankerData).attr('data-container'));
+  $("#changelog-packagename").append($(ankerData).attr('data-package'));
+
   if (changelog.Method !== "") {
     $("#changelog-method").append(changelog.Method);
-  } else {
-    $("#changelog-method").append("- NO DATA");
-  }
-  if (changelog.Contents !== "") {
     $("#changelog-contents").append(highlightCveID($(ankerData).attr('data-cveid'), changeNR(changelog.Contents)));
   } else {
-    $("#changelog-contents").append("- NO DATA");
+    $("#changelog-method").append("NO DATA");
+    $("#changelog-contents").append("NO DATA");
   }
 }
 

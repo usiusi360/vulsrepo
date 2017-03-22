@@ -415,11 +415,35 @@
 
 	<div style="display:none">
 		<div id="changelog-content">
+			<div>
+				<table class="table table-condensed table-bordered">
+					<tr class="active">
+						<th>CveID</th>
+						<th>DetectionMethod</th>
+					</tr>
+					<tr>
+						<td id="changelog-cveid"></td>
+						<td id="changelog-method"></td>
+					</tr>
+				</table>
+			</div>
 
-			<p class="bg-primary">
-				DetectionMethod
-			</p>
-			<div id="changelog-method"></div>
+
+			<div>
+				<table class="table table-condensed table-bordered">
+					<tr class="active">
+						<th>ServerName</th>
+						<th>ContainerName</th>
+						<th>PackageName</th>
+					</tr>
+					<tr>
+						<td id="changelog-servername"></td>
+						<td id="changelog-containername"></td>
+						<td id="changelog-packagename"></td>
+					</tr>
+				</table>
+			</div>
+
 			<p class="bg-primary">
 				Changelog
 			</p>
