@@ -598,6 +598,12 @@ var createPivotData = function (resultArray) {
           KnownObj["CVSS (A)"] = y_val.CveDetail.Nvd.AvailabilityImpact;
         }
 
+        if (p_val.Name !== undefined) {
+          KnownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val.Name + '">Changelog</a>';
+        } else {
+          KnownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val + '">Changelog</a>';
+        }
+
         array.push(KnownObj);
 
       });
@@ -656,6 +662,12 @@ var createPivotData = function (resultArray) {
           UnknownObj["Container"] = x_val.data.Container.Name;
         } else {
           UnknownObj["Container"] = "None";
+        }
+
+        if (p_val.Name !== undefined) {
+          UnknownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val.Name + '">Changelog</a>';
+        } else {
+          UnknownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val + '">Changelog</a>';
         }
 
         array.push(UnknownObj);
@@ -737,6 +749,18 @@ var displayPivot = function (array) {
       $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
       $("#pivot_base").find(".pvtRowLabel:contains('healthy')").css("background-color", "lightskyblue");
       $("#pivot_base").find(".pvtColLabel:contains('healthy')").css("background-color", "lightskyblue");
+
+      $('.lightbox').colorbox({
+        inline: true,
+        href: "#changelog-content",
+        speed: 100,
+        fadeOut: 100,
+        opacity: 0.2,
+        closeButton: false,
+        onComplete: function () {
+          createDetailChangelog(this)
+        }
+      });
     }
 
   };
@@ -1014,12 +1038,16 @@ var createDetailChangelog = function (ankerData) {
   $("#changelog-containername").append($(ankerData).attr('data-container'));
   $("#changelog-packagename").append($(ankerData).attr('data-package'));
 
-  if (changelog.Method !== "") {
-    $("#changelog-method").append(changelog.Method);
-    $("#changelog-contents").append(highlightCveID($(ankerData).attr('data-cveid'), changeNR(changelog.Contents)));
-  } else {
+  if (changelog === undefined) {
+    $("#changelog-method").append("CpeNameMatch");
+    $("#changelog-contents").append("NO DATA");
+  } else if (changelog.Method === "") {
     $("#changelog-method").append("NO DATA");
     $("#changelog-contents").append("NO DATA");
+  } else {
+    $("#changelog-method").append(changelog.Method);
+    $("#changelog-contents").append(highlightCveID($(ankerData).attr('data-cveid'), changeNR(changelog.Contents)));
+
   }
 }
 
