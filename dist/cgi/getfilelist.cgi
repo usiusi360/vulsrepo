@@ -1,8 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
-use Data::Dumper;
 use JSON;
 use CGI;
 use FindBin;
@@ -39,7 +38,7 @@ sub scan_dir {
         chdir "../";
       };
     }
-    elsif (( $path !~ /.txt$/ ) && ( $path !~ /all.json/ )) {
+    elsif (( $path =~ /.json$/ ) && ( $path !~ /^all.json$/ )) {
          my $tmp_children ={};
          my $tmp_url = Cwd::getcwd() . "/" . $path;
          $tmp_url =~ s/$basePath//g;

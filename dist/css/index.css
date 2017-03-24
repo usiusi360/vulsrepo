@@ -15,7 +15,7 @@
 	margin-top: 11px;
 }
 
-.modal p {
+p {
 	margin-top: 15px;
 	text-indent: 5px
 }
@@ -71,10 +71,6 @@ a {
 	margin: 30px;
 }
 
-#submitSelectfile {
-	margin-bottom: 10px;
-}
-
 #toolName {
 	padding-left: 65px;
 }
@@ -92,3 +88,26 @@ a {
 	width: 100px;
 }
 
+.submitSelectfile {
+    margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+#changelog-content {
+	width: 800px;
+	height: 600px;
+}
+
+#changelog-method {
+	margin-bottom: 10px;
+}
+
+.highlight-cveid {
+	font-weight: bold;
+	background-color:#FFC107
+}
+
+.table-package {
+	margin-bottom: 10px;
+}
