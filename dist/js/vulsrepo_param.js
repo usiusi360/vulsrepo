@@ -1,6 +1,7 @@
 var vulsrepo = {
     detailRawData: null,
     timeOut: 300 * 1000,
+    demoFlag: false,
     link: {
         cwe_nvd: {
             url: "https://cwe.mitre.org/data/definitions/",

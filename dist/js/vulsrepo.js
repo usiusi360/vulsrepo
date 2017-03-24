@@ -483,9 +483,17 @@ var setEvents = function () {
 };
 
 var createFolderTree = function () {
+
+  var target;
+  if (vulsrepo.demoFlag === true) {
+    target = "getfilelist.json"
+  } else {
+    target = "getfilelist.cgi"
+  }
+
   var tree = $("#folderTree").dynatree({
     initAjax: {
-      url: "dist/cgi/getfilelist.cgi"
+      url: "dist/cgi/" + target
     },
     ajaxDefaults: {
       cache: false,
@@ -764,6 +772,10 @@ var displayPivot = function (array) {
     }
 
   };
+
+  if (vulsrepo.demoFlag === true) {
+    pivot_attr["rows"] = ["ScanTime", "Container"];
+  }
 
   var pivot_obj = db.get("vulsrepo_pivot_conf");
   if (pivot_obj != null) {
