@@ -1049,13 +1049,18 @@ var createMapPackageData = function (cveID, array, cves, x_val) {
 }
 
 var createDetailChangelog = function (ankerData) {
-  var changelog = getChangeLog($(ankerData).attr('data-scantime'), $(ankerData).attr('data-server'), $(ankerData).attr('data-container'), $(ankerData).attr('data-package'));
+  var cveid = $(ankerData).attr('data-cveid');
+  var scantime = $(ankerData).attr('data-scantime');
+  var server = $(ankerData).attr('data-server');
+  var container = $(ankerData).attr('data-container');
+  var package = $(ankerData).attr('data-package');
+  var changelog = getChangeLog(scantime, server, container, package);
 
   $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-contents").empty();
-  $("#changelog-cveid").append($(ankerData).attr('data-cveid'));
-  $("#changelog-servername").append($(ankerData).attr('data-server'));
-  $("#changelog-containername").append($(ankerData).attr('data-container'));
-  $("#changelog-packagename").append($(ankerData).attr('data-package'));
+  $("#changelog-cveid").append(cveid);
+  $("#changelog-servername").append(server);
+  $("#changelog-containername").append(container);
+  $("#changelog-packagename").append(package);
 
   if (changelog === undefined) {
     $("#changelog-method").append("CpeNameMatch");
@@ -1065,17 +1070,16 @@ var createDetailChangelog = function (ankerData) {
     $("#changelog-contents").append("NO DATA");
   } else {
     $("#changelog-method").append(changelog.Method);
-    $("#changelog-contents").append(highlightCveID($(ankerData).attr('data-cveid'), changeNR(changelog.Contents)));
-
+    $("#changelog-contents").append(highlightCveID(changeNR(changelog.Contents), cveid));
   }
 }
 
-var getChangeLog = function (scanTime, hostName, containerName, packageName) {
+var getChangeLog = function (scantime, server, container, package) {
   var changelog;
   $.each(vulsrepo.detailRawData, function (x, x_val) {
-    if ((x_val.scanTime === scanTime) && (x_val.data.ServerName === hostName) && (x_val.data.Container.Name === containerName)) {
+    if ((x_val.scanTime === scantime) && (x_val.data.ServerName === server) && (x_val.data.Container.Name === container)) {
       $.each(x_val.data.Packages, function (y, y_val) {
-        if (y_val.Name === packageName) {
+        if (y_val.Name === package) {
           changelog = y_val.Changelog;
         }
       });
@@ -1088,7 +1092,7 @@ var changeNR = function (changelog) {
   return changelog.replace(/\n/g, "<br>");
 }
 
-var highlightCveID = function (cveid, changelog) {
+var highlightCveID = function (changelog, cveid) {
   var regExp = new RegExp(cveid, "g");
   return changelog.replace(regExp, '<span class="highlight-cveid">' + cveid + '</span>');
 }
