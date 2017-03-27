@@ -9,15 +9,12 @@ $(document).ready(function () {
   $('#drawerLeft').drawer('show');
 });
 
-var initPivotTable = function () {
+var initData = function () {
   $.blockUI(blockUI_opt_all);
   getData().done(function (resultArray) {
-    displayPivot(createPivotData(resultArray));
     vulsrepo.detailRawData = resultArray;
-    setPulldown("#drop_topmenu");
-    setPulldownDisplayChangeEvent("#drop_topmenu");
-    filterDisp.off("pivot_conf");
-    $.unblockUI(blockUI_opt_all);
+    vulsrepo.detailPivotData = createPivotData(resultArray);
+    initPivotTable();
   }).fail(function (result) {
     $.unblockUI(blockUI_opt_all);
     if (result === "notSelect") {
@@ -26,7 +23,17 @@ var initPivotTable = function () {
       showAlert(result.status + " " + result.statusText, result.responseText);
     }
   });
+};
 
+var initPivotTable = function () {
+  $.blockUI(blockUI_opt_all);
+  setTimeout(function () {
+    displayPivot(vulsrepo.detailPivotData);
+    setPulldown("#drop_topmenu");
+    setPulldownDisplayChangeEvent("#drop_topmenu");
+    filterDisp.off("pivot_conf");
+    $.unblockUI(blockUI_opt_all);
+  }, 500);
 };
 
 var packageTable = $("#table-package").DataTable();
@@ -365,7 +372,7 @@ var setEvents = function () {
 
   $(".submitSelectfile").click(function () {
     $('#drawerLeft').drawer('hide');
-    setTimeout(initPivotTable, 500);
+    setTimeout(initData, 500);
   });
 
   $("#btnSelectAll").click(function () {
