@@ -773,7 +773,7 @@ var displayPivot = function (array) {
         opacity: 0.2,
         closeButton: false,
         onComplete: function () {
-          createDetailChangelog(this)
+          displayChangelogDetail(this)
         }
       });
     }
@@ -937,10 +937,10 @@ var displayDetail = function (th) {
   packageTable.destroy();
   packageTable = $("#table-package")
     .DataTable({
+      data: pkgData,
       retrieve: true,
       scrollX: true,
       autoWidth: true,
-      data: pkgData,
       columns: [{
         data: "ScanTime"
       }, {
@@ -960,6 +960,8 @@ var displayDetail = function (th) {
       }]
     });
 
+  //packageTable.fixedHeader.adjust();
+
   // ---package changelog event
   $('.lightbox').colorbox({
     inline: true,
@@ -969,7 +971,7 @@ var displayDetail = function (th) {
     opacity: 0.2,
     closeButton: false,
     onComplete: function () {
-      createDetailChangelog(this)
+      displayChangelogDetail(this)
     }
   });
 
@@ -1021,79 +1023,105 @@ var checkLink = function (url, find, imgId) {
 var createDetailPackageData = function (cveID) {
   var array = [];
   $.each(vulsrepo.detailRawData, function (x, x_val) {
-    array = createMapPackageData(cveID, array, x_val.data.KnownCves, x_val);
-    array = createMapPackageData(cveID, array, x_val.data.UnknownCves, x_val);
+    $.each(x_val.data.ScannedCves, function (y, y_val) {
+      if (cveID === y_val.CveID) {
+        if (isCheckNull(y_val.CpeNames) === false) {
+          targets = y_val.CpeNames;
+        } else {
+          targets = y_val.Packages;
+        }
+
+        $.each(targets, function (z, z_val) {
+          let tmp_Map = {
+            ScanTime: x_val.scanTime,
+            ServerName: x_val.data.ServerName,
+            ContainerName: x_val.data.Container.Name,
+          };
+
+          if (z_val.Name !== undefined) {
+            tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val.Name + '">' + z_val.Name + '</a>';
+            tmp_Map["PackageVersion"] = z_val.Version;
+            tmp_Map["PackageRelease"] = z_val.Release;
+            tmp_Map["PackageNewVersion"] = z_val.NewVersion;
+            tmp_Map["PackageNewRelease"] = z_val.NewRelease;
+
+          } else {
+            tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
+            tmp_Map["PackageVersion"] = "";
+            tmp_Map["PackageRelease"] = "";
+            tmp_Map["PackageNewVersion"] = "";
+            tmp_Map["PackageNewRelease"] = "";
+          }
+          array.push(tmp_Map);
+        });
+
+      }
+
+    });
+
   });
   return array;
 };
 
-var createMapPackageData = function (cveID, array, cves, x_val) {
-  $.each(cves, function (y, y_val) {
-    if (cveID === y_val.CveDetail.CveID) {
-      $.each(y_val.Packages, function (z, z_val) {
-        var tmp_Map = {
-          ScanTime: x_val.scanTime,
-          ServerName: x_val.data.ServerName,
-          ContainerName: x_val.data.Container.Name,
-          PackageVersion: z_val.Version,
-          PackageRelease: z_val.Release,
-          PackageNewVersion: z_val.NewVersion,
-          PackageNewRelease: z_val.NewRelease
-        };
-        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val.Name + '">' + z_val.Name + '</a>';
-        array.push(tmp_Map);
-      });
-    }
-  });
-  return array
-}
+var displayChangelogDetail = function (ankerData) {
+  let scantime = $(ankerData).attr('data-scantime');
+  let server = $(ankerData).attr('data-server');
+  let container = $(ankerData).attr('data-container');
+  let cveid = $(ankerData).attr('data-cveid');
+  let package = $(ankerData).attr('data-package');
+  let changelogInfo = getChangeLogInfo(scantime, server, container, cveid, package);
 
-var createDetailChangelog = function (ankerData) {
-  var cveid = $(ankerData).attr('data-cveid');
-  var scantime = $(ankerData).attr('data-scantime');
-  var server = $(ankerData).attr('data-server');
-  var container = $(ankerData).attr('data-container');
-  var package = $(ankerData).attr('data-package');
-  var changelog = getChangeLog(scantime, server, container, package);
-
-  $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-contents").empty();
+  $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-score, #changelog-contents").empty();
   $("#changelog-cveid").append(cveid);
   $("#changelog-servername").append(server);
   $("#changelog-containername").append(container);
-  $("#changelog-packagename").append(package);
+  $("#changelog-method").append(changelogInfo.cveidInfo.Confidence.DetectionMethod);
+  $("#changelog-score").append(changelogInfo.cveidInfo.Confidence.Score);
 
-  if (changelog === undefined) {
-    $("#changelog-method").append("CpeNameMatch");
-    $("#changelog-contents").append("NO DATA");
-  } else if (changelog.Method === "") {
-    $("#changelog-method").append("NO DATA");
+  if (isCheckNull(changelogInfo.cveidInfo.Packages) === true) {
+    $("#changelog-packagename").append(package);
+  } else {
+    $.each(changelogInfo.cveidInfo.Packages, function (x, x_val) {
+      if (x_val.Name === package) {
+        $("#changelog-packagename").append(package + "-" + x_val.Version + "." + x_val.Release + " => " + x_val.NewVersion + "." + x_val.NewRelease);
+      }
+    });
+  }
+
+  if (changelogInfo.changelogContents === "") {
     $("#changelog-contents").append("NO DATA");
   } else {
-    $("#changelog-method").append(changelog.Method);
-    $("#changelog-contents").append(highlightCveID(changeNR(changelog.Contents), cveid));
+    $("#changelog-contents").append(highlightCveID(changeNR(changelogInfo.changelogContents), cveid));
   }
 }
 
-var getChangeLog = function (scantime, server, container, package) {
-  var changelog;
+var getChangeLogInfo = function (scantime, server, container, cveid, package) {
+  let cveidInfo;
+  let changelogContents = "";
   $.each(vulsrepo.detailRawData, function (x, x_val) {
     if ((x_val.scanTime === scantime) && (x_val.data.ServerName === server) && (x_val.data.Container.Name === container)) {
-      $.each(x_val.data.Packages, function (y, y_val) {
-        if (y_val.Name === package) {
-          changelog = y_val.Changelog;
+      $.each(x_val.data.ScannedCves, function (y, y_val) {
+        if (y_val.CveID === cveid) {
+          cveidInfo = y_val;
+        }
+      });
+
+      $.each(x_val.data.Packages, function (z, z_val) {
+        if (z_val.Name === package) {
+          changelogContents = z_val.Changelog.Contents;
         }
       });
     }
   });
-  return changelog;
+  return { "cveidInfo": cveidInfo, "changelogContents": changelogContents };
 };
 
-var changeNR = function (changelog) {
-  return changelog.replace(/\n/g, "<br>");
+var changeNR = function (changelogContents) {
+  return changelogContents.replace(/\n/g, "<br>");
 }
 
-var highlightCveID = function (changelog, cveid) {
-  var regExp = new RegExp(cveid, "g");
-  return changelog.replace(regExp, '<span class="highlight-cveid">' + cveid + '</span>');
+var highlightCveID = function (changelogContents, cveid) {
+  let regExp = new RegExp(cveid, "g");
+  return changelogContents.replace(regExp, '<span class="highlight-cveid">' + cveid + '</span>');
 }
 
