@@ -38,7 +38,7 @@ sub scan_dir {
         chdir "../";
       };
     }
-    elsif (( $path =~ /.json$/ ) && ( $path !~ /^all.json$/ )) {
+    elsif (( $path =~ /.json$|.json.gz$/) && ( $path !~ /^all.json$/ )) {
          my $tmp_children ={};
          my $tmp_url = Cwd::getcwd() . "/" . $path;
          $tmp_url =~ s/$basePath//g;
