@@ -830,6 +830,7 @@ var initDetail = function () {
   $("#cvss_av_jvn,#cvss_ac_jvn,#cvss_au_jvn,#cvss_c_jvn,#cvss_i_jvn,#cvss_a_jvn").removeClass().text("");
   $("#cvss_av_nvd,#cvss_ac_nvd,#cvss_au_nvd,#cvss_c_nvd,#cvss_i_nvd,#cvss_a_nvd").removeClass().text("");
   $("#detailTitle_jvn,#detailTitle_nvd,#Summary_jvn,#Summary_nvd,#CweID,#Link,#References").empty();
+  $("#count-References").text("0");
 };
 
 
@@ -920,17 +921,20 @@ var displayDetail = function (th) {
   addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
 
   // ---References---
+  let countRef = 0;
   if (isCheckNull(data.Jvn.References) === false) {
     $.each(data.Jvn.References, function (x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
+      countRef++;
     });
   }
   if (isCheckNull(data.Nvd.References) === false) {
     $.each(data.Nvd.References, function (x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
+      countRef++;
     });
   }
-
+  $("#count-References").text(countRef);
 
   // ---Tab Package
   var pkgData = createDetailPackageData(th);
