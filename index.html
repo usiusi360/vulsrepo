@@ -274,7 +274,7 @@
 												<div class="panel panel-primary">
 													<div class="panel-heading">
 														<h4 class="panel-title accordion-toggle">
-															<a id="title-References" data-toggle="collapse" data-parent="#panel-References" href="#collapse-References">References</a>
+															<a id="title-References" data-toggle="collapse" data-parent="#panel-References" href="#collapse-References">References<span id="count-References" class="badge">0</span></a>
 														</h4>
 													</div>
 													<div id="collapse-References" class="panel-collapse collapse">
@@ -431,11 +431,13 @@
 				<table class="table table-condensed table-bordered table-package">
 					<tr class="info">
 						<th>CveID</th>
-						<th>DetectionMethod</th>
+						<th>Confidence-DetectionMethod</th>
+						<th>Confidence-Score</th>
 					</tr>
 					<tr>
 						<td id="changelog-cveid"></td>
 						<td id="changelog-method"></td>
+						<td id="changelog-score"></td>
 					</tr>
 				</table>
 			</div>
@@ -497,6 +499,7 @@
 <script type="text/javascript" src="plugins/colorbox/jquery.colorbox-min.js"></script>
 <!-- main -->
 <script src="dist/js/vulsrepo_param.js" type="text/javascript"></script>
+<script src="dist/js/vulsrepo_common.js" type="text/javascript"></script>
 <script src="dist/js/vulsrepo.js" type="text/javascript"></script>
 
 </html>

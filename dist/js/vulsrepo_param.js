@@ -49,6 +49,16 @@ var vulsrepo = {
             url: "https://people.canonical.com/~ubuntu-security/cve/",
             disp: "Ubuntu",
             find: "DO NOT USE THIS CANDIDATE NUMBER"
+        },
+        amazon: {
+            url: "https://alas.aws.amazon.com/",
+            disp: "Amazon",
+            find: "AccessDenied"
+        },
+        RHN: {
+            url: "https://rhn.redhat.com/errata/",
+            disp: "RedHat Network",
+            find: "Erratum not found"
         }
     }
 };
