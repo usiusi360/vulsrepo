@@ -970,7 +970,9 @@ var getChangeLogInfo = function (scantime, server, container, cveid, package) {
 };
 
 var changeNR = function (changelogContents) {
-  return changelogContents.replace(/\n/g, "<br>");
+  return _.escape(changelogContents)
+    .replace(/\n/g, "<br>")
+    .replace(/(\s)/g, "&nbsp;");
 }
 
 var highlightCveID = function (changelogContents, cveid) {
