@@ -10,13 +10,13 @@ $(document).ready(function () {
 });
 
 var initData = function () {
-  $.blockUI(blockUI_opt_all);
+  $.blockUI(blockUIoption);
   getData().done(function (resultArray) {
     vulsrepo.detailRawData = resultArray;
     vulsrepo.detailPivotData = createPivotData(resultArray);
     initPivotTable();
   }).fail(function (result) {
-    $.unblockUI(blockUI_opt_all);
+    $.unblockUI(blockUIoption);
     if (result === "notSelect") {
       showAlert("Not Selected", "File is not selected.");
     } else {
@@ -26,13 +26,13 @@ var initData = function () {
 };
 
 var initPivotTable = function () {
-  $.blockUI(blockUI_opt_all);
+  $.blockUI(blockUIoption);
   setTimeout(function () {
     displayPivot(vulsrepo.detailPivotData);
     setPulldown("#drop_topmenu");
     setPulldownDisplayChangeEvent("#drop_topmenu");
     filterDisp.off("pivot_conf");
-    $.unblockUI(blockUI_opt_all);
+    $.unblockUI(blockUIoption);
   }, 500);
 };
 
@@ -90,7 +90,7 @@ var showAlert = function (code, text) {
   $("#modal-alert").modal('show');
 };
 
-var blockUI_opt_all = {
+var blockUIoption = {
   message: '<h4><img src="./dist/img/loading.gif" />　Please Wait...</h4>',
   fadeIn: 200,
   fadeOut: 200,
