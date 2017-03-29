@@ -765,17 +765,7 @@ var displayPivot = function (array) {
       $("#pivot_base").find(".pvtRowLabel:contains('healthy')").css("background-color", "lightskyblue");
       $("#pivot_base").find(".pvtColLabel:contains('healthy')").css("background-color", "lightskyblue");
 
-      $('.lightbox').colorbox({
-        inline: true,
-        href: "#changelog-content",
-        speed: 100,
-        fadeOut: 100,
-        opacity: 0.2,
-        closeButton: false,
-        onComplete: function () {
-          displayChangelogDetail(this)
-        }
-      });
+      addEventDisplayChangelog();
     }
 
   };
@@ -967,6 +957,13 @@ var displayDetail = function (th) {
   //packageTable.fixedHeader.adjust();
 
   // ---package changelog event
+  addEventDisplayChangelog();
+
+  $("#modal-detail").modal('show');
+
+};
+
+var addEventDisplayChangelog = function () {
   $('.lightbox').colorbox({
     inline: true,
     href: "#changelog-content",
@@ -978,11 +975,7 @@ var displayDetail = function (th) {
       displayChangelogDetail(this)
     }
   });
-
-  $("#modal-detail").modal('show');
-
-};
-
+}
 
 var addLink = function (target, url, disp, find, imgIdTarget) {
   $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
