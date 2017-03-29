@@ -624,13 +624,13 @@ var createDetailData = function (cveID) {
   $.each(vulsrepo.detailRawData, function (x, x_val) {
     $.each(x_val.data.KnownCves, function (y, y_val) {
       if (cveID === y_val.CveDetail.CveID) {
-        targetObj = y_val.CveDetail;
+        targetObj = y_val;
       }
     });
 
     $.each(x_val.data.UnknownCves, function (y, y_val) {
       if (cveID === y_val.CveDetail.CveID) {
-        targetObj = y_val.CveDetail;
+        targetObj = y_val;
       }
     });
   });
@@ -650,7 +650,7 @@ var initDetail = function () {
 };
 
 
-var displayDetail = function (th) {
+var displayDetail = function (cveID) {
   initDetail();
 
   if (db.get("vulsrepo_detailLastTab") === "nvd") {
@@ -659,25 +659,25 @@ var displayDetail = function (th) {
     $('a[href="#tab_jvn"]').tab('show');
   }
 
-  var data = createDetailData(th);
+  var data = createDetailData(cveID);
 
   // ---Tab main
   $("#modal-label").text(data.CveID);
 
   // ---Tab JVN---
-  if (data.Jvn.Summary !== "") {
-    $("#publishedDateJvn").text(data.Jvn.PublishedDate.split("T")[0]);
-    $("#lastModifiedDateJvn").text(data.Jvn.LastModifiedDate.split("T")[0]);
+  if (data.CveDetail.Jvn.Summary !== "") {
+    $("#publishedDateJvn").text(data.CveDetail.Jvn.PublishedDate.split("T")[0]);
+    $("#lastModifiedDateJvn").text(data.CveDetail.Jvn.LastModifiedDate.split("T")[0]);
 
-    var arrayVector = getSplitArray(data.Jvn.Vector);
-    $("#scoreText_jvn").text(data.Jvn.Score + " (" + data.Jvn.Severity + ")").css('background-color', getSeverity(data.Jvn.Score)[1]);
+    var arrayVector = getSplitArray(data.CveDetail.Jvn.Vector);
+    $("#scoreText_jvn").text(data.CveDetail.Jvn.Score + " (" + data.CveDetail.Jvn.Severity + ")").css('background-color', getSeverity(data.CveDetail.Jvn.Score)[1]);
     $("#cvss_av_jvn").text(getVector.jvn(arrayVector[0])[0]).addClass(getVector.jvn(arrayVector[0])[1]);
     $("#cvss_ac_jvn").text(getVector.jvn(arrayVector[1])[0]).addClass(getVector.jvn(arrayVector[1])[1]);
     $("#cvss_au_jvn").text(getVector.jvn(arrayVector[2])[0]).addClass(getVector.jvn(arrayVector[2])[1]);
     $("#cvss_c_jvn").text(getVector.jvn(arrayVector[3])[0]).addClass(getVector.jvn(arrayVector[3])[1]);
     $("#cvss_i_jvn").text(getVector.jvn(arrayVector[4])[0]).addClass(getVector.jvn(arrayVector[4])[1]);
     $("#cvss_a_jvn").text(getVector.jvn(arrayVector[5])[0]).addClass(getVector.jvn(arrayVector[5])[1]);
-    $("#Summary_jvn").append("<div>" + data.Jvn.Summary + "<div>");
+    $("#Summary_jvn").append("<div>" + data.CveDetail.Jvn.Summary + "<div>");
 
   } else {
     $("#scoreText_jvn").text("NO DATA");
@@ -685,18 +685,18 @@ var displayDetail = function (th) {
   }
 
   // ---Tab NVD---
-  if (data.Nvd.Summary !== "") {
-    $("#publishedDateNvd").text(data.Nvd.PublishedDate.split("T")[0]);
-    $("#lastModifiedDateNvd").text(data.Nvd.LastModifiedDate.split("T")[0]);
+  if (data.CveDetail.Nvd.Summary !== "") {
+    $("#publishedDateNvd").text(data.CveDetail.Nvd.PublishedDate.split("T")[0]);
+    $("#lastModifiedDateNvd").text(data.CveDetail.Nvd.LastModifiedDate.split("T")[0]);
 
-    $("#scoreText_nvd").text(data.Nvd.Score + " (" + getSeverity(data.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.Nvd.Score)[1]);
-    $("#cvss_av_nvd").text(data.Nvd.AccessVector).addClass(getVector.nvd("AV", data.Nvd.AccessVector));
-    $("#cvss_ac_nvd").text(data.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.Nvd.AccessComplexity));
-    $("#cvss_au_nvd").text(data.Nvd.Authentication).addClass(getVector.nvd("Au", data.Nvd.Authentication));
-    $("#cvss_c_nvd").text(data.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.Nvd.ConfidentialityImpact));
-    $("#cvss_i_nvd").text(data.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.Nvd.IntegrityImpact));
-    $("#cvss_a_nvd").text(data.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.Nvd.AvailabilityImpact));
-    $("#Summary_nvd").append("<div>" + data.Nvd.Summary + "<div>");
+    $("#scoreText_nvd").text(data.CveDetail.Nvd.Score + " (" + getSeverity(data.CveDetail.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.CveDetail.Nvd.Score)[1]);
+    $("#cvss_av_nvd").text(data.CveDetail.Nvd.AccessVector).addClass(getVector.nvd("AV", data.CveDetail.Nvd.AccessVector));
+    $("#cvss_ac_nvd").text(data.CveDetail.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.CveDetail.Nvd.AccessComplexity));
+    $("#cvss_au_nvd").text(data.CveDetail.Nvd.Authentication).addClass(getVector.nvd("Au", data.CveDetail.Nvd.Authentication));
+    $("#cvss_c_nvd").text(data.CveDetail.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.CveDetail.Nvd.ConfidentialityImpact));
+    $("#cvss_i_nvd").text(data.CveDetail.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.CveDetail.Nvd.IntegrityImpact));
+    $("#cvss_a_nvd").text(data.CveDetail.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.CveDetail.Nvd.AvailabilityImpact));
+    $("#Summary_nvd").append("<div>" + data.CveDetail.Nvd.Summary + "<div>");
 
   } else {
     $("#scoreText_nvd").text("NO DATA");
@@ -704,13 +704,13 @@ var displayDetail = function (th) {
   }
 
   // ---Link---
-  if (data.Nvd.CweID === "" || data.Nvd.CweID === undefined) {
+  if (data.CveDetail.Nvd.CweID === "" || data.CveDetail.Nvd.CweID === undefined) {
     $("#CweID").append("<span>NO DATA</span>");
   } else {
-    $("#CweID").append("<span>[" + data.Nvd.CweID + "] </span>");
-    $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.Nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+    $("#CweID").append("<span>[" + data.CveDetail.Nvd.CweID + "] </span>");
+    $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.CveDetail.Nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
     $("#CweID").append("<span> / </span>");
-    $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
+    $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.CveDetail.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
   }
 
   addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
@@ -718,14 +718,14 @@ var displayDetail = function (th) {
   addLink("#Link", vulsrepo.link.nvd.url + "?vulnId=" + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
 
   var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-  if (data.Jvn.JvnLink === "") {
+  if (data.CveDetail.Jvn.JvnLink === "") {
     $("#Link").append("<a href=\"" + vulsrepo.link.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
     if (chkAheadUrl === "true") {
       $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/error.svg\"></img>");
     }
 
   } else {
-    $("#Link").append("<a href=\"" + data.Jvn.JvnLink + "\" target='_blank'>JVN</a>");
+    $("#Link").append("<a href=\"" + data.CveDetail.Jvn.JvnLink + "\" target='_blank'>JVN</a>");
     if (chkAheadUrl === "true") {
       $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/ok.svg\"></img>");
     }
@@ -735,17 +735,20 @@ var displayDetail = function (th) {
   addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
   addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
   addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
+  $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function (i, i_val) {
+    addLink("#Link", i_val.url, i_val.disp, i_val.find, i_val.imgID);
+  });
 
   // ---References---
   let countRef = 0;
-  if (isCheckNull(data.Jvn.References) === false) {
-    $.each(data.Jvn.References, function (x, x_val) {
+  if (isCheckNull(data.CveDetail.Jvn.References) === false) {
+    $.each(data.CveDetail.Jvn.References, function (x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
       countRef++;
     });
   }
-  if (isCheckNull(data.Nvd.References) === false) {
-    $.each(data.Nvd.References, function (x, x_val) {
+  if (isCheckNull(data.CveDetail.Nvd.References) === false) {
+    $.each(data.CveDetail.Nvd.References, function (x, x_val) {
       $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
       countRef++;
     });
@@ -753,7 +756,7 @@ var displayDetail = function (th) {
   $("#count-References").text(countRef);
 
   // ---Tab Package
-  var pkgData = createDetailPackageData(th);
+  var pkgData = createDetailPackageData(cveID);
   packageTable.destroy();
   packageTable = $("#table-package")
     .DataTable({
@@ -787,6 +790,33 @@ var displayDetail = function (th) {
 
   $("#modal-detail").modal('show');
 
+};
+
+var getDistroAdvisoriesArray = function (DistroAdvisoriesData) {
+  let distroAdvisoriesArray = [];
+  $.each(DistroAdvisoriesData, function (x, x_val) {
+    let tmp_Map = {};
+    if (x_val.AdvisoryID.indexOf("ALAS-") != -1) {
+      tmp_Map = {
+        url: vulsrepo.link.amazon.url + x_val.AdvisoryID + ".html",
+        disp: vulsrepo.link.amazon.disp,
+        find: vulsrepo.link.amazon.find,
+        imgID: "amazon"
+      }
+    } else if (x_val.AdvisoryID.indexOf("RHSA-") != -1) {
+      tmp_Map = {
+        url: vulsrepo.link.RHN.url + x_val.AdvisoryID + ".html",
+        disp: vulsrepo.link.RHN.disp,
+        find: vulsrepo.link.RHN.find,
+        imgID: "rhn"
+      }
+    } else {
+      // For cases where other distros are increased
+      console.log("");
+    }
+    distroAdvisoriesArray.push(tmp_Map);
+  });
+  return distroAdvisoriesArray;
 };
 
 var addEventDisplayChangelog = function () {
