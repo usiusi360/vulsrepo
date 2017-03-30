@@ -55,7 +55,7 @@ var vulsrepo = {
             disp: "Amazon",
             find: "AccessDenied"
         },
-        RHN: {
+        rhn: {
             url: "https://rhn.redhat.com/errata/",
             disp: "RedHat Network",
             find: "Erratum not found"

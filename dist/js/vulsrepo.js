@@ -805,9 +805,9 @@ var getDistroAdvisoriesArray = function (DistroAdvisoriesData) {
       }
     } else if (x_val.AdvisoryID.indexOf("RHSA-") != -1) {
       tmp_Map = {
-        url: vulsrepo.link.RHN.url + x_val.AdvisoryID + ".html",
-        disp: vulsrepo.link.RHN.disp,
-        find: vulsrepo.link.RHN.find,
+        url: vulsrepo.link.rhn.url + x_val.AdvisoryID + ".html",
+        disp: vulsrepo.link.rhn.disp,
+        find: vulsrepo.link.rhn.find,
         imgID: "rhn"
       }
     } else {
