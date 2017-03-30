@@ -714,8 +714,9 @@ var displayDetail = function (cveID) {
   }
 
   addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
-  addLink("#Link", vulsrepo.link.cve.url + data.CveID, vulsrepo.link.cve.disp, vulsrepo.link.cve.find, "cve");
-  addLink("#Link", vulsrepo.link.nvd.url + "?vulnId=" + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
+  addLink("#Link", vulsrepo.link.cveDetail.url + data.CveID, vulsrepo.link.cveDetail.disp, vulsrepo.link.cveDetail.find, "cveDetail");
+  addLink("#Link", vulsrepo.link.cvssV2Calculator.url + data.CveID, vulsrepo.link.cvssV2Calculator.disp, vulsrepo.link.cvssV2Calculator.find, "cvssV2Calculator");
+  addLink("#Link", vulsrepo.link.nvd.url + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
 
   var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
   if (data.CveDetail.Jvn.JvnLink === "") {
@@ -845,6 +846,11 @@ var addLink = function (target, url, disp, find, imgIdTarget) {
 };
 
 var checkLink = function (url, find, imgId) {
+  if ((imgId === '#imgId_cvssV2Calculator') | (imgId === '#imgId_nvd')) {
+    $(imgId).remove();
+    return
+  }
+
   $.ajaxSetup({
     timeout: 30 * 1000
   });
@@ -857,6 +863,8 @@ var checkLink = function (url, find, imgId) {
   }).always(function (data, textStatus, jqXHR) {
     // console.log("always:" + imgId);
     // console.log(data);
+    // console.log(textStatus);
+    // console.log(jqXHR);
 
     var result_text = data.results[0];
     if (result_text !== undefined) {

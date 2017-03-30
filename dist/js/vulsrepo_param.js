@@ -15,13 +15,13 @@ var vulsrepo = {
             disp: "MITRE",
             find: "RESERVED"
         },
-        cve: {
+        cveDetail: {
             url: "http://www.cvedetails.com/cve/",
             disp: "CveDetails",
             find: "Unknown CVE ID"
         },
         nvd: {
-            url: "https://web.nvd.nist.gov/view/vuln/detail",
+            url: "https://nvd.nist.gov/vuln/detail/",
             disp: "NVD",
             find: "CVE ID Not Found"
         },
@@ -30,8 +30,8 @@ var vulsrepo = {
             disp: "JVN",
             find: "Not found"
         },
-        cvss: {
-            url: "https://nvd.nist.gov/cvss/v2-calculator",
+        cvssV2Calculator: {
+            url: "https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?name=",
             disp: "CVSSv2 Caluclator",
             find: "Warning: Unable to find vulnerability requested."
         },
