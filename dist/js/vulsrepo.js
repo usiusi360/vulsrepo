@@ -378,7 +378,7 @@ var createPivotData = function(resultArray) {
                     "ServerName": x_val.data.ServerName,
                     "Family": x_val.data.Family,
                     "Release": x_val.data.Release,
-                    "CveID": '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+                    "CveID": y_val.CveDetail.CveID,
                 };
 
                 if (y_val.Confidence !== undefined) {
@@ -439,12 +439,6 @@ var createPivotData = function(resultArray) {
                     KnownObj["CVSS (A)"] = y_val.CveDetail.Nvd.AvailabilityImpact;
                 }
 
-                if (p_val.Name !== undefined) {
-                    KnownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val.Name + '">Changelog</a>';
-                } else {
-                    KnownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val + '">Changelog</a>';
-                }
-
                 array.push(KnownObj);
 
             });
@@ -466,7 +460,7 @@ var createPivotData = function(resultArray) {
                     "ServerName": x_val.data.ServerName,
                     "Family": x_val.data.Family,
                     "Release": x_val.data.Release,
-                    "CveID": '<a class="cveid">' + y_val.CveDetail.CveID + '</a>',
+                    "CveID": y_val.CveDetail.CveID,
                     "CweID": "Unknown",
                     "CVSS Score": "Unknown",
                     "CVSS Severity": "Unknown",
@@ -503,12 +497,6 @@ var createPivotData = function(resultArray) {
                     UnknownObj["Container"] = x_val.data.Container.Name;
                 } else {
                     UnknownObj["Container"] = "None";
-                }
-
-                if (p_val.Name !== undefined) {
-                    UnknownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val.Name + '">Changelog</a>';
-                } else {
-                    UnknownObj["Changelog"] = '<a href="#contents" class="lightbox" data-cveid="' + y_val.CveDetail.CveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + p_val + '">Changelog</a>';
                 }
 
                 array.push(UnknownObj);
@@ -558,7 +546,7 @@ var createPivotData = function(resultArray) {
 var displayPivot = function(array) {
 
     var derivers = $.pivotUtilities.derivers;
-    // var renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
+    //var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
     var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
     var dateFormat = $.pivotUtilities.derivers.dateFormat;
     var sortAs = $.pivotUtilities.sortAs;
@@ -584,13 +572,9 @@ var displayPivot = function(array) {
         },
         onRefresh: function(config) {
             db.set("vulsrepo_pivot_conf_tmp", config);
-            $('.cveid').on('click', function() {
-                displayDetail(this.text);
-            });
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
-            $("#pivot_base").find(".pvtRowLabel:contains('healthy')").css("background-color", "lightskyblue");
-            $("#pivot_base").find(".pvtColLabel:contains('healthy')").css("background-color", "lightskyblue");
-
+            $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
+            addCveIDLink();
             addEventDisplayChangelog();
         }
 
@@ -617,6 +601,18 @@ var displayPivot = function(array) {
         overwrite: "true"
     });
 
+};
+
+var addCveIDLink = function() {
+    let doms = $("#pivot_base").find("th:contains('CVE-')");
+    doms.each(function() {
+        let cveid = $(this).text();
+        $(this).text("").append('<a class="cveid">' + cveid + '<a>');
+    });
+
+    $('.cveid').on('click', function() {
+        displayDetail(this.text);
+    });
 };
 
 var createDetailData = function(cveID) {
