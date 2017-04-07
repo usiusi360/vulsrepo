@@ -843,7 +843,7 @@ var addLink = function(target, url, disp, find, imgIdTarget) {
 };
 
 var checkLink = function(url, find, imgId) {
-    if ((imgId === '#imgId_cvssV2Calculator') | (imgId === '#imgId_nvd')) {
+    if ((imgId === '#imgId_cvssV2Calculator') | (imgId === '#imgId_cvssV3Calculator') | (imgId === '#imgId_nvd')) {
         $(imgId).remove();
         return
     }
