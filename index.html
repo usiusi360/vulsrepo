@@ -1,469 +1,468 @@
 <!doctype html>
 
 <head>
-	<meta charset="utf-8">
-	<title>VulsRepo</title>
+    <meta charset="utf-8">
+    <title>VulsRepo</title>
 
-	<!-- jqueryUI -->
-	<link href="plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />
-	<!-- bootstrap -->
-	<link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<!-- bootstrapSwitch -->
-	<link href="plugins/bootstrapSwitch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-	<!-- font awesome -->
-	<link href="plugins/Font-Awesome/css/font-awesome.min.css" rel="stylesheet">
-	<!-- c3.js -->
-	<link href="plugins/c3.js/c3.min.css" rel="stylesheet" type="text/css" />
-	<!-- pivot.js -->
-	<link href="plugins/pivot.js/pivot.min.css" rel="stylesheet" type="text/css" />
-	<!-- dynatree.js -->
-	<link href="plugins/dynatree.js/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css" />
-	<!-- bootstrap-drawer -->
-	<link href="plugins/bootstrap-drawer/css/bootstrap-drawer.min.css" rel="stylesheet" type="text/css" />
-	<!-- bootstrap-vertical-tabs -->
-	<link href="plugins/bootstrap-vertical-tabs/bootstrap.vertical-tabs.min.css" rel="stylesheet" type="text/css" />
-	<!-- datatables.js -->
-	<link href="plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-	<!-- colorbox.js -->
-	<link href="plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css" />
-	<!-- main.js -->
-	<link href="dist/css/index.css" rel="stylesheet" type="text/css" />
+    <!-- jqueryUI -->
+    <link href="plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap -->
+    <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrapSwitch -->
+    <link href="plugins/bootstrapSwitch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- font awesome -->
+    <link href="plugins/Font-Awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- c3.js -->
+    <link href="plugins/c3.js/c3.min.css" rel="stylesheet" type="text/css" />
+    <!-- pivot.js -->
+    <link href="plugins/pivot.js/pivot.min.css" rel="stylesheet" type="text/css" />
+    <!-- dynatree.js -->
+    <link href="plugins/dynatree.js/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap-drawer -->
+    <link href="plugins/bootstrap-drawer/css/bootstrap-drawer.min.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap-vertical-tabs -->
+    <link href="plugins/bootstrap-vertical-tabs/bootstrap.vertical-tabs.min.css" rel="stylesheet" type="text/css" />
+    <!-- datatables.js -->
+    <link href="plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+    <!-- colorbox.js -->
+    <link href="plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css" />
+    <!-- main.js -->
+    <link href="dist/css/index.css" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body class="has-drawer">
 
-	<div id="drawerLeft" class="drawer dw-xs-6 dw-sm-4 dw-md-2 fold" aria-labelledby="drawerLeft">
-		<div class="drawer-controls">
-			<a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded"
-				aria-expanded="false"><i class="fa fa-align-justify"></i></a>
-		</div>
-		<div class="drawer-contents">
-			<div class="drawer-heading">
-				<h3 class="drawer-title">Select File</h3>
-			</div>
-			<div class="drawer-body">
-				<div>
-					<button type="submit" class="btn btn-primary my-button submitSelectfile">
+    <div id="drawerLeft" class="drawer dw-xs-6 dw-sm-4 dw-md-2 fold" aria-labelledby="drawerLeft">
+        <div class="drawer-controls">
+            <a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded" aria-expanded="false"><i class="fa fa-align-justify"></i></a>
+        </div>
+        <div class="drawer-contents">
+            <div class="drawer-heading">
+                <h3 class="drawer-title">Select File</h3>
+            </div>
+            <div class="drawer-body">
+                <div>
+                    <button type="submit" class="btn btn-primary my-button submitSelectfile">
 						Submit
 					</button>
-				</div>
-				<div>
-					<p>
-						<a href="#" id="btnSelectAll">Select all</a> - <a href="#" id="btnDeselectAll">Deselect all</a>
-					</p>
-				</div>
-				<div id="folderTree"></div>
-				<div>
-					<button type="submit" class="btn btn-primary my-button submitSelectfile">
+                </div>
+                <div>
+                    <p>
+                        <a href="#" id="btnSelectAll">Select all</a> - <a href="#" id="btnDeselectAll">Deselect all</a>
+                    </p>
+                </div>
+                <div id="folderTree"></div>
+                <div>
+                    <button type="submit" class="btn btn-primary my-button submitSelectfile">
 						Submit
 					</button>
-				</div>
-			</div>
-			<div class="drawer-footer">
-				<small>VulsRepo ©2017 usiusi360</small>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <small>VulsRepo ©2017 usiusi360</small>
+            </div>
+        </div>
+    </div>
 
-	<nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse">
 
-		<div class="navbar-header">
-			<a id="toolName" class="navbar-brand">VulsRepo</a>
-		</div>
-		<div class="collapse navbar-collapse">
-			<button id="Setting" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-wrench pull-right"></button>
-		</div>
+        <div class="navbar-header">
+            <a id="toolName" class="navbar-brand">VulsRepo</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <button id="Setting" type="button" class="btn btn-default navbar-btn glyphicon glyphicon-wrench pull-right"></button>
+        </div>
 
-	</nav>
-	<div class="container-fluid">
-		<!-- <div id="nvd_help">
+    </nav>
+    <div class="container-fluid">
+        <!-- <div id="nvd_help">
 		<div class="glyphicon glyphicon-question-sign pull-right" title="test"></div>
 		</div> -->
 
-		<table>
-			<tr>
-				<td>
-					<div>
-						<div class="dropdown box">
-							<div class="btn-group btn-default my-input-pos">
-								<button type="button" class="btn btn-default">
+        <table>
+            <tr>
+                <td>
+                    <div>
+                        <div class="dropdown box">
+                            <div class="btn-group btn-default my-input-pos">
+                                <button type="button" class="btn btn-default">
 								<span id="drop_topmenu_visibleValue">Select setting</span>
 							</button>
-								<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
-								<ul class="dropdown-menu" role="menu" id="drop_topmenu"></ul>
-								<input type="hidden" id="drop_topmenu_hiddenValue" value="">
-							</div>
+                                <ul class="dropdown-menu" role="menu" id="drop_topmenu"></ul>
+                                <input type="hidden" id="drop_topmenu_hiddenValue" value="">
+                            </div>
 
-							<button type="submit" class="btn btn-primary  my-button" id="save_pivot_conf">
+                            <button type="submit" class="btn btn-primary  my-button" id="save_pivot_conf">
 							Save
 						</button>
-							<button type="submit" class="btn btn-default my-button" id="delete_pivot_conf">
+                            <button type="submit" class="btn btn-default my-button" id="delete_pivot_conf">
 							Delete
 						</button>
-							<button type="submit" class="btn btn-default my-button" id="clear_pivot_conf" style="margin-left: 15px;">
+                            <button type="submit" class="btn btn-default my-button" id="clear_pivot_conf" style="margin-left: 15px;">
 							Clear
 						</button>
-							<span class="label" id="label_pivot_conf"></span>
-							<span class="alert alert-success" id="alert_pivot_conf">Success</span>
-						</div>
-					</div>
-					<div id="pivot_base"></div>
-				</td>
+                            <span class="label" id="label_pivot_conf"></span>
+                            <span class="alert alert-success" id="alert_pivot_conf">Success</span>
+                        </div>
+                    </div>
+                    <div id="pivot_base"></div>
+                </td>
 
-			</tr>
-		</table>
-	</div>
+            </tr>
+        </table>
+    </div>
 
-	<div class="modal fade" id="modal-detail" tabindex="-1" aria-labelledby="myLargeModalLabel">
-		<div class="modal-dialog  modal-lg">
-			<div class="modal-content">
-				<div class="modal-header bg-info">
-					<button type="button" class="close" data-dismiss="modal">
+    <div class="modal fade" id="modal-detail" tabindex="-1" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="modal-label"></h4>
-				</div>
-				<div class="modal-body" style="padding-right: 0px;padding-left: 5px; padding-bottom: 0px;">
+                    <h4 class="modal-title" id="modal-label"></h4>
+                </div>
+                <div class="modal-body" style="padding-right: 0px;padding-left: 5px; padding-bottom: 0px;">
 
-					<!--<div class="panel panel-default">-->
-					<div class="panel">
-						<div class="panel-body" style="padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;">
+                    <!--<div class="panel panel-default">-->
+                    <div class="panel">
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;">
 
-							<div class="col-xs-1" style="padding-left: 0px; padding-right: 0px;	width: 50px;">
-								<ul class="nav nav-tabs tabs-left sideways">
-									<li class="active">
-										<a href="#main-r" data-toggle="tab">Main</a>
-									</li>
-									<li>
-										<a href="#package-r" data-toggle="tab">Package</a>
-									</li>
-								</ul>
-							</div>
+                            <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px;	width: 50px;">
+                                <ul class="nav nav-tabs tabs-left sideways">
+                                    <li class="active">
+                                        <a href="#main-r" data-toggle="tab">Main</a>
+                                    </li>
+                                    <li>
+                                        <a href="#package-r" data-toggle="tab">Package</a>
+                                    </li>
+                                </ul>
+                            </div>
 
-							<div class="col-xs-11" style="padding-left: 0px; padding-right: 0px;">
-								<div class="tab-content">
-									<div class="tab-pane active" id="main-r">
-										<div class="panel panel-info">
-											<div class="panel-body">
+                            <div class="col-xs-11" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="main-r">
+                                        <div class="panel panel-info">
+                                            <div class="panel-body">
 
 
-												<ul class="nav nav-tabs">
-													<li class="active">
-														<a href="#tab_jvn" data-toggle="tab">JVN</a>
-													</li>
-													<li>
-														<a href="#tab_nvd" data-toggle="tab">NVD</a>
-													</li>
-												</ul>
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active">
+                                                        <a href="#tab_jvn" data-toggle="tab">JVN</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#tab_nvd" data-toggle="tab">NVD</a>
+                                                    </li>
+                                                </ul>
 
-												<div class="tab-content">
-													<div class="tab-pane active" id="tab_jvn">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane active" id="tab_jvn">
 
-														<table class='dateDisplay'>
-															<tr>
-																<td class='dateDisplay_title'>Published Date :</td>
-																<td class='dateDisplay_date' id='publishedDateJvn'></td>
-																<td class='dateDisplay_title'>LastModified Date :</td>
-																<td class='dateDisplay_date' id='lastModifiedDateJvn'></td>
-															</tr>
-														</table>
+                                                        <table class='dateDisplay'>
+                                                            <tr>
+                                                                <td class='dateDisplay_title'>Published Date :</td>
+                                                                <td class='dateDisplay_date' id='publishedDateJvn'></td>
+                                                                <td class='dateDisplay_title'>LastModified Date :</td>
+                                                                <td class='dateDisplay_date' id='lastModifiedDateJvn'></td>
+                                                            </tr>
+                                                        </table>
 
-														<div id="detailTitle_jvn" class="detailTitle"></div>
-														<p class="bg-primary">
-															CVSS Score
-														</p>
-														<div class="detailScore">
-															<table class='detailScoreTable'>
-																<tr>
-																	<td id='scoreText_jvn'></td>
-																</tr>
-															</table>
-														</div>
+                                                        <div id="detailTitle_jvn" class="detailTitle"></div>
+                                                        <p class="bg-primary">
+                                                            CVSS Score
+                                                        </p>
+                                                        <div class="detailScore">
+                                                            <table class='detailScoreTable'>
+                                                                <tr>
+                                                                    <td id='scoreText_jvn'></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
 
-														<div>
-															<table class="table table-condensed table-bordered detailCvssTable">
-																<tr class="active">
-																	<th>Access Vector</th>
-																	<th>Access Complexity</th>
-																	<th>Authentication</th>
-																	<th>Confidentiality Impact</th>
-																	<th>Integrity Impact</th>
-																	<th>Availability Impact</th>
-																</tr>
-																<tr>
-																	<td id="cvss_av_jvn"></td>
-																	<td id="cvss_ac_jvn"></td>
-																	<td id="cvss_au_jvn"></td>
-																	<td id="cvss_c_jvn"></td>
-																	<td id="cvss_i_jvn"></td>
-																	<td id="cvss_a_jvn"></td>
-																</tr>
-															</table>
-														</div>
+                                                        <div>
+                                                            <table class="table table-condensed table-bordered detailCvssTable">
+                                                                <tr class="active">
+                                                                    <th>Access Vector</th>
+                                                                    <th>Access Complexity</th>
+                                                                    <th>Authentication</th>
+                                                                    <th>Confidentiality Impact</th>
+                                                                    <th>Integrity Impact</th>
+                                                                    <th>Availability Impact</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td id="cvss_av_jvn"></td>
+                                                                    <td id="cvss_ac_jvn"></td>
+                                                                    <td id="cvss_au_jvn"></td>
+                                                                    <td id="cvss_c_jvn"></td>
+                                                                    <td id="cvss_i_jvn"></td>
+                                                                    <td id="cvss_a_jvn"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
 
-														<p class="bg-primary">
-															Summary
-														</p>
-														<div id="Summary_jvn"></div>
-													</div>
+                                                        <p class="bg-primary">
+                                                            Summary
+                                                        </p>
+                                                        <div id="Summary_jvn"></div>
+                                                    </div>
 
-													<div class="tab-pane" id="tab_nvd">
-														<table class='dateDisplay'>
-															<tr>
-																<td class='dateDisplay_title'>Published Date :</td>
-																<td class='dateDisplay_date' id='publishedDateNvd'></td>
-																<td class='dateDisplay_title'>LastModified Date :</td>
-																<td class='dateDisplay_date' id='lastModifiedDateNvd'></td>
-															</tr>
-														</table>
+                                                    <div class="tab-pane" id="tab_nvd">
+                                                        <table class='dateDisplay'>
+                                                            <tr>
+                                                                <td class='dateDisplay_title'>Published Date :</td>
+                                                                <td class='dateDisplay_date' id='publishedDateNvd'></td>
+                                                                <td class='dateDisplay_title'>LastModified Date :</td>
+                                                                <td class='dateDisplay_date' id='lastModifiedDateNvd'></td>
+                                                            </tr>
+                                                        </table>
 
-														<div id="detailTitle_nvd" class="detailTitle"></div>
-														<p class="bg-primary">
-															CVSS Score
-														</p>
-														<div class="detailScore">
-															<table class='detailScoreTable'>
-																<tr>
-																	<td id='scoreText_nvd'></td>
-																</tr>
-															</table>
-														</div>
+                                                        <div id="detailTitle_nvd" class="detailTitle"></div>
+                                                        <p class="bg-primary">
+                                                            CVSS Score
+                                                        </p>
+                                                        <div class="detailScore">
+                                                            <table class='detailScoreTable'>
+                                                                <tr>
+                                                                    <td id='scoreText_nvd'></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
 
-														<div>
-															<table class="table table-condensed table-bordered detailCvssTable">
-																<tr class="active">
-																	<th>Access Vector</th>
-																	<th>Access Complexity</th>
-																	<th>Authentication</th>
-																	<th>Confidentiality Impact</th>
-																	<th>Integrity Impact</th>
-																	<th>Availability Impact</th>
-																</tr>
-																<tr>
-																	<td id="cvss_av_nvd"></td>
-																	<td id="cvss_ac_nvd"></td>
-																	<td id="cvss_au_nvd"></td>
-																	<td id="cvss_c_nvd"></td>
-																	<td id="cvss_i_nvd"></td>
-																	<td id="cvss_a_nvd"></td>
-																</tr>
-															</table>
-														</div>
+                                                        <div>
+                                                            <table class="table table-condensed table-bordered detailCvssTable">
+                                                                <tr class="active">
+                                                                    <th>Access Vector</th>
+                                                                    <th>Access Complexity</th>
+                                                                    <th>Authentication</th>
+                                                                    <th>Confidentiality Impact</th>
+                                                                    <th>Integrity Impact</th>
+                                                                    <th>Availability Impact</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td id="cvss_av_nvd"></td>
+                                                                    <td id="cvss_ac_nvd"></td>
+                                                                    <td id="cvss_au_nvd"></td>
+                                                                    <td id="cvss_c_nvd"></td>
+                                                                    <td id="cvss_i_nvd"></td>
+                                                                    <td id="cvss_a_nvd"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
 
-														<p class="bg-primary">
-															Summary
-														</p>
-														<div id="Summary_nvd"></div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<p class="bg-primary">
-											CweID
-										</p>
-										<div id="CweID"></div>
-										<p class="bg-primary">
-											Links
-										</p>
-										<div id="Link"></div>
-										<section>
-											<div class="panel-group" id="panel-References">
-												<div class="panel panel-primary">
-													<div class="panel-heading">
-														<h4 class="panel-title accordion-toggle">
-															<a id="title-References" data-toggle="collapse" data-parent="#panel-References" href="#collapse-References">References<span id="count-References" class="badge">0</span></a>
-														</h4>
-													</div>
-													<div id="collapse-References" class="panel-collapse collapse">
-														<div class="panel-body">
-															<div id="References"></div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</section>
-									</div>
+                                                        <p class="bg-primary">
+                                                            Summary
+                                                        </p>
+                                                        <div id="Summary_nvd"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="bg-primary">
+                                            CweID
+                                        </p>
+                                        <div id="CweID"></div>
+                                        <p class="bg-primary">
+                                            Links
+                                        </p>
+                                        <div id="Link"></div>
+                                        <section>
+                                            <div class="panel-group" id="panel-References">
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-heading">
+                                                        <h4 class="panel-title accordion-toggle">
+                                                            <a id="title-References" data-toggle="collapse" data-parent="#panel-References" href="#collapse-References">References<span id="count-References" class="badge">0</span></a>
+                                                        </h4>
+                                                    </div>
+                                                    <div id="collapse-References" class="panel-collapse collapse">
+                                                        <div class="panel-body">
+                                                            <div id="References"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
 
-									<div class="tab-pane" id="package-r">
-										<table id="table-package" class="table table-bordered" cellspacing="0" width="100%">
-											<thead>
-												<tr>
-													<th>ScanTime</th>
-													<th>Server<br>Name</th>
-													<th>Container<br>Name</th>
-													<th>Package<br>Name</th>
-													<th>Package<br>Version</th>
-													<th>Package<br>Release</th>
-													<th>Package<br>NewVersion</th>
-													<th>Package<br>NewRelease</th>
-												</tr>
-											</thead>
-										</table>
-									</div>
+                                    <div class="tab-pane" id="package-r">
+                                        <table id="table-package" class="table table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ScanTime</th>
+                                                    <th>Server<br>Name</th>
+                                                    <th>Container<br>Name</th>
+                                                    <th>Package<br>Name</th>
+                                                    <th>Package<br>Version</th>
+                                                    <th>Package<br>Release</th>
+                                                    <th>Package<br>NewVersion</th>
+                                                    <th>Package<br>NewRelease</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
 
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
-	<div class="modal fade" id="modal-alert" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header bg-danger">
-					<button type="button" class="close" data-dismiss="modal">
+    <div class="modal fade" id="modal-alert" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h5 class="modal-title" id="modal-label">ERROR</h5>
-				</div>
-				<div class="modal-body">
-					<p class="bg-danger">
-						Error Code
-					</p>
-					<div id="alert_error_code"></div>
-					<p class="bg-danger">
-						Response Text
-					</p>
-					<div id="alert_responce_text"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <h5 class="modal-title" id="modal-label">ERROR</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="bg-danger">
+                        Error Code
+                    </p>
+                    <div id="alert_error_code"></div>
+                    <p class="bg-danger">
+                        Response Text
+                    </p>
+                    <div id="alert_responce_text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="modal fade" id="modal-setting" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header bg-default">
-					<button type="button" class="close" data-dismiss="modal">
+    <div class="modal fade" id="modal-setting" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-default">
+                    <button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h5 class="modal-title" id="modal-label">SETTING</h5>
-				</div>
-				<div class="modal-body">
+                    <h5 class="modal-title" id="modal-label">SETTING</h5>
+                </div>
+                <div class="modal-body">
 
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							The look-ahead check the URL
-						</div>
-						<div class="panel-body">
-							<div class="make-switch">
-								<input type="checkbox" name="chkAheadUrl">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            The look-ahead check the URL
+                        </div>
+                        <div class="panel-body">
+                            <div class="make-switch">
+                                <input type="checkbox" name="chkAheadUrl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="modal fade" id="modal-saveDiag" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header bg-default">
-					<button type="button" class="close" data-dismiss="modal">
+    <div class="modal fade" id="modal-saveDiag" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-default">
+                    <button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h5 class="modal-title" id="modal-label">SAVE</h5>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								Save new setting
-							</div>
-							<div class="panel-body">
-								<div class="radio">
-									<input type="radio" name="radio_setting" checked="checked">
-									<input type="text" id="input_saveDiag" class="form-control my-input my-input-pos" placeholder="Input setting name">
-									<label><span class="label label-warning" id="alert_saveDiag_textbox" style="display: none">Setting name cannot be empty.</span></label>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								Update setting
-							</div>
-							<div class="panel-body">
-								<div class="radio">
-									<input type="radio" name="radio_setting">
-									<div class="btn-group btn-default my-input-pos" id="drop_saveDiag_buttonGroup">
-										<button type="button" class="btn btn-default" disabled>
+                    <h5 class="modal-title" id="modal-label">SAVE</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Save new setting
+                            </div>
+                            <div class="panel-body">
+                                <div class="radio">
+                                    <input type="radio" name="radio_setting" checked="checked">
+                                    <input type="text" id="input_saveDiag" class="form-control my-input my-input-pos" placeholder="Input setting name">
+                                    <label><span class="label label-warning" id="alert_saveDiag_textbox" style="display: none">Setting name cannot be empty.</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Update setting
+                            </div>
+                            <div class="panel-body">
+                                <div class="radio">
+                                    <input type="radio" name="radio_setting">
+                                    <div class="btn-group btn-default my-input-pos" id="drop_saveDiag_buttonGroup">
+                                        <button type="button" class="btn btn-default" disabled>
 											<span id="drop_saveDiag_visibleValue">Select setting</span>
 										</button>
-										<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" disabled>
+                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" disabled>
 											<span class="caret"></span>
 										</button>
-										<ul class="dropdown-menu" role="menu" id="drop_saveDiag"></ul>
-										<input type="hidden" id="drop_saveDiag_hiddenValue" value="">
-									</div>
+                                        <ul class="dropdown-menu" role="menu" id="drop_saveDiag"></ul>
+                                        <input type="hidden" id="drop_saveDiag_hiddenValue" value="">
+                                    </div>
 
-								</div>
-								<label><span class="label label-warning" id="alert_saveDiag_dropdown" style="display: none">Select setting.</span></label>
-							</div>
-						</div>
-					</div>
+                                </div>
+                                <label><span class="label label-warning" id="alert_saveDiag_dropdown" style="display: none">Select setting.</span></label>
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="pull-right">
-						<button type="submit" class="btn btn-info my-button" id="ok_saveDiag">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-info my-button" id="ok_saveDiag">
 							OK
 						</button>
-						<button type="submit" class="btn btn-default my-button" id="cancel_saveDiag">
+                        <button type="submit" class="btn btn-default my-button" id="cancel_saveDiag">
 							Cancel
 						</button>
-					</div>
-					<br>
-					<br>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div style="display:none">
-		<div id="changelog-content">
-			<div>
-				<table class="table table-condensed table-bordered table-package">
-					<tr class="info">
-						<th>CveID</th>
-						<th>Confidence-DetectionMethod</th>
-						<th>Confidence-Score</th>
-					</tr>
-					<tr>
-						<td id="changelog-cveid"></td>
-						<td id="changelog-method"></td>
-						<td id="changelog-score"></td>
-					</tr>
-				</table>
-			</div>
+    <div style="display:none">
+        <div id="changelog-content">
+            <div>
+                <table class="table table-condensed table-bordered table-package">
+                    <tr class="info">
+                        <th>CveID</th>
+                        <th>Confidence-DetectionMethod</th>
+                        <th>Confidence-Score</th>
+                    </tr>
+                    <tr>
+                        <td id="changelog-cveid" class="highlight-changelog"></td>
+                        <td id="changelog-method"></td>
+                        <td id="changelog-score"></td>
+                    </tr>
+                </table>
+            </div>
 
 
-			<div>
-				<table class="table table-condensed table-bordered">
-					<tr class="info">
-						<th>ServerName</th>
-						<th>ContainerName</th>
-						<th>PackageName</th>
-					</tr>
-					<tr>
-						<td id="changelog-servername"></td>
-						<td id="changelog-containername"></td>
-						<td id="changelog-packagename"></td>
-					</tr>
-				</table>
-			</div>
+            <div>
+                <table class="table table-condensed table-bordered">
+                    <tr class="info">
+                        <th>ServerName</th>
+                        <th>ContainerName</th>
+                        <th>PackageName</th>
+                    </tr>
+                    <tr>
+                        <td id="changelog-servername"></td>
+                        <td id="changelog-containername"></td>
+                        <td id="changelog-packagename"></td>
+                    </tr>
+                </table>
+            </div>
 
-			<p class="bg-primary">
-				Changelog
-			</p>
-			<div id="changelog-contents"></div>
-		</div>
-	</div>
+            <p class="bg-primary">
+                Changelog
+            </p>
+            <div id="changelog-contents"></div>
+        </div>
+    </div>
 </body>
 
 <!-- JS -->
@@ -494,9 +493,11 @@
 <!-- bootstrap-drawer -->
 <script src="plugins/bootstrap-drawer/js/drawer.min.js" type="text/javascript"></script>
 <!-- datatables.js -->
-<script type="text/javascript" src="plugins/datatables/datatables.min.js"></script>
+<script src="plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <!-- colorbox.js -->
-<script type="text/javascript" src="plugins/colorbox/jquery.colorbox-min.js"></script>
+<script src="plugins/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
+<!--underscore.js-->
+<script src="plugins/underscore.js/underscore-min.js" type="text/javascript"></script>
 <!-- main -->
 <script src="dist/js/vulsrepo_param.js" type="text/javascript"></script>
 <script src="dist/js/vulsrepo_common.js" type="text/javascript"></script>

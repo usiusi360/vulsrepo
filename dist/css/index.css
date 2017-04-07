@@ -1,115 +1,122 @@
 .my-button {
-	width: 70px;
+    width: 70px;
 }
 
 .my-input {
-	width: 500px;
+    width: 500px;
 }
 
 .my-input-pos {
-	margin-left: 15px;
+    margin-left: 15px;
 }
 
-.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
-	margin-left: -5px;
-	margin-top: 11px;
+.checkbox input[type=checkbox],
+.checkbox-inline input[type=checkbox],
+.radio input[type=radio],
+.radio-inline input[type=radio] {
+    margin-left: -5px;
+    margin-top: 11px;
 }
 
 p {
-	margin-top: 15px;
-	text-indent: 5px
+    margin-top: 15px;
+    text-indent: 5px
 }
 
 a {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .alert {
-	display: none;
-	margin: 2%;
+    display: none;
+    margin: 2%;
 }
 
 .cvss-info {
-	background-color: lightskyblue;
+    background-color: lightskyblue;
 }
 
 .cvss-warning {
-	background-color: orange;
+    background-color: orange;
 }
 
 .cvss-danger {
-	background-color: indianred;
+    background-color: indianred;
 }
 
 .detailTitle {
-	margin-top: 10px;
-	margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .detailScore {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .detailScoreTable {
-	width: 140px;
-	height: 40px;
-	font-size: 14pt;
-	color: white;
-	text-align: center;
+    width: 140px;
+    height: 40px;
+    font-size: 14pt;
+    color: white;
+    text-align: center;
 }
 
 .detailCvssTable {
-	text-align: center;
+    text-align: center;
 }
 
 .linkCheckIcon {
-	width: 20px;
-	height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 #pivot_base {
-	margin: 30px;
+    margin: 30px;
 }
 
 #toolName {
-	padding-left: 65px;
+    padding-left: 65px;
 }
 
 .dateDisplay {
-	margin-top: 20px;
-	font-size: small;
+    margin-top: 20px;
+    font-size: small;
 }
 
 .dateDisplay_title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .dateDisplay_date {
-	width: 100px;
+    width: 100px;
 }
 
 .submitSelectfile {
     margin-top: 10px;
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
-
 #changelog-content {
-	width: 800px;
-	height: 600px;
+    width: 800px;
+    height: 600px;
 }
 
 #changelog-method {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
-.highlight-cveid {
-	font-weight: bold;
-	background-color:#FFC107
+.highlight-changelog {
+    font-weight: bold;
+    background-color: #FFC107
+}
+
+.title-changelog {
+    font-weight: bold;
+    background-color: #bfea95
 }
 
 .table-package {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .panel-heading {
@@ -119,15 +126,17 @@ a {
     padding-left: 5px;
     padding-right: 5px;
 }
+
 .accordion-toggle a:after {
     font-family: 'Glyphicons Halflings';
-    content:"\e113";
+    content: "\e113";
     float: right;
     color: inherit;
 }
+
 .accordion-toggle a.collapsed:after {
     font-family: 'Glyphicons Halflings';
-    content:"\e114";
+    content: "\e114";
     float: right;
     color: inherit;
 }
@@ -137,7 +146,7 @@ section {
 }
 
 #title-References {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 #count-References {
