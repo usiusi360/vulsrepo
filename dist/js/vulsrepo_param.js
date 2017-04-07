@@ -35,6 +35,11 @@ var vulsrepo = {
             disp: "CVSSv2 Caluclator",
             find: "Warning: Unable to find vulnerability requested."
         },
+        cvssV3Calculator: {
+            url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?name=",
+            disp: "CVSSv3 Caluclator",
+            find: "Warning: Unable to find vulnerability requested."
+        },
         rhel: {
             url: "https://access.redhat.com/security/cve/",
             disp: "RHEL",
