@@ -378,7 +378,7 @@ var createPivotData = function(resultArray) {
                     "ServerName": x_val.data.ServerName,
                     "Family": x_val.data.Family,
                     "Release": x_val.data.Release,
-                    "CveID": y_val.CveDetail.CveID,
+                    "CveID": "CHK-cveid-" + y_val.CveDetail.CveID,
                 };
 
                 if (y_val.Confidence !== undefined) {
@@ -439,6 +439,12 @@ var createPivotData = function(resultArray) {
                     KnownObj["CVSS (A)"] = y_val.CveDetail.Nvd.AvailabilityImpact;
                 }
 
+                if (p_val.Name !== undefined) {
+                    KnownObj["Changelog"] = "CHK-changelog-" + y_val.CveDetail.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val.Name;
+                } else {
+                    KnownObj["Changelog"] = "CHK-changelog-" + y_val.CveDetail.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val;
+                }
+
                 array.push(KnownObj);
 
             });
@@ -460,7 +466,7 @@ var createPivotData = function(resultArray) {
                     "ServerName": x_val.data.ServerName,
                     "Family": x_val.data.Family,
                     "Release": x_val.data.Release,
-                    "CveID": y_val.CveDetail.CveID,
+                    "CveID": "CHK-cveid-" + y_val.CveDetail.CveID,
                     "CweID": "Unknown",
                     "CVSS Score": "Unknown",
                     "CVSS Severity": "Unknown",
@@ -497,6 +503,12 @@ var createPivotData = function(resultArray) {
                     UnknownObj["Container"] = x_val.data.Container.Name;
                 } else {
                     UnknownObj["Container"] = "None";
+                }
+
+                if (p_val.Name !== undefined) {
+                    UnknownObj["Changelog"] = "CHK-changelog-" + y_val.CveDetail.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val.Name;
+                } else {
+                    UnknownObj["Changelog"] = "CHK-changelog-" + y_val.CveDetail.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val;
                 }
 
                 array.push(UnknownObj);
@@ -575,7 +587,7 @@ var displayPivot = function(array) {
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             addCveIDLink();
-            addEventDisplayChangelog();
+            addChangelogLink();
         }
 
     };
@@ -604,15 +616,24 @@ var displayPivot = function(array) {
 };
 
 var addCveIDLink = function() {
-    let doms = $("#pivot_base").find("th:contains('CVE-')");
+    let doms = $("#pivot_base").find("th:contains('CHK-cveid-')");
     doms.each(function() {
-        let cveid = $(this).text();
+        let cveid = $(this).text().replace("CHK-cveid-", "");
         $(this).text("").append('<a class="cveid">' + cveid + '<a>');
     });
 
     $('.cveid').on('click', function() {
         displayDetail(this.text);
     });
+};
+
+var addChangelogLink = function() {
+    let doms = $("#pivot_base").find("th:contains('CHK-changelog-')");
+    doms.each(function() {
+        let changelogSearch = $(this).text().replace("CHK-changelog-", "").split(",");
+        $(this).text("").append('<a href="#contents" class="lightbox" data-cveid="' + changelogSearch[0] + '" data-scantime="' + changelogSearch[1] + '" data-server="' + changelogSearch[2] + '" data-container="' + changelogSearch[3] + '" data-package="' + changelogSearch[4] + '">Changelog</a>');
+    });
+    addEventDisplayChangelog();
 };
 
 var createDetailData = function(cveID) {
