@@ -1011,7 +1011,7 @@ var shapeChangelog = function(changelogContents, cveid) {
         let line = _.escape(x_val)
             .replace(/\s/g, "&nbsp;")
             .replace(/^(\*.+)$/g, '<span class="title-changelog">$1</span>') //for centos
-            .replace(/^([a-zA-Z].+)$/g, '<span class="title-changelog">$1</span>') //for debian ubuntu
+            .replace(/^([a-zA-Z].+urgency=.+)$/g, '<span class="title-changelog">$1</span>') //for debian ubuntu
             .replace(regExp, '<span class="highlight-changelog">' + cveid + '</span>');
 
         resultArray.push(line);
