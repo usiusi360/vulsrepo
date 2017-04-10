@@ -64,6 +64,16 @@ var vulsrepo = {
             url: "https://rhn.redhat.com/errata/",
             disp: "RedHat Network",
             find: "Erratum not found"
+        },
+        oracle: {
+            url: "https://linux.oracle.com/cve/",
+            disp: "OracleLinux",
+            find: "Not Found"
+        },
+        oracleErrata: {
+            url: "https://linux.oracle.com/errata/",
+            disp: "OracleLinux Errata",
+            find: "Not Found"
         }
     }
 };

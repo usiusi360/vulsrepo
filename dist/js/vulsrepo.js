@@ -752,6 +752,7 @@ var displayDetail = function(cveID) {
     addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
     addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
     addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
+    addLink("#Link", vulsrepo.link.oracle.url + data.CveID + ".html", vulsrepo.link.oracle.disp, vulsrepo.link.oracle.find, "oracle");
     $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
         addLink("#Link", i_val.url, i_val.disp, i_val.find, i_val.imgID);
     });
@@ -826,6 +827,13 @@ var getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
                 disp: vulsrepo.link.rhn.disp,
                 find: vulsrepo.link.rhn.find,
                 imgID: "rhn"
+            }
+        } else if ((x_val.AdvisoryID.indexOf("ELSA-") != -1) | (x_val.AdvisoryID.indexOf("OVMSA-") != -1)) {
+            tmp_Map = {
+                url: vulsrepo.link.oracleErrata.url + x_val.AdvisoryID + ".html",
+                disp: vulsrepo.link.oracleErrata.disp,
+                find: vulsrepo.link.oracleErrata.find,
+                imgID: "oracleErrata"
             }
         } else {
             // For cases where other distros are increased
