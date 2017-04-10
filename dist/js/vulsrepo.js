@@ -566,7 +566,7 @@ var displayPivot = function(array) {
     var pivot_attr = {
         renderers: renderers,
         menuLimit: 3000,
-        rows: ["ScanTime"],
+        rows: ["ScanTime", "ServerName", "Container"],
         cols: ["CVSS Severity", "CVSS Score"],
         vals: [""],
         exclusions: "",
@@ -592,10 +592,6 @@ var displayPivot = function(array) {
 
     };
 
-    if (vulsrepo.demoFlag === true) {
-        pivot_attr["rows"] = ["ScanTime", "Container"];
-    }
-
     var pivot_obj = db.get("vulsrepo_pivot_conf");
     if (pivot_obj != null) {
         pivot_attr["rows"] = pivot_obj["rows"];
@@ -604,6 +600,8 @@ var displayPivot = function(array) {
         pivot_attr["exclusions"] = pivot_obj["exclusions"];
         pivot_attr["aggregatorName"] = pivot_obj["aggregatorName"];
         pivot_attr["rendererName"] = pivot_obj["rendererName"];
+        pivot_attr["rowOrder"] = pivot_obj["rowOrder"];
+        pivot_attr["colOrder"] = pivot_obj["colOrder"];
         filterDisp.on("#label_pivot_conf");
     } else {
         filterDisp.off("#label_pivot_conf");
