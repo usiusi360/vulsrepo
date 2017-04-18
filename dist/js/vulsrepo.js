@@ -1018,7 +1018,7 @@ var shapeChangelog = function(changelogContents, cveid) {
             .replace(/\s/g, "&nbsp;")
             .replace(/^(\*.+)$/g, '<span class="title-changelog">$1</span>') //for centos
             .replace(/^([a-zA-Z].+urgency=.+)$/g, '<span class="title-changelog">$1</span>') //for debian ubuntu
-            .replace(/(CVE-[0-9]{4}-[0-9]{4})/g, '<span class="changelog-allcveid">$1</span>')
+            .replace(/(CVE-[0-9]{4}-[0-9]+)/g, '<span class="changelog-allcveid">$1</span>')
             .replace(regExpTarget, '<span class="changelog-targetcveid">' + cveid + '</span>');
 
         resultArray.push(line);
