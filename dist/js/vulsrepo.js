@@ -1011,17 +1011,23 @@ var getChangeLogInfo = function(scantime, server, container, cveid, package) {
 var shapeChangelog = function(changelogContents, cveid) {
     let tmpArray = changelogContents.split("\n");
     let resultArray = [];
-    let regExp = new RegExp(cveid, "g");
+    let regExpTarget = new RegExp('<span class="changelog-allcveid">' + cveid + '</span>', "g");
 
     $.each(tmpArray, function(x, x_val) {
         let line = _.escape(x_val)
             .replace(/\s/g, "&nbsp;")
             .replace(/^(\*.+)$/g, '<span class="title-changelog">$1</span>') //for centos
             .replace(/^([a-zA-Z].+urgency=.+)$/g, '<span class="title-changelog">$1</span>') //for debian ubuntu
-            .replace(regExp, '<span class="highlight-changelog">' + cveid + '</span>');
+            .replace(/(CVE-[0-9]{4}-[0-9]{4})/g, '<span class="changelog-allcveid">$1</span>')
+            .replace(regExpTarget, '<span class="changelog-targetcveid">' + cveid + '</span>');
 
         resultArray.push(line);
     })
 
     return resultArray;
+}
+
+var bringToFlont = function(id) {
+    var v = $('#' + id);
+    v.appendTo(v.parent());
 }
