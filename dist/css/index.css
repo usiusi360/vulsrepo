@@ -105,7 +105,12 @@ a {
     margin-bottom: 10px;
 }
 
-.highlight-changelog {
+.changelog-allcveid {
+    font-weight: bold;
+    background-color: lightskyblue
+}
+
+.changelog-targetcveid {
     font-weight: bold;
     background-color: #FFC107
 }
