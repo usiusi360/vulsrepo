@@ -182,7 +182,7 @@ var setPulldownDisplayChangeEvent = function(target) {
 var setEvents = function() {
 
     if (db.get("vulsrepo_detailLastTab") === null) {
-        db.set("vulsrepo_detailLastTab", "jvn");
+        db.set("vulsrepo_detailLastTab", "nvd");
     }
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -214,9 +214,6 @@ var setEvents = function() {
         });
         return false;
     });
-
-    // $("#nvd_help").tooltip({});
-    // $("a[data-toggle=popover]").popover();
 
     $("#save_pivot_conf").click(function() {
         $("#alert_saveDiag_textbox").css("display", "none");
@@ -300,16 +297,44 @@ var setEvents = function() {
     });
 
     $("[name='chkAheadUrl']").bootstrapSwitch();
+    $("[name='chkNvdUse']").bootstrapSwitch();
+    $("[name='chkJvnUse']").bootstrapSwitch();
     var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
     if (chkAheadUrl === "true") {
         $('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
     }
-
+    var chkNvdUse = db.get("vulsrepo_chkNvdUse");
+    if (chkNvdUse === "false") {
+        $('input[name="chkNvdUse"]').bootstrapSwitch('state', false, false);
+    }
+    var chkJvnUse = db.get("vulsrepo_chkJvnUse");
+    if (chkJvnUse === "false") {
+        $('input[name="chkJvnUse"]').bootstrapSwitch('state', false, false);
+    }
     $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === true) {
             db.set("vulsrepo_chkAheadUrl", "true");
         } else {
             db.remove("vulsrepo_chkAheadUrl");
+        }
+    });
+    $('input[name="chkNvdUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        pairState = $('input[name="chkJvnUse"]').bootstrapSwitch('state');
+        if (state === false) {
+            $('input[name="chkJvnUse"]').bootstrapSwitch('state', true, true);
+            db.remove("vulsrepo_chkJvnUse");
+            db.set("vulsrepo_chkNvdUse", "false");
+        } else {
+            db.remove("vulsrepo_chkNvdUse");
+        }
+    });
+    $('input[name="chkJvnUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === false) {
+            $('input[name="chkNvdUse"]').bootstrapSwitch('state', true, true);
+            db.remove("vulsrepo_chkNvdUse");
+            db.set("vulsrepo_chkJvnUse", "false");
+        } else {
+            db.remove("vulsrepo_chkJvnUse");
         }
     });
 
@@ -674,6 +699,19 @@ var displayDetail = function(cveID) {
         $('a[href="#tab_nvd"]').tab('show');
     } else {
         $('a[href="#tab_jvn"]').tab('show');
+    }
+
+    if (db.get("vulsrepo_chkNvdUse") === "false") {
+        $('a[href="#tab_nvd"]').css('display', 'none');
+        $('a[href="#tab_jvn"]').tab('show');
+    } else {
+        $('a[href="#tab_nvd"]').css('display', '');
+    }
+    if (db.get("vulsrepo_chkJvnUse") === "false") {
+        $('a[href="#tab_jvn"]').css('display', 'none');
+        $('a[href="#tab_nvd"]').tab('show');
+    } else {
+        $('a[href="#tab_jvn"]').css('display', '');
     }
 
     var data = createDetailData(cveID);
