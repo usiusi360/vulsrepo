@@ -313,6 +313,8 @@ var setEvents = function() {
         }
     });
 
+    displayHelpMes();
+
 };
 
 var createFolderTree = function() {
