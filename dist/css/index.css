@@ -124,7 +124,7 @@ a {
     margin-bottom: 10px;
 }
 
-.panel-heading {
+#modal-detail .panel-heading {
     cursor: pointer;
     padding-top: 0px;
     padding-bottom: 0px;
