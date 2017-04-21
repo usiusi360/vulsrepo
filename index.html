@@ -155,7 +155,73 @@
                                                 </ul>
 
                                                 <div class="tab-content">
-                                                    <div class="tab-pane active" id="tab_jvn">
+
+                                                    <!--nvd-->
+                                                    <div class="tab-pane active" id="tab_nvd">
+                                                        <table class='dateDisplay'>
+                                                            <tr>
+                                                                <td class='dateDisplay_title'>Published Date :</td>
+                                                                <td class='dateDisplay_date' id='publishedDateNvd'></td>
+                                                                <td class='dateDisplay_title'>LastModified Date :</td>
+                                                                <td class='dateDisplay_date' id='lastModifiedDateNvd'></td>
+                                                            </tr>
+                                                        </table>
+
+                                                        <div id="detailTitle_nvd" class="detailTitle"></div>
+                                                        <p class="bg-primary">
+                                                            CVSS Score
+                                                        </p>
+                                                        <a class="pull-right" href="https://www.first.org/cvss/v2/guide" Target=”_blank”>Guide</a>
+                                                        <div class="glyphicon glyphicon-link pull-right"></div>
+                                                        <div class="detailScore">
+                                                            <table class='detailScoreTable'>
+                                                                <tr>
+                                                                    <td id='scoreText_nvd'></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                        <div>
+                                                            <table class="table table-condensed table-bordered detailCvssTable">
+                                                                <tr class="active">
+                                                                    <th>Access Vector(AV)
+                                                                        <div id="tooltip_nvd_av" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Access Complexity(AC)
+                                                                        <div id="tooltip_nvd_ac" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Authentication(Au)
+                                                                        <div id="tooltip_nvd_au" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Confidentiality Impact(C)
+                                                                        <div id="tooltip_nvd_c" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Integrity Impact(I)
+                                                                        <div id="tooltip_nvd_i" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Availability Impact(A)
+                                                                        <div id="tooltip_nvd_a" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td id="cvss_av_nvd"></td>
+                                                                    <td id="cvss_ac_nvd"></td>
+                                                                    <td id="cvss_au_nvd"></td>
+                                                                    <td id="cvss_c_nvd"></td>
+                                                                    <td id="cvss_i_nvd"></td>
+                                                                    <td id="cvss_a_nvd"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                        <p class="bg-primary">
+                                                            Summary
+                                                        </p>
+                                                        <div id="Summary_nvd"></div>
+                                                    </div>
+
+                                                    <!--jvn-->
+                                                    <div class="tab-pane" id="tab_jvn">
 
                                                         <table class='dateDisplay'>
                                                             <tr>
@@ -219,68 +285,6 @@
                                                         <div id="Summary_jvn"></div>
                                                     </div>
 
-                                                    <div class="tab-pane" id="tab_nvd">
-                                                        <table class='dateDisplay'>
-                                                            <tr>
-                                                                <td class='dateDisplay_title'>Published Date :</td>
-                                                                <td class='dateDisplay_date' id='publishedDateNvd'></td>
-                                                                <td class='dateDisplay_title'>LastModified Date :</td>
-                                                                <td class='dateDisplay_date' id='lastModifiedDateNvd'></td>
-                                                            </tr>
-                                                        </table>
-
-                                                        <div id="detailTitle_nvd" class="detailTitle"></div>
-                                                        <p class="bg-primary">
-                                                            CVSS Score
-                                                        </p>
-                                                        <a class="pull-right" href="https://www.first.org/cvss/v2/guide" Target=”_blank”>Guide</a>
-                                                        <div class="glyphicon glyphicon-link pull-right"></div>
-                                                        <div class="detailScore">
-                                                            <table class='detailScoreTable'>
-                                                                <tr>
-                                                                    <td id='scoreText_nvd'></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <div>
-                                                            <table class="table table-condensed table-bordered detailCvssTable">
-                                                                <tr class="active">
-                                                                    <th>Access Vector(AV)
-                                                                        <div id="tooltip_nvd_av" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Access Complexity(AC)
-                                                                        <div id="tooltip_nvd_ac" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Authentication(Au)
-                                                                        <div id="tooltip_nvd_au" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Confidentiality Impact(C)
-                                                                        <div id="tooltip_nvd_c" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Integrity Impact(I)
-                                                                        <div id="tooltip_nvd_i" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Availability Impact(A)
-                                                                        <div id="tooltip_nvd_a" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td id="cvss_av_nvd"></td>
-                                                                    <td id="cvss_ac_nvd"></td>
-                                                                    <td id="cvss_au_nvd"></td>
-                                                                    <td id="cvss_c_nvd"></td>
-                                                                    <td id="cvss_i_nvd"></td>
-                                                                    <td id="cvss_a_nvd"></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <p class="bg-primary">
-                                                            Summary
-                                                        </p>
-                                                        <div id="Summary_nvd"></div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
