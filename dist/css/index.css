@@ -124,7 +124,7 @@ a {
     margin-bottom: 10px;
 }
 
-.panel-heading {
+#modal-detail .panel-heading {
     cursor: pointer;
     padding-top: 0px;
     padding-bottom: 0px;
@@ -156,4 +156,33 @@ section {
 
 #count-References {
     margin-left: 10px;
+}
+
+.modal .large {
+    width: 1200px;
+    margin-left: -300px;
+}
+
+table.cvss_tooltip {
+    border-collapse: collapse;
+    text-align: left;
+    line-height: 1.5;
+    border-top: 1px solid #ccc;
+    border-left: 3px solid #369;
+}
+
+table.cvss_tooltip th {
+    padding: 5px;
+    font-weight: bold;
+    vertical-align: top;
+    color: #153d73;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+table.cvss_tooltip td {
+    padding: 5px;
+    vertical-align: top;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }

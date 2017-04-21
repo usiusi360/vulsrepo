@@ -182,7 +182,7 @@ var setPulldownDisplayChangeEvent = function(target) {
 var setEvents = function() {
 
     if (db.get("vulsrepo_detailLastTab") === null) {
-        db.set("vulsrepo_detailLastTab", "jvn");
+        db.set("vulsrepo_detailLastTab", "nvd");
     }
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
@@ -214,9 +214,6 @@ var setEvents = function() {
         });
         return false;
     });
-
-    // $("#nvd_help").tooltip({});
-    // $("a[data-toggle=popover]").popover();
 
     $("#save_pivot_conf").click(function() {
         $("#alert_saveDiag_textbox").css("display", "none");
@@ -295,16 +292,29 @@ var setEvents = function() {
         initPivotTable();
     });
 
+    $('a[href="#package-r"]').click(function() {
+        setTimeout(function() { packageTable.columns.adjust(); }, 1);
+    });
+
     $("#Setting").click(function() {
         $("#modal-setting").modal('show');
     });
 
     $("[name='chkAheadUrl']").bootstrapSwitch();
+    $("[name='chkNvdUse']").bootstrapSwitch();
+    $("[name='chkJvnUse']").bootstrapSwitch();
     var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
     if (chkAheadUrl === "true") {
         $('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
     }
-
+    var chkNvdUse = db.get("vulsrepo_chkNvdUse");
+    if (chkNvdUse === "false") {
+        $('input[name="chkNvdUse"]').bootstrapSwitch('state', false, false);
+    }
+    var chkJvnUse = db.get("vulsrepo_chkJvnUse");
+    if (chkJvnUse === "false") {
+        $('input[name="chkJvnUse"]').bootstrapSwitch('state', false, false);
+    }
     $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === true) {
             db.set("vulsrepo_chkAheadUrl", "true");
@@ -312,6 +322,27 @@ var setEvents = function() {
             db.remove("vulsrepo_chkAheadUrl");
         }
     });
+    $('input[name="chkNvdUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        pairState = $('input[name="chkJvnUse"]').bootstrapSwitch('state');
+        if (state === false) {
+            $('input[name="chkJvnUse"]').bootstrapSwitch('state', true, true);
+            db.remove("vulsrepo_chkJvnUse");
+            db.set("vulsrepo_chkNvdUse", "false");
+        } else {
+            db.remove("vulsrepo_chkNvdUse");
+        }
+    });
+    $('input[name="chkJvnUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === false) {
+            $('input[name="chkNvdUse"]').bootstrapSwitch('state', true, true);
+            db.remove("vulsrepo_chkNvdUse");
+            db.set("vulsrepo_chkJvnUse", "false");
+        } else {
+            db.remove("vulsrepo_chkJvnUse");
+        }
+    });
+
+    displayHelpMes();
 
 };
 
@@ -674,6 +705,19 @@ var displayDetail = function(cveID) {
         $('a[href="#tab_jvn"]').tab('show');
     }
 
+    if (db.get("vulsrepo_chkNvdUse") === "false") {
+        $('a[href="#tab_nvd"]').css('display', 'none');
+        $('a[href="#tab_jvn"]').tab('show');
+    } else {
+        $('a[href="#tab_nvd"]').css('display', '');
+    }
+    if (db.get("vulsrepo_chkJvnUse") === "false") {
+        $('a[href="#tab_jvn"]').css('display', 'none');
+        $('a[href="#tab_nvd"]').tab('show');
+    } else {
+        $('a[href="#tab_jvn"]').css('display', '');
+    }
+
     var data = createDetailData(cveID);
 
     // ---Tab main
@@ -718,36 +762,43 @@ var displayDetail = function(cveID) {
         $("#Summary_nvd").append("NO DATA");
     }
 
-    // ---Link---
+    // ---CweID---
     if (data.CveDetail.Nvd.CweID === "" || data.CveDetail.Nvd.CweID === undefined) {
         $("#CweID").append("<span>NO DATA</span>");
     } else {
         $("#CweID").append("<span>[" + data.CveDetail.Nvd.CweID + "] </span>");
-        $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.CveDetail.Nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
-        $("#CweID").append("<span> / </span>");
-        $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.CveDetail.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
+        if (db.get("vulsrepo_chkNvdUse") !== "false") {
+            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.CveDetail.Nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+            $("#CweID").append("<span> / </span>");
+        }
+        if (db.get("vulsrepo_chkJvnUse") !== "false") {
+            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.CveDetail.Nvd.CweID + ".html\" target='_blank'>JVN</a>");
+        }
     }
 
+    // ---Link---
     addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
     addLink("#Link", vulsrepo.link.cveDetail.url + data.CveID, vulsrepo.link.cveDetail.disp, vulsrepo.link.cveDetail.find, "cveDetail");
     addLink("#Link", vulsrepo.link.cvssV2Calculator.url + data.CveID, vulsrepo.link.cvssV2Calculator.disp, vulsrepo.link.cvssV2Calculator.find, "cvssV2Calculator");
     addLink("#Link", vulsrepo.link.cvssV3Calculator.url + data.CveID, vulsrepo.link.cvssV3Calculator.disp, vulsrepo.link.cvssV3Calculator.find, "cvssV3Calculator");
     addLink("#Link", vulsrepo.link.nvd.url + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
 
-    var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-    if (data.CveDetail.Jvn.JvnLink === "") {
-        $("#Link").append("<a href=\"" + vulsrepo.link.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
-        if (chkAheadUrl === "true") {
-            $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/error.svg\"></img>");
-        }
+    if (db.get("vulsrepo_chkJvnUse") !== "false") {
+        var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
+        if (data.CveDetail.Jvn.JvnLink === "") {
+            $("#Link").append("<a href=\"" + vulsrepo.link.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
+            if (chkAheadUrl === "true") {
+                $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/error.svg\"></img>");
+            }
 
-    } else {
-        $("#Link").append("<a href=\"" + data.CveDetail.Jvn.JvnLink + "\" target='_blank'>JVN</a>");
-        if (chkAheadUrl === "true") {
-            $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/ok.svg\"></img>");
+        } else {
+            $("#Link").append("<a href=\"" + data.CveDetail.Jvn.JvnLink + "\" target='_blank'>JVN</a>");
+            if (chkAheadUrl === "true") {
+                $("#Link").append("<img class='linkCheckIcon' src=\"dist/img/ok.svg\"></img>");
+            }
         }
+        $("#Link").append("<span> / </span>");
     }
-    $("#Link").append("<span> / </span>");
 
     addLink("#Link", vulsrepo.link.rhel.url + data.CveID, vulsrepo.link.rhel.disp, vulsrepo.link.rhel.find, "rhel");
     addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
@@ -759,13 +810,13 @@ var displayDetail = function(cveID) {
 
     // ---References---
     let countRef = 0;
-    if (isCheckNull(data.CveDetail.Jvn.References) === false) {
+    if ((isCheckNull(data.CveDetail.Jvn.References) === false) & (db.get("vulsrepo_chkJvnUse") !== "false")) {
         $.each(data.CveDetail.Jvn.References, function(x, x_val) {
             $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
             countRef++;
         });
     }
-    if (isCheckNull(data.CveDetail.Nvd.References) === false) {
+    if ((isCheckNull(data.CveDetail.Nvd.References) === false) & (db.get("vulsrepo_chkNvdUse") !== "false")) {
         $.each(data.CveDetail.Nvd.References, function(x, x_val) {
             $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
             countRef++;
@@ -778,11 +829,13 @@ var displayDetail = function(cveID) {
     packageTable.destroy();
     packageTable = $("#table-package")
         .DataTable({
-            data: pkgData,
-            retrieve: true,
-            scrollX: true,
-            autoWidth: true,
-            columns: [{
+            "data": pkgData,
+            "fixedHeader": true,
+            "retrieve": true,
+            "scrollX": true,
+            "autoWidth": true,
+            "scrollCollapse": true,
+            "columns": [{
                 data: "ScanTime"
             }, {
                 data: "ServerName"
@@ -801,12 +854,11 @@ var displayDetail = function(cveID) {
             }]
         });
 
-    //packageTable.fixedHeader.adjust();
-
     // ---package changelog event
     addEventDisplayChangelog();
 
     $("#modal-detail").modal('show');
+    setTimeout(function() { packageTable.columns.adjust(); }, 200);
 
 };
 
