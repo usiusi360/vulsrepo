@@ -706,14 +706,12 @@ var displayDetail = function(cveID) {
         $('a[href="#tab_jvn"]').tab('show');
     } else {
         $('a[href="#tab_nvd"]').css('display', '');
-        // $('a[href="#tab_nvd"]').tab('show');
     }
     if (db.get("vulsrepo_chkJvnUse") === "false") {
         $('a[href="#tab_jvn"]').css('display', 'none');
         $('a[href="#tab_nvd"]').tab('show');
     } else {
         $('a[href="#tab_jvn"]').css('display', '');
-        // $('a[href="#tab_jvn"]').tab('show');
     }
 
     var data = createDetailData(cveID);
