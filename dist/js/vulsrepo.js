@@ -292,6 +292,10 @@ var setEvents = function() {
         initPivotTable();
     });
 
+    $('a[href="#package-r"]').click(function() {
+        setTimeout(function() { packageTable.columns.adjust(); }, 1);
+    });
+
     $("#Setting").click(function() {
         $("#modal-setting").modal('show');
     });
@@ -850,12 +854,11 @@ var displayDetail = function(cveID) {
             }]
         });
 
-    //packageTable.fixedHeader.adjust();
-
     // ---package changelog event
     addEventDisplayChangelog();
 
     $("#modal-detail").modal('show');
+    setTimeout(function() { packageTable.columns.adjust(); }, 200);
 
 };
 

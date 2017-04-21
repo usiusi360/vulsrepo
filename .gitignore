@@ -1,6 +1,4 @@
 .project
 dist/cgi/test.json
 results/*
-
-
 .vscode/settings.json
