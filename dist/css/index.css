@@ -186,3 +186,11 @@ table.cvss_tooltip td {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
+
+body {
+    width: 100%;
+}
+
+body.noscroll {
+    position: fixed;
+}
