@@ -896,16 +896,25 @@ var getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
     return distroAdvisoriesArray;
 };
 
+var scrollTop;
 var addEventDisplayChangelog = function() {
     $('.lightbox').colorbox({
         inline: true,
         href: "#changelog-content",
+        width: "950px",
+        height: "90%",
         speed: 100,
         fadeOut: 100,
         opacity: 0.2,
         closeButton: false,
         onComplete: function() {
-            displayChangelogDetail(this)
+            displayChangelogDetail(this);
+            scrollTop = $(window).scrollTop();
+            $('body').addClass('noscroll').css('top', (-scrollTop) + 'px');
+        },
+        onClosed: function() {
+            $('body').removeClass('noscroll');
+            $(window).scrollTop(scrollTop);
         }
     });
 }
