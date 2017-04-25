@@ -227,6 +227,10 @@ body.noscroll {
     width: 100px;
 }
 
-a .glyphicon-question-sign {
+.question-sign-black {
     color: black;
+}
+
+.question-sign-white {
+    color: white;
 }
