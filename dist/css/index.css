@@ -194,3 +194,30 @@ body {
 body.noscroll {
     position: fixed;
 }
+
+#pivot-priority {
+    list-style-type: none;
+    margin: 0px 0px 0px 15px;
+    padding: 0;
+    width: 150px;
+}
+
+#pivot-priority li {
+    margin: 3px 3px 3px 3px;
+    padding: 5px;
+    font-size: 120%;
+    height: 36px;
+    cursor: move;
+    background-color: #31b0d5;
+    color: white;
+}
+
+#pivot-priority li span {
+    padding-left: 10px;
+    padding-right: 40px;
+}
+
+#pivot-priority .placeholder {
+    border: 1px dashed red;
+    background-color: pink;
+}

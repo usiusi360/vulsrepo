@@ -342,6 +342,32 @@ var setEvents = function() {
         }
     });
 
+    if (db.get("vulsrepo_pivotPriority") === null) {
+        db.set("vulsrepo_pivotPriority", "NVD,JVN");
+    }
+    $.each(db.get("vulsrepo_pivotPriority").split(","), function(i, i_val) {
+        $("#pivot-priority").append(`<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>${i_val}</li>`);
+    });
+    $('#pivot-priority').sortable({
+        tolerance: "pointer",
+        distance: 1,
+        cursor: "move",
+        revert: 100,
+        placeholder: "placeholder",
+        update: function() {
+            let tmp_pri = [];
+            $("#pivot-priority li").each(function(index) {
+                tmp_pri.push($(this).text());
+            });
+            db.set("vulsrepo_pivotPriority", tmp_pri.join(","));
+        }
+    });
+    $('#pivot-priority').disableSelection();
+
+    $("#modal-setting").on("hidden.bs.modal", function() {
+        initData();
+    });
+
     displayHelpMes();
 
 };
@@ -391,7 +417,8 @@ var isCheckNull = function(o) {
 
 var createPivotData = function(resultArray) {
 
-    var array = [];
+    let array = [];
+    let prioltyFlag = db.get("vulsrepo_pivotPriority").split(",");
 
     $.each(resultArray, function(x, x_val) {
         $.each(x_val.data.KnownCves, function(y, y_val) {
@@ -445,20 +472,7 @@ var createPivotData = function(resultArray) {
                     KnownObj["Container"] = "None";
                 }
 
-                if (y_val.CveDetail.Jvn.Score !== 0) {
-                    KnownObj["CVSS Score"] = y_val.CveDetail.Jvn.Score;
-                    KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
-                    KnownObj["Summary"] = y_val.CveDetail.Jvn.Title;
-
-                    // ex) CveDetail.Jvn.Vector (AV:A/AC:H/Au:N/C:N/I:P/A:N)
-                    var arrayVector = getSplitArray(y_val.CveDetail.Jvn.Vector);
-                    KnownObj["CVSS (AV)"] = getVector.jvn(arrayVector[0])[0];
-                    KnownObj["CVSS (AC)"] = getVector.jvn(arrayVector[1])[0];
-                    KnownObj["CVSS (Au)"] = getVector.jvn(arrayVector[2])[0];
-                    KnownObj["CVSS (C)"] = getVector.jvn(arrayVector[3])[0];
-                    KnownObj["CVSS (I)"] = getVector.jvn(arrayVector[4])[0];
-                    KnownObj["CVSS (A)"] = getVector.jvn(arrayVector[5])[0];
-                } else if (y_val.CveDetail.Nvd.Score !== 0) {
+                let nvdCvss = function() {
                     KnownObj["CVSS Score"] = y_val.CveDetail.Nvd.Score;
                     KnownObj["CVSS Severity"] = getSeverity(y_val.CveDetail.Nvd.Score)[0];
                     KnownObj["Summary"] = y_val.CveDetail.Nvd.Summary;
@@ -468,7 +482,41 @@ var createPivotData = function(resultArray) {
                     KnownObj["CVSS (C)"] = y_val.CveDetail.Nvd.ConfidentialityImpact;
                     KnownObj["CVSS (I)"] = y_val.CveDetail.Nvd.IntegrityImpact;
                     KnownObj["CVSS (A)"] = y_val.CveDetail.Nvd.AvailabilityImpact;
-                }
+                };
+
+                let jvnCvss = function() {
+                    KnownObj["CVSS Score"] = y_val.CveDetail.Jvn.Score;
+                    KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
+                    KnownObj["Summary"] = y_val.CveDetail.Jvn.Title;
+                    // ex) CveDetail.Jvn.Vector (AV:A/AC:H/Au:N/C:N/I:P/A:N)
+                    var arrayVector = getSplitArray(y_val.CveDetail.Jvn.Vector);
+                    KnownObj["CVSS (AV)"] = getVector.jvn(arrayVector[0])[0];
+                    KnownObj["CVSS (AC)"] = getVector.jvn(arrayVector[1])[0];
+                    KnownObj["CVSS (Au)"] = getVector.jvn(arrayVector[2])[0];
+                    KnownObj["CVSS (C)"] = getVector.jvn(arrayVector[3])[0];
+                    KnownObj["CVSS (I)"] = getVector.jvn(arrayVector[4])[0];
+                    KnownObj["CVSS (A)"] = getVector.jvn(arrayVector[5])[0];
+                };
+
+                $.each(prioltyFlag, function(i, i_val) {
+                    if (i_val === "NVD") {
+                        if (y_val.CveDetail.Nvd.Score !== 0) {
+                            nvdCvss();
+                        } else if (y_val.CveDetail.Jvn.Score !== 0) {
+                            jvnCvss();
+                        }
+                        return false;
+                    }
+
+                    if (i_val === "JVN") {
+                        if (y_val.CveDetail.Jvn.Score !== 0) {
+                            jvnCvss();
+                        } else if (y_val.CveDetail.Nvd.Score !== 0) {
+                            nvdCvss();
+                        }
+                        return false;
+                    }
+                });
 
                 if (p_val.Name !== undefined) {
                     KnownObj["Changelog"] = "CHK-changelog-" + y_val.CveDetail.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val.Name;
@@ -564,7 +612,9 @@ var createPivotData = function(resultArray) {
                 "CVSS (Au)": "healthy",
                 "CVSS (C)": "healthy",
                 "CVSS (I)": "healthy",
-                "CVSS (A)": "healthy"
+                "CVSS (A)": "healthy",
+                "Confidence.Score": "healthy",
+                "Confidence.DetectionMethod": "healthy"
             };
 
             if (x_val.data.Platform.Name !== "") {
