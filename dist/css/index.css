@@ -226,3 +226,7 @@ body.noscroll {
 .pvtAggregator {
     width: 100px;
 }
+
+a .glyphicon-question-sign {
+    color: black;
+}
