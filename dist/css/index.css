@@ -221,3 +221,8 @@ body.noscroll {
     border: 1px dashed red;
     background-color: pink;
 }
+
+.pvtRenderer,
+.pvtAggregator {
+    width: 100px;
+}

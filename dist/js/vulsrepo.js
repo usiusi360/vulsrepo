@@ -303,16 +303,13 @@ var setEvents = function() {
     $("[name='chkAheadUrl']").bootstrapSwitch();
     $("[name='chkNvdUse']").bootstrapSwitch();
     $("[name='chkJvnUse']").bootstrapSwitch();
-    var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-    if (chkAheadUrl === "true") {
+    if (db.get("vulsrepo_chkAheadUrl") === "true") {
         $('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
     }
-    var chkNvdUse = db.get("vulsrepo_chkNvdUse");
-    if (chkNvdUse === "false") {
+    if (db.get("vulsrepo_chkNvdUse") === "false") {
         $('input[name="chkNvdUse"]').bootstrapSwitch('state', false, false);
     }
-    var chkJvnUse = db.get("vulsrepo_chkJvnUse");
-    if (chkJvnUse === "false") {
+    if (db.get("vulsrepo_chkJvnUse") === "false") {
         $('input[name="chkJvnUse"]').bootstrapSwitch('state', false, false);
     }
     $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -439,13 +436,13 @@ var createPivotData = function(resultArray) {
                     "CveID": "CHK-cveid-" + y_val.CveDetail.CveID,
                 };
 
-                if (y_val.Confidence !== undefined) {
-                    KnownObj["Confidence.Score"] = y_val.Confidence.Score;
-                    KnownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
-                } else {
-                    KnownObj["Confidence.Score"] = "Unknown";
-                    KnownObj["Confidence.DetectionMethod"] = "Unknown";
-                }
+                // if (y_val.Confidence !== undefined) {
+                //     KnownObj["Confidence.Score"] = y_val.Confidence.Score;
+                //     KnownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
+                // } else {
+                //     KnownObj["Confidence.Score"] = "Unknown";
+                //     KnownObj["Confidence.DetectionMethod"] = "Unknown";
+                // }
 
                 if (p_val.Name !== undefined) {
                     KnownObj["Packages"] = p_val.Name;
@@ -558,13 +555,13 @@ var createPivotData = function(resultArray) {
                     "CVSS (A)": "Unknown"
                 };
 
-                if (y_val.Confidence !== undefined) {
-                    UnknownObj["Confidence.Score"] = y_val.Confidence.Score;
-                    UnknownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
-                } else {
-                    UnknownObj["Confidence.Score"] = "Unknown";
-                    UnknownObj["Confidence.DetectionMethod"] = "Unknown";
-                }
+                // if (y_val.Confidence !== undefined) {
+                //     UnknownObj["Confidence.Score"] = y_val.Confidence.Score;
+                //     UnknownObj["Confidence.DetectionMethod"] = y_val.Confidence.DetectionMethod;
+                // } else {
+                //     UnknownObj["Confidence.Score"] = "Unknown";
+                //     UnknownObj["Confidence.DetectionMethod"] = "Unknown";
+                // }
 
                 if (p_val.Name !== undefined) {
                     UnknownObj["Packages"] = p_val.Name;
@@ -613,8 +610,8 @@ var createPivotData = function(resultArray) {
                 "CVSS (C)": "healthy",
                 "CVSS (I)": "healthy",
                 "CVSS (A)": "healthy",
-                "Confidence.Score": "healthy",
-                "Confidence.DetectionMethod": "healthy"
+                // "Confidence.Score": "healthy",
+                // "Confidence.DetectionMethod": "healthy"
             };
 
             if (x_val.data.Platform.Name !== "") {
@@ -667,6 +664,7 @@ var displayPivot = function(array) {
             db.set("vulsrepo_pivot_conf_tmp", config);
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
+            $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
             addCveIDLink();
             addChangelogLink();
         }
@@ -761,6 +759,7 @@ var displayDetail = function(cveID) {
     } else {
         $('a[href="#tab_nvd"]').css('display', '');
     }
+
     if (db.get("vulsrepo_chkJvnUse") === "false") {
         $('a[href="#tab_jvn"]').css('display', 'none');
         $('a[href="#tab_nvd"]').tab('show');
@@ -971,8 +970,7 @@ var addEventDisplayChangelog = function() {
 
 var addLink = function(target, url, disp, find, imgIdTarget) {
     $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
-    var chkAheadUrl = db.get("vulsrepo_chkAheadUrl");
-    if (chkAheadUrl === "true") {
+    if (db.get("vulsrepo_chkAheadUrl") === "true") {
         $(target).append("<img class='linkCheckIcon' id=imgId_" + imgIdTarget + " src=\"dist/img/loading_small.gif\"></img>");
         checkLink(url, find, "#imgId_" + imgIdTarget);
     }
