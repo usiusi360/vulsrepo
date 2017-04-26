@@ -98,6 +98,13 @@ Access the browser
 http://VulsServer/vulsrepo/
 ````
 
+## Misc
+
+- The data of the Pivot Table preferentially displays NVD data.In order to display JVN data. it is necessary to change from setting.
+
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="50%">
+
+
 ## Gallery ##
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image002.png)
