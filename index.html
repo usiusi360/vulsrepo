@@ -123,7 +123,6 @@
                 </div>
                 <div class="modal-body" style="padding-right: 0px;padding-left: 5px; padding-bottom: 0px;">
 
-                    <!--<div class="panel panel-default">-->
                     <div class="panel">
                         <div class="panel-body" style="padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;">
 
@@ -365,7 +364,7 @@
     </div>
 
     <div class="modal fade" id="modal-setting" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-success">
                     <button type="button" class="close" data-dismiss="modal">
@@ -375,47 +374,80 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            The look-ahead check the URL
-                        </div>
-                        <div class="panel-body">
-                            <div class="make-switch">
-                                <input type="checkbox" name="chkAheadUrl">
+                    <div class="bs-callout bs-callout-primary">
+                        <h4>Detail screen of CVE-ID</h4>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        The look-ahead check the URL
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="make-switch">
+                                            <input type="checkbox" name="chkAheadUrl">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Show / Hide the Tab
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="make-switch">
+                                            <input type="checkbox" name="chkNvdUse" data-label-text="NVD" checked>
+                                            <input type="checkbox" name="chkJvnUse" data-label-text="JVN" checked>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Displayed on the detailed screen of CVE-ID
-                        </div>
-                        <div class="panel-body">
-                            <div class="make-switch">
-                                <input type="checkbox" name="chkNvdUse" data-label-text="NVD" checked>
-                                <input type="checkbox" name="chkJvnUse" data-label-text="JVN" checked>
+                    <div class="bs-callout bs-callout-primary">
+                        <h4>Pivot Table</h4>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Show / Hide the Item
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="make-switch">
+                                            <input type="checkbox" name="chkPivotSummary" data-label-text="Summary" checked>
+                                            <input type="checkbox" name="chkPivotCvss" data-label-text="Cvss Metrics" checked>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Priority on Pivot Table
-                        </div>
-                        <div class="panel-body">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td rowspan="2">
-                                            <ul id="pivot-priority">
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        Priority
+                                    </div>
+                                    <div class="panel-body">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td rowspan="2">
+                                                        <ul id="pivot-priority">
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
