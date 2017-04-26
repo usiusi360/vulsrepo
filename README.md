@@ -100,9 +100,18 @@ http://VulsServer/vulsrepo/
 
 ## Misc
 
-- The data of the Pivot Table preferentially displays NVD data.In order to display JVN data. it is necessary to change from setting.
+### SETTING
 
 <img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="50%">
+
+- Detail screen of CVE-ID
+    - The look-ahead check the URL => Prefetch Link's URL destination and check whether the page exists
+    - Show / Hide the Tab => Toggle display of NVD / JVN tab
+
+- Pivot Table
+    - Show / Hide the Item => Set items not to be displayed on pivot table. Since the data of Summary is very large, it turns OFF when the number of vulnerabilities is large and an error occurs.
+    - Priority => Set the data to be displayed with priority in the pivot table.The default is NVD data.
+
 
 
 ## Gallery ##
