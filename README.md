@@ -102,17 +102,22 @@ http://VulsServer/vulsrepo/
 
 ### SETTING
 
-<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="50%">
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="80%">
 
 - Detail screen of CVE-ID
-    - The look-ahead check the URL => Prefetch Link's URL destination and check whether the page exists
-    - Show / Hide the Tab => Toggle display of NVD / JVN tab
+
+| Setting Name |  |
+|:-|:-|
+|The look-ahead check the URL|Prefetch Link's URL destination and check whether the page exists|
+|Show / Hide the Tab|Toggle display of NVD / JVN tab|
+
 
 - Pivot Table
-    - Show / Hide the Item => Set items not to be displayed on pivot table. Since the data of Summary is very large, it turns OFF when the number of vulnerabilities is large and an error occurs.
-    - Priority => Set the data to be displayed with priority in the pivot table.The default is NVD data.
 
-
+| Setting Name |  |
+|:-|:-|
+|Show / Hide the Item|Set items not to be displayed on pivot table. Since the data of Summary is very large, it turns OFF when the number of vulnerabilities is large and an error occurs.|
+|Priority|Set the data to be displayed with priority in the pivot table.The default is NVD data.|
 
 ## Gallery ##
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
