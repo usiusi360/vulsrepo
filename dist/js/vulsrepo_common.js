@@ -341,13 +341,9 @@ var getHelpMes = function(target, type) {
 
     let tmp_tr = "";
     $.each(helpMes[target][type], function(x, x_val) {
-        tmp_tr = tmp_tr + `
-                  <tr>
-                      <td>${x_val.title}</td>
-                      <td>${x_val.desp}</td>
-                  </tr>`
+        tmp_tr = tmp_tr + "<tr><td>" + x_val.title + "</td><td>" + x_val.desp + "</td></tr>"
     });
-    return `<table class="cvss_tooltip"><tbody>${tmp_tr}</tbody></table>`;
+    return '<table class="cvss_tooltip"><tbody>' + tmp_tr + '</tbody></table>';
 };
 
 var displayHelpMes = function() {

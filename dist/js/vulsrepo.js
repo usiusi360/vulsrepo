@@ -380,7 +380,7 @@ var setEvents = function() {
         db.set("vulsrepo_pivotPriority", "NVD,JVN");
     }
     $.each(db.get("vulsrepo_pivotPriority").split(","), function(i, i_val) {
-        $("#pivot-priority").append(`<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>${i_val}</li>`);
+        $("#pivot-priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
     });
     $('#pivot-priority').sortable({
         tolerance: "pointer",
