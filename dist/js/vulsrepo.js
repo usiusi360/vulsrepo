@@ -187,13 +187,17 @@ var setEvents = function() {
     }
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-        var tabName = e.target.href;
-        var items = tabName.split("#");
-
-        if (items[1] === "tab_nvd") {
-            db.set("vulsrepo_detailLastTab", "nvd");
-        } else {
-            db.set("vulsrepo_detailLastTab", "jvn");
+        let hrefName = e.target.href;
+        switch (hrefName.split("#")[1]) {
+            case "tab_nvd":
+                db.set("vulsrepo_detailLastTab", "nvd");
+                break;
+            case "tab_jvn":
+                db.set("vulsrepo_detailLastTab", "jvn");
+                break;
+            case "tab_oval":
+                db.set("vulsrepo_detailLastTab", "oval");
+                break;
         }
     });
 
@@ -317,6 +321,7 @@ var setEvents = function() {
     $("[name='chkPivotCvss']").bootstrapSwitch();
     $("[name='chkNvdUse']").bootstrapSwitch();
     $("[name='chkJvnUse']").bootstrapSwitch();
+    $("[name='chkOvalUse']").bootstrapSwitch();
 
     if (db.get("vulsrepo_chkAheadUrl") === "true") {
         $('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
@@ -332,6 +337,9 @@ var setEvents = function() {
     }
     if (db.get("vulsrepo_chkJvnUse") === "false") {
         $('input[name="chkJvnUse"]').bootstrapSwitch('state', false, false);
+    }
+    if (db.get("vulsrepo_chkOvalUse") === "false") {
+        $('input[name="chkOvalUse"]').bootstrapSwitch('state', false, false);
     }
 
     $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -358,8 +366,8 @@ var setEvents = function() {
     $('input[name="chkNvdUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
         pairState = $('input[name="chkJvnUse"]').bootstrapSwitch('state');
         if (state === false) {
-            $('input[name="chkJvnUse"]').bootstrapSwitch('state', true, true);
-            db.remove("vulsrepo_chkJvnUse");
+            //$('input[name="chkJvnUse"]').bootstrapSwitch('state', true, true);
+            //db.remove("vulsrepo_chkJvnUse");
             db.set("vulsrepo_chkNvdUse", "false");
         } else {
             db.remove("vulsrepo_chkNvdUse");
@@ -367,17 +375,26 @@ var setEvents = function() {
     });
     $('input[name="chkJvnUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === false) {
-            $('input[name="chkNvdUse"]').bootstrapSwitch('state', true, true);
-            db.remove("vulsrepo_chkNvdUse");
+            //$('input[name="chkNvdUse"]').bootstrapSwitch('state', true, true);
+            //db.remove("vulsrepo_chkNvdUse");
             db.set("vulsrepo_chkJvnUse", "false");
         } else {
             db.remove("vulsrepo_chkJvnUse");
         }
     });
+    $('input[name="chkOvalUse"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        if (state === false) {
+            //$('input[name="chkOvalUse"]').bootstrapSwitch('state', true, true);
+            //db.remove("vulsrepo_chkOvalUse");
+            db.set("vulsrepo_chkOvalUse", "false");
+        } else {
+            db.remove("vulsrepo_chkOvalUse");
+        }
+    });
 
     //// priority
     if (db.get("vulsrepo_pivotPriority") === null) {
-        db.set("vulsrepo_pivotPriority", "NVD,JVN");
+        db.set("vulsrepo_pivotPriority", "NVD,JVN,OVAL");
     }
     $.each(db.get("vulsrepo_pivotPriority").split(","), function(i, i_val) {
         $("#pivot-priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
@@ -520,6 +537,24 @@ var createPivotData = function(resultArray) {
 
                 let jvnCvss = function() {
                     KnownObj["CVSS Score"] = y_val.CveDetail.Jvn.Score;
+                    KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
+                    if (summaryFlag !== "false") {
+                        KnownObj["Summary"] = y_val.CveDetail.Jvn.Title;
+                    }
+                    // ex) CveDetail.Jvn.Vector (AV:A/AC:H/Au:N/C:N/I:P/A:N)
+                    if (cvssFlag !== "false") {
+                        var arrayVector = getSplitArray(y_val.CveDetail.Jvn.Vector);
+                        KnownObj["CVSS (AV)"] = getVector.jvn(arrayVector[0])[0];
+                        KnownObj["CVSS (AC)"] = getVector.jvn(arrayVector[1])[0];
+                        KnownObj["CVSS (Au)"] = getVector.jvn(arrayVector[2])[0];
+                        KnownObj["CVSS (C)"] = getVector.jvn(arrayVector[3])[0];
+                        KnownObj["CVSS (I)"] = getVector.jvn(arrayVector[4])[0];
+                        KnownObj["CVSS (A)"] = getVector.jvn(arrayVector[5])[0];
+                    }
+                };
+
+                let ovalCvss = function() {
+                    KnownObj["CVSS Score"] = y_val.OvalDetail.Jvn.Score;
                     KnownObj["CVSS Severity"] = y_val.CveDetail.Jvn.Severity;
                     if (summaryFlag !== "false") {
                         KnownObj["Summary"] = y_val.CveDetail.Jvn.Title;
@@ -695,7 +730,7 @@ var displayPivot = function(array) {
 
     var derivers = $.pivotUtilities.derivers;
     //var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
-    var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
+    var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.export_renderers);
     var dateFormat = $.pivotUtilities.derivers.dateFormat;
     var sortAs = $.pivotUtilities.sortAs;
 
@@ -805,15 +840,23 @@ var initDetail = function() {
 var displayDetail = function(cveID) {
     initDetail();
 
-    if (db.get("vulsrepo_detailLastTab") === "nvd") {
-        $('a[href="#tab_nvd"]').tab('show');
-    } else {
-        $('a[href="#tab_jvn"]').tab('show');
+    switch (db.get("vulsrepo_detailLastTab")) {
+        case "nvd":
+            $('a[href="#tab_nvd"]').tab('show');
+            break;
+        case "jvn":
+            $('a[href="#tab_jvn"]').tab('show');
+            break;
+        case "oval":
+            $('a[href="#tab_oval"]').tab('show');
+            break;
+
     }
 
     if (db.get("vulsrepo_chkNvdUse") === "false") {
         $('a[href="#tab_nvd"]').css('display', 'none');
         $('a[href="#tab_jvn"]').tab('show');
+        $('a[href="#tab_oval"]').tab('show');
     } else {
         $('a[href="#tab_nvd"]').css('display', '');
     }
@@ -821,8 +864,17 @@ var displayDetail = function(cveID) {
     if (db.get("vulsrepo_chkJvnUse") === "false") {
         $('a[href="#tab_jvn"]').css('display', 'none');
         $('a[href="#tab_nvd"]').tab('show');
+        $('a[href="#tab_oval"]').tab('show');
     } else {
         $('a[href="#tab_jvn"]').css('display', '');
+    }
+
+    if (db.get("vulsrepo_chkOvalUse") === "false") {
+        $('a[href="#tab_oval"]').css('display', 'none');
+        $('a[href="#tab_nvd"]').tab('show');
+        $('a[href="#tab_jvn"]').tab('show');
+    } else {
+        $('a[href="#tab_oval"]').css('display', '');
     }
 
     var data = createDetailData(cveID);
@@ -917,14 +969,16 @@ var displayDetail = function(cveID) {
 
     // ---References---
     let countRef = 0;
-    if ((isCheckNull(data.CveDetail.Jvn.References) === false) & (db.get("vulsrepo_chkJvnUse") !== "false")) {
-        $.each(data.CveDetail.Jvn.References, function(x, x_val) {
+    if ((isCheckNull(data.CveDetail.Nvd.References) === false) & (db.get("vulsrepo_chkNvdUse") !== "false")) {
+        $("#References").append("<div>-----NVD-----</div>");
+        $.each(data.CveDetail.Nvd.References, function(x, x_val) {
             $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
             countRef++;
         });
     }
-    if ((isCheckNull(data.CveDetail.Nvd.References) === false) & (db.get("vulsrepo_chkNvdUse") !== "false")) {
-        $.each(data.CveDetail.Nvd.References, function(x, x_val) {
+    if ((isCheckNull(data.CveDetail.Jvn.References) === false) & (db.get("vulsrepo_chkJvnUse") !== "false")) {
+        $("#References").append("<div>-----JVN-----</div>");
+        $.each(data.CveDetail.Jvn.References, function(x, x_val) {
             $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
             countRef++;
         });

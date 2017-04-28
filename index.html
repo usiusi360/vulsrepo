@@ -151,6 +151,9 @@
                                                     <li>
                                                         <a href="#tab_jvn" data-toggle="tab">JVN</a>
                                                     </li>
+                                                    <li>
+                                                        <a href="#tab_oval" data-toggle="tab">OVAL</a>
+                                                    </li>
                                                 </ul>
 
                                                 <div class="tab-content">
@@ -284,6 +287,68 @@
                                                         <div id="Summary_jvn"></div>
                                                     </div>
 
+                                                    <!--oval-->
+                                                    <div class="tab-pane active" id="tab_oval">
+                                                        <table class='dateDisplay'>
+                                                            <tr>
+                                                                <td class='dateDisplay_title'>Published Date :</td>
+                                                                <td class='dateDisplay_date' id='publishedDateOval'></td>
+                                                                <td class='dateDisplay_title'>LastModified Date :</td>
+                                                                <td class='dateDisplay_date' id='lastModifiedDateOval'></td>
+                                                            </tr>
+                                                        </table>
+
+                                                        <div id="detailTitle_oval" class="detailTitle"></div>
+                                                        <p class="bg-primary">
+                                                            CVSS Score
+                                                        </p>
+                                                        <div class="detailScore">
+                                                            <table class='detailScoreTable'>
+                                                                <tr>
+                                                                    <td id='scoreText_oval'></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                        <div>
+                                                            <table class="table table-condensed table-bordered detailCvssTable">
+                                                                <tr class="active">
+                                                                    <th>Access Vector(AV)
+                                                                        <div id="tooltip_oval_av" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Access Complexity(AC)
+                                                                        <div id="tooltip_oval_ac" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Authentication(Au)
+                                                                        <div id="tooltip_oval_au" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Confidentiality Impact(C)
+                                                                        <div id="tooltip_oval_c" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Integrity Impact(I)
+                                                                        <div id="tooltip_oval_i" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                    <th>Availability Impact(A)
+                                                                        <div id="tooltip_oval_a" class="glyphicon glyphicon-question-sign"></div>
+                                                                    </th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td id="cvss_av_oval"></td>
+                                                                    <td id="cvss_ac_oval"></td>
+                                                                    <td id="cvss_au_oval"></td>
+                                                                    <td id="cvss_c_oval"></td>
+                                                                    <td id="cvss_i_oval"></td>
+                                                                    <td id="cvss_a_oval"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                        <p class="bg-primary">
+                                                            Summary
+                                                        </p>
+                                                        <div id="Summary_oval"></div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -399,6 +464,7 @@
                                         <div class="make-switch">
                                             <input type="checkbox" name="chkNvdUse" data-label-text="NVD" checked>
                                             <input type="checkbox" name="chkJvnUse" data-label-text="JVN" checked>
+                                            <input type="checkbox" name="chkOvalUse" data-label-text="OVAL" checked>
                                         </div>
                                     </div>
                                 </div>
@@ -581,6 +647,7 @@
 <script src="plugins/pivot.js/pivot.min.js" type="text/javascript"></script>
 <script src="plugins/pivot.js/d3_renderers.min.js" type="text/javascript"></script>
 <script src="plugins/pivot.js/c3_renderers.min.js" type="text/javascript"></script>
+<script src="plugins/pivot.js/export_renderers.min.js" type="text/javascript"></script>
 <!-- jquery.blockUI.js -->
 <script src="plugins/jquery.blockUI/jquery.blockUI.js" type="text/javascript"></script>
 <!-- jquery.xdomainajax -->
