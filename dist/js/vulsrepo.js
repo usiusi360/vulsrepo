@@ -828,11 +828,12 @@ var createDetailData = function(cveID) {
 
 var initDetail = function() {
     $("#modal-label").text("");
-    $("#publishedDateJvn,#lastModifiedDateJvn,#publishedDateNvd,#lastModifiedDateNvd").text("------");
-    $("#scoreText_jvn,#scoreText_nvd").text("").css('background-color', 'gray');
+    $("#publishedDateJvn,#lastModifiedDateJvn,#publishedDateNvd,#lastModifiedDateNvd", "#publishedDateOval", "#lastModifiedDateOval").text("------");
+    $("#scoreText_jvn,#scoreText_nvd,#scoreText_oval").text("").css('background-color', 'gray');
     $("#cvss_av_jvn,#cvss_ac_jvn,#cvss_au_jvn,#cvss_c_jvn,#cvss_i_jvn,#cvss_a_jvn").removeClass().text("");
     $("#cvss_av_nvd,#cvss_ac_nvd,#cvss_au_nvd,#cvss_c_nvd,#cvss_i_nvd,#cvss_a_nvd").removeClass().text("");
-    $("#detailTitle_jvn,#detailTitle_nvd,#Summary_jvn,#Summary_nvd,#CweID,#Link,#References").empty();
+    $("#cvss_av_oval,#cvss_ac_oval,#cvss_au_oval,#cvss_c_oval,#cvss_i_oval,#cvss_a_oval").removeClass().text("");
+    $("#detailTitle_jvn,#detailTitle_nvd,#detailTitle_oval,#Summary_jvn,#Summary_nvd,#Summary_oval,#CweID,#Link,#References").empty();
     $("#count-References").text("0");
 };
 
@@ -903,6 +904,25 @@ var displayDetail = function(cveID) {
     }
 
     // ---Tab NVD---
+    if (data.CveDetail.Nvd.Summary !== "") {
+        $("#publishedDateNvd").text(data.CveDetail.Nvd.PublishedDate.split("T")[0]);
+        $("#lastModifiedDateNvd").text(data.CveDetail.Nvd.LastModifiedDate.split("T")[0]);
+
+        $("#scoreText_nvd").text(data.CveDetail.Nvd.Score + " (" + getSeverity(data.CveDetail.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.CveDetail.Nvd.Score)[1]);
+        $("#cvss_av_nvd").text(data.CveDetail.Nvd.AccessVector).addClass(getVector.nvd("AV", data.CveDetail.Nvd.AccessVector));
+        $("#cvss_ac_nvd").text(data.CveDetail.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.CveDetail.Nvd.AccessComplexity));
+        $("#cvss_au_nvd").text(data.CveDetail.Nvd.Authentication).addClass(getVector.nvd("Au", data.CveDetail.Nvd.Authentication));
+        $("#cvss_c_nvd").text(data.CveDetail.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.CveDetail.Nvd.ConfidentialityImpact));
+        $("#cvss_i_nvd").text(data.CveDetail.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.CveDetail.Nvd.IntegrityImpact));
+        $("#cvss_a_nvd").text(data.CveDetail.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.CveDetail.Nvd.AvailabilityImpact));
+        $("#Summary_nvd").append("<div>" + data.CveDetail.Nvd.Summary + "<div>");
+
+    } else {
+        $("#scoreText_nvd").text("NO DATA");
+        $("#Summary_nvd").append("NO DATA");
+    }
+
+    // ---Tab OVAL---
     if (data.CveDetail.Nvd.Summary !== "") {
         $("#publishedDateNvd").text(data.CveDetail.Nvd.PublishedDate.split("T")[0]);
         $("#lastModifiedDateNvd").text(data.CveDetail.Nvd.LastModifiedDate.split("T")[0]);
