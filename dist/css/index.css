@@ -307,3 +307,7 @@ body.noscroll {
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+
+.font-size-small {
+    font-size: 90%;
+}

@@ -728,6 +728,8 @@ var createPivotData = function(resultArray) {
 
 var displayPivot = function(array) {
 
+
+
     var derivers = $.pivotUtilities.derivers;
     //var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
     var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.export_renderers);
@@ -782,6 +784,8 @@ var displayPivot = function(array) {
     $("#pivot_base").pivotUI(array, pivot_attr, {
         overwrite: "true"
     });
+
+    history.replaceState('', '', '?aaa=bbbb');
 
 };
 
@@ -923,23 +927,23 @@ var displayDetail = function(cveID) {
     }
 
     // ---Tab OVAL---
-    if (data.CveDetail.Nvd.Summary !== "") {
-        $("#publishedDateNvd").text(data.CveDetail.Nvd.PublishedDate.split("T")[0]);
-        $("#lastModifiedDateNvd").text(data.CveDetail.Nvd.LastModifiedDate.split("T")[0]);
+    // if (data.CveDetail.Nvd.Summary !== "") {
+    //     $("#publishedDateNvd").text(data.CveDetail.Nvd.PublishedDate.split("T")[0]);
+    //     $("#lastModifiedDateNvd").text(data.CveDetail.Nvd.LastModifiedDate.split("T")[0]);
 
-        $("#scoreText_nvd").text(data.CveDetail.Nvd.Score + " (" + getSeverity(data.CveDetail.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.CveDetail.Nvd.Score)[1]);
-        $("#cvss_av_nvd").text(data.CveDetail.Nvd.AccessVector).addClass(getVector.nvd("AV", data.CveDetail.Nvd.AccessVector));
-        $("#cvss_ac_nvd").text(data.CveDetail.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.CveDetail.Nvd.AccessComplexity));
-        $("#cvss_au_nvd").text(data.CveDetail.Nvd.Authentication).addClass(getVector.nvd("Au", data.CveDetail.Nvd.Authentication));
-        $("#cvss_c_nvd").text(data.CveDetail.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.CveDetail.Nvd.ConfidentialityImpact));
-        $("#cvss_i_nvd").text(data.CveDetail.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.CveDetail.Nvd.IntegrityImpact));
-        $("#cvss_a_nvd").text(data.CveDetail.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.CveDetail.Nvd.AvailabilityImpact));
-        $("#Summary_nvd").append("<div>" + data.CveDetail.Nvd.Summary + "<div>");
+    //     $("#scoreText_nvd").text(data.CveDetail.Nvd.Score + " (" + getSeverity(data.CveDetail.Nvd.Score)[0] + ")").css('background-color', getSeverity(data.CveDetail.Nvd.Score)[1]);
+    //     $("#cvss_av_nvd").text(data.CveDetail.Nvd.AccessVector).addClass(getVector.nvd("AV", data.CveDetail.Nvd.AccessVector));
+    //     $("#cvss_ac_nvd").text(data.CveDetail.Nvd.AccessComplexity).addClass(getVector.nvd("AC", data.CveDetail.Nvd.AccessComplexity));
+    //     $("#cvss_au_nvd").text(data.CveDetail.Nvd.Authentication).addClass(getVector.nvd("Au", data.CveDetail.Nvd.Authentication));
+    //     $("#cvss_c_nvd").text(data.CveDetail.Nvd.ConfidentialityImpact).addClass(getVector.nvd("C", data.CveDetail.Nvd.ConfidentialityImpact));
+    //     $("#cvss_i_nvd").text(data.CveDetail.Nvd.IntegrityImpact).addClass(getVector.nvd("I", data.CveDetail.Nvd.IntegrityImpact));
+    //     $("#cvss_a_nvd").text(data.CveDetail.Nvd.AvailabilityImpact).addClass(getVector.nvd("A", data.CveDetail.Nvd.AvailabilityImpact));
+    //     $("#Summary_nvd").append("<div>" + data.CveDetail.Nvd.Summary + "<div>");
 
-    } else {
-        $("#scoreText_nvd").text("NO DATA");
-        $("#Summary_nvd").append("NO DATA");
-    }
+    // } else {
+    //     $("#scoreText_nvd").text("NO DATA");
+    //     $("#Summary_nvd").append("NO DATA");
+    // }
 
     // ---CweID---
     if (data.CveDetail.Nvd.CweID === "" || data.CveDetail.Nvd.CweID === undefined) {
@@ -1040,6 +1044,53 @@ var displayDetail = function(cveID) {
 
     $("#modal-detail").modal('show');
     setTimeout(function() { packageTable.columns.adjust(); }, 200);
+
+
+    var ctx = document.getElementById("myRadarChart");
+
+    var myRadarChart = new Chart(ctx, {
+        type: 'radar',
+        options: {
+            responsive: false,
+            scale: {
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }
+        },
+        data: {
+            labels: ["Access Vector(AV)", "Access Complexity(AC)", "Authentication(Au)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
+            datasets: [{
+                    label: "NVD",
+                    backgroundColor: "rgba(179,181,198,0.2)",
+                    borderColor: "rgba(179,181,198,1)",
+                    pointBackgroundColor: "rgba(179,181,198,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(179,181,198,1)",
+                    hitRadius: 5,
+                    data: [1, 3, 2, 2, 3, 2]
+                },
+                {
+                    label: "JVN",
+                    backgroundColor: "rgba(255,99,132,0.2)",
+                    borderColor: "rgba(255,99,132,1)",
+                    pointBackgroundColor: "rgba(255,99,132,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(255,99,132,1)",
+                    hitRadius: 5,
+                    data: [2, 3, 2, 3, 3, 3]
+                }
+            ]
+        }
+    });
+
+    $('#Summary_rhel').collapser({
+        mode: 'words',
+        truncate: 40
+    });
 
 };
 
