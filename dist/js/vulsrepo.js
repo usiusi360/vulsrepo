@@ -400,7 +400,7 @@ var setEvents = function() {
     $('#pivot-priority').disableSelection();
 
     $("#pivot-link").click(function() {
-        let str = location.href + "?vulsrepo_pivot_conf_tmp=" + encodeURIComponent(localStorage.getItem("vulsrepo_pivot_conf_tmp"));
+        let str = location.href + "?vulsrepo_pivot_conf_tmp=" + LZString.compressToEncodedURIComponent(localStorage.getItem("vulsrepo_pivot_conf_tmp"));
         $("#view_url_box").val("");
         $("#view_url_box").val(str);
         $("#modal-viewUrl").modal('show');
@@ -704,7 +704,12 @@ var displayPivot = function(array) {
     var url_param;
     if (location.search !== "") {
         try {
-            url_param = JSON.parse(decodeURIComponent(location.search.substring(1).split('=')[1]));
+            var decode_str = LZString.decompressFromEncodedURIComponent(location.search.substring(1).split('=')[1])
+            if (decode_str === null) {
+                showAlert("param decode error", decode_str);
+                return;
+            }
+            url_param = JSON.parse(decode_str);
         } catch (e) {
             showAlert("param parse error", e);
             return;
