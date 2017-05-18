@@ -347,16 +347,22 @@ var getHelpMes = function(target, type) {
 };
 
 var displayHelpMes = function() {
-    $.each(["jvn", "nvd"], function(x, x_val) {
+
+    let addHelpMes = function(dom_t, obj_t) {
         $.each(["av", "ac", "au", "c", "i", "a"], function(x, y_val) {
-            $("#tooltip_" + x_val + "_" + y_val).balloon({
+            $("#tooltip_" + dom_t + "_" + y_val).balloon({
                 html: true,
                 css: {
                     fontSize: '80%',
                     maxWidth: '700px'
                 },
-                contents: getHelpMes(x_val, y_val)
+                contents: getHelpMes(obj_t, y_val)
             });
         });
-    });
+    };
+
+    addHelpMes("nvd", "nvd");
+    addHelpMes("jvn", "jvn");
+    addHelpMes("oval", "nvd");
+
 };
