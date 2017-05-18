@@ -37,6 +37,7 @@ var initPivotTable = function() {
 };
 
 var packageTable = $("#table-package").DataTable();
+var clipboard = new Clipboard('.btn');
 
 var db = {
     set: function(key, obj) {
@@ -398,6 +399,13 @@ var setEvents = function() {
     });
     $('#pivot-priority').disableSelection();
 
+    $("#pivot-link").click(function() {
+        let str = location.href + "?vulsrepo_pivot_conf_tmp=" + encodeURIComponent(localStorage.getItem("vulsrepo_pivot_conf_tmp"));
+        $("#view_url_box").val("");
+        $("#view_url_box").val(str);
+        $("#modal-viewUrl").modal('show');
+    });
+
 };
 
 var createFolderTree = function() {
@@ -693,6 +701,21 @@ var createPivotData = function(resultArray) {
 
 var displayPivot = function(array) {
 
+    var url_param;
+    if (location.search !== "") {
+        try {
+            url_param = JSON.parse(decodeURIComponent(location.search.substring(1).split('=')[1]));
+        } catch (e) {
+            showAlert("param parse error", e);
+            return;
+        }
+    }
+
+    var url = window.location.href
+    var new_url = url.replace(/\?.*$/, "");
+    history.replaceState(null, null, new_url);
+
+
     var derivers = $.pivotUtilities.derivers;
     //var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
     var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
@@ -729,7 +752,13 @@ var displayPivot = function(array) {
 
     };
 
-    var pivot_obj = db.get("vulsrepo_pivot_conf");
+    var pivot_obj;
+    if (url_param != null) {
+        pivot_obj = url_param;
+    } else {
+        pivot_obj = db.get("vulsrepo_pivot_conf");
+    }
+
     if (pivot_obj != null) {
         pivot_attr["rows"] = pivot_obj["rows"];
         pivot_attr["cols"] = pivot_obj["cols"];
