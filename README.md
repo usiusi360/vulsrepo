@@ -98,6 +98,38 @@ Access the browser
 http://VulsServer/vulsrepo/
 ````
 
+## Misc
+
+### SETTING
+
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="80%">
+
+- Detail screen of CVE-ID
+
+| Setting Name |  |
+|:-|:-|
+|The look-ahead check the URL|Prefetch Link's URL destination and check whether the page exists|
+|Show / Hide the Tab|Toggle display of NVD / JVN tab|
+
+
+- Pivot Table
+
+| Setting Name |  |
+|:-|:-|
+|Show / Hide the Item|Set items not to be displayed on pivot table. Since the data of Summary is very large, it turns OFF when the number of vulnerabilities is large and an error occurs.|
+|Priority|Set the data to be displayed with priority in the pivot table.The default is NVD data.|
+
+### Sharing settings
+
+- How to share pivot settings with others
+
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image007.png" width="80%">
+
+1. Click the link display button on the upper right.
+2. Click the copy button to clickboard.
+3. Pass the copied URL to another person.
+4. When you access the URL in the browser and select the file, the pivot is displayed with the same setting.
+
 ## Gallery ##
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image002.png)
