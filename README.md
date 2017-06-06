@@ -130,6 +130,16 @@ http://VulsServer/vulsrepo/
 3. Pass the copied URL to another person.
 4. When you access the URL in the browser and select the file, the pivot is displayed with the same setting.
 
+### FAQ
+
+- Why does not Total of Vuls and VulsRepo result match ?
+
+Vuls aggregates the number of CveIDs included in the host.
+However, VulsRepo counts Packages related to CveID as one case.
+If more than one package is associated with one CveID, Total will increase more than Vuls.
+
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image008.png" width="80%">
+
 ## Gallery ##
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image002.png)
