@@ -150,7 +150,9 @@
                                                     <table class="table table-hover table-condensed font-size-small">
                                                         <tr class="active">
                                                             <th>Type</th>
-                                                            <th>Score</th>
+                                                            <th>Score
+                                                                <div id="tooltip_jvn_c" class="glyphicon glyphicon-question-sign"></div>
+                                                            </th>
                                                             <th>Summary</th>
                                                             <th>LastModified Date</th>
                                                         </tr>
@@ -180,7 +182,24 @@
                                                     </table>
                                                 </div>
                                                 <div class="col-xs-4" style="padding-left: 0px;">
-                                                    <canvas id="myRadarChart" width="380" height="380"></canvas>
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active">
+                                                            <a data-toggle="tab" href="#tab_chart_v2">CvssV2</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab" href="#tab_chart_v3">CvssV3</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-content">
+                                                        <div class="tab-pane active" id="tab_chart_v2">
+                                                            <canvas id="radar-chartV2" width="380" height="380"></canvas>
+                                                        </div>
+                                                        <div class="tab-pane" id="tab_chart_v3">
+                                                            <canvas id="radar-chartV3" width="380" height="380"></canvas>
+                                                        </div>
+
+                                                    </div>
+                                                    <div id="tooltip_jvn_i" class="glyphicon glyphicon-question-sign"></div>
                                                 </div>
 
                                             </div>

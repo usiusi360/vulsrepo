@@ -1,10 +1,10 @@
 var getSeverity = function(Score) {
     if (Score >= 7.0) {
-        return Array("High", "red");
+        return Array("High", "#ffc800");
     } else if ((Score <= 6.9) && (Score >= 4.0)) {
-        return Array("Medium", "orange");
+        return Array("Medium", "#ffff00");
     } else if ((Score <= 3.9) && (Score >= 0.1)) {
-        return Array("Low", "#ffff00");
+        return Array("Low", "##ffe5d0");
     } else if (Score == 0) {
         return Array("None", "white");
     }
@@ -29,7 +29,7 @@ var getSplitArray = function(full_vector) {
     return full_vector.replace(/\(|\)/g, '').split("/");
 };
 
-var getVector = {
+var getVectorV2 = {
 
     cvss: function(vector) {
         var subscore = vector.split(":");
@@ -111,6 +111,107 @@ var getVector = {
     }
 };
 
+
+
+var getVectorV3 = {
+
+    cvss: function(vector) {
+        var subscore = vector.split(":");
+
+        switch (subscore[0]) {
+            case 'AV':
+                switch (subscore[1]) {
+                    case 'P':
+                        return Array("PHYSICAL", 1);
+                        break;
+                    case 'L':
+                        return Array("LOCAL", 2);
+                        break;
+                    case 'A':
+                        return Array("ADJACENT_NETWORK", 3);
+                        break;
+                    case 'N':
+                        return Array("NETWORK", 4);
+                        break;
+                }
+            case 'AC':
+                switch (subscore[1]) {
+                    case 'H':
+                        return Array("HIGH", 1);
+                        break;
+                    case 'L':
+                        return Array("LOW", 3);
+                        break;
+                }
+            case 'PR':
+                switch (subscore[1]) {
+                    case 'H':
+                        return Array("HIGH", 1);
+                        break;
+                    case 'L':
+                        return Array("LOW", 2);
+                        break;
+                    case 'N':
+                        return Array("NONE", 3);
+                        break;
+                }
+            case 'UI':
+                switch (subscore[1]) {
+                    case 'R':
+                        return Array("REQUIRED", 1);
+                        break;
+                    case 'N':
+                        return Array("NONE", 3);
+                        break;
+                }
+            case 'S':
+                switch (subscore[1]) {
+                    case 'U':
+                        return Array("UNCHANGED", 1);
+                        break;
+                    case 'C':
+                        return Array("CHANGED", 3);
+                        break;
+                }
+            case 'C':
+                switch (subscore[1]) {
+                    case 'N':
+                        return Array("NONE", 1);
+                        break;
+                    case 'L':
+                        return Array("LOW", 2);
+                        break;
+                    case 'H':
+                        return Array("HIGH", 3);
+                        break;
+                }
+            case 'I':
+                switch (subscore[1]) {
+                    case 'N':
+                        return Array("NONE", 1);
+                        break;
+                    case 'L':
+                        return Array("LOW", 2);
+                        break;
+                    case 'H':
+                        return Array("HIGH", 3);
+                        break;
+                }
+            case 'A':
+                switch (subscore[1]) {
+                    case 'N':
+                        return Array("NONE", 1);
+                        break;
+                    case 'L':
+                        return Array("LOW", 2);
+                        break;
+                    case 'H':
+                        return Array("HIGH", 3);
+                        break;
+                }
+        }
+    }
+};
 
 var getHelpMes = function(target, type) {
 

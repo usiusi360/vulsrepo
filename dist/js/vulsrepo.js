@@ -516,12 +516,12 @@ var createPivotData = function(resultArray) {
                             if (cvssFlag !== "false") {
                                 if (y_val.CveContents[target].Cvss2Vector !== "") { //for CVE-2016-5483
                                     var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
-                                    result["CVSS (AV)"] = getVector.cvss(arrayVector[0])[0];
-                                    result["CVSS (AC)"] = getVector.cvss(arrayVector[1])[0];
-                                    result["CVSS (Au)"] = getVector.cvss(arrayVector[2])[0];
-                                    result["CVSS (C)"] = getVector.cvss(arrayVector[3])[0];
-                                    result["CVSS (I)"] = getVector.cvss(arrayVector[4])[0];
-                                    result["CVSS (A)"] = getVector.cvss(arrayVector[5])[0];
+                                    result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
+                                    result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
+                                    result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
+                                    result["CVSS (C)"] = getVectorV2.cvss(arrayVector[3])[0];
+                                    result["CVSS (I)"] = getVectorV2.cvss(arrayVector[4])[0];
+                                    result["CVSS (A)"] = getVectorV2.cvss(arrayVector[5])[0];
                                 } else {
                                     result["CVSS (AV)"] = "None";
                                     result["CVSS (AC)"] = "None";
@@ -727,15 +727,14 @@ var displayDetail = function(cveID) {
                 $("#scoreText_" + target).text(data.CveContents[target].Cvss2Score + " (" + getSeverity(data.CveContents[target].Cvss2Score)[0] + ")").css('background-color', getSeverity(data.CveContents[target].Cvss2Score)[1]);
                 $("#Summary_" + target).append("<div>" + data.CveContents[target].Summary + "<div>");
 
-                var arrayVector = getSplitArray(data.CveContents[target].Cvss2Vector);
-
                 var result = [];
-                result.push(getVector.cvss(arrayVector[0])[1]);
-                result.push(getVector.cvss(arrayVector[1])[1]);
-                result.push(getVector.cvss(arrayVector[2])[1]);
-                result.push(getVector.cvss(arrayVector[3])[1]);
-                result.push(getVector.cvss(arrayVector[4])[1]);
-                result.push(getVector.cvss(arrayVector[5])[1]);
+                var arrayVector = getSplitArray(data.CveContents[target].Cvss2Vector);
+                result.push(getVectorV2.cvss(arrayVector[0])[1]);
+                result.push(getVectorV2.cvss(arrayVector[1])[1]);
+                result.push(getVectorV2.cvss(arrayVector[2])[1]);
+                result.push(getVectorV2.cvss(arrayVector[3])[1]);
+                result.push(getVectorV2.cvss(arrayVector[4])[1]);
+                result.push(getVectorV2.cvss(arrayVector[5])[1]);
             } else {
                 $("#scoreText_" + target).text("NO DATA");
                 $("#Summary_" + target).append("NO DATA");
@@ -759,18 +758,34 @@ var displayDetail = function(cveID) {
                 $("#scoreText_redhatV3").text(data.CveContents[target].Cvss3Score + " (" + getSeverityV3(data.CveContents[target].Cvss3Score)[0] + ")").css('background-color', getSeverityV3(data.CveContents[target].Cvss3Score)[1]);
                 $("#Summary_redhat").empty();
                 $("#Summary_redhat").append("<div>" + data.CveContents[target].Summary + "<div>");
+
+                var result = [];
+                var arrayVector = getSplitArray(data.CveContents[target].Cvss3Vector);
+                result.push(getVectorV3.cvss(arrayVector[0])[1]);
+                result.push(getVectorV3.cvss(arrayVector[1])[1]);
+                result.push(getVectorV3.cvss(arrayVector[2])[1]);
+                result.push(getVectorV3.cvss(arrayVector[3])[1]);
+                result.push(getVectorV3.cvss(arrayVector[4])[1]);
+                result.push(getVectorV3.cvss(arrayVector[5])[1]);
+                result.push(getVectorV3.cvss(arrayVector[6])[1]);
+                result.push(getVectorV3.cvss(arrayVector[7])[1]);
             } else {
                 $("#scoreText_redhatV3").text("NO DATA");
             }
         } else {
             $("#scoreText_redhatV3").text("NO DATA");
         }
+
+        if (result === undefined) {
+            result = [0, 0, 0, 0, 0, 0, 0, 0];
+        }
+        return result;
     }
 
     var radarData_nvd = dispCvssV2("nvd");
     var radarData_jvn = dispCvssV2("jvn");
-    var radarData_redhat = dispCvssV2("redhat");
-    dispCvssV3("redhat");
+    var radarData_redhatV2 = dispCvssV2("redhat");
+    var radarData_redhatV3 = dispCvssV3("redhat")
 
     // ---CweID---
     if (data.CveContents.nvd !== undefined) {
@@ -880,13 +895,17 @@ var displayDetail = function(cveID) {
     $("#modal-detail").modal('show');
     setTimeout(function() { packageTable.columns.adjust(); }, 200);
 
-    var ctx = document.getElementById("myRadarChart").getContext("2d");
+    var ctxV2 = document.getElementById("radar-chartV2");
+    var ctxV3 = document.getElementById("radar-chartV3");
 
-    if (typeof myChart != "undefined") {
-        myChart.destroy();
+    if (typeof chartV2 != "undefined") {
+        chartV2.destroy();
+    }
+    if (typeof chartV3 != "undefined") {
+        chartV3.destroy();
     }
 
-    myChart = new Chart(ctx, {
+    chartV2 = new Chart(ctxV2, {
         type: 'radar',
         options: {
             responsive: false,
@@ -930,9 +949,37 @@ var displayDetail = function(cveID) {
                     pointHoverBackgroundColor: "#fff",
                     pointHoverBorderColor: "rgba(51,204,204,1)",
                     hitRadius: 5,
-                    data: radarData_redhat
+                    data: radarData_redhatV2
                 }
             ]
+        }
+    });
+
+    chartV3 = new Chart(ctxV3, {
+        type: 'radar',
+        options: {
+            responsive: false,
+            scale: {
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }
+        },
+        data: {
+            labels: ["Access Vector(AV)", "Access Complexity(AC)", "Privileges Required(PR)", "User Interaction(UI)", "Scope(S)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
+            datasets: [{
+                label: "RedhatV3",
+                backgroundColor: "rgba(102,102,255,0.2)",
+                borderColor: "rgba(102,102,255,1)",
+                pointBackgroundColor: "rgba(102,102,255,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(102,102,255,1)",
+                hitRadius: 5,
+                data: radarData_redhatV3
+
+            }]
         }
     });
 
