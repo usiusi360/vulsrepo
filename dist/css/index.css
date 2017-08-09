@@ -159,8 +159,8 @@ section {
 }
 
 .modal .large {
-    width: 1200px;
-    margin-left: -300px;
+    width: 1300px;
+    margin-left: -350px;
 }
 
 table.cvss_tooltip {
@@ -306,4 +306,8 @@ body.noscroll {
 
 .bs-callout-info h4 {
     color: #5bc0de;
+}
+
+.font-size-small {
+    font-size: 90%;
 }
