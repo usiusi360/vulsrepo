@@ -1,38 +1,38 @@
-var getSeverity = function(Score) {
+const getSeverity = function(Score) {
     if (Score >= 7.0) {
-        return Array("High", "#ffc800");
+        return "High";
     } else if ((Score <= 6.9) && (Score >= 4.0)) {
-        return Array("Medium", "#ffff00");
+        return "Medium";
     } else if ((Score <= 3.9) && (Score >= 0.1)) {
-        return Array("Low", "##ffe5d0");
+        return "Low";
     } else if (Score == 0) {
-        return Array("None", "white");
+        return "None";
     }
 };
 
-var getSeverityV3 = function(Score) {
+const getSeverityV3 = function(Score) {
     if (Score >= 9.0) {
-        return Array("Critical", "#ff0000");
+        return "Critical";
     } else if ((Score <= 8.9) && (Score >= 7.0)) {
-        return Array("High", "#ffc800");
+        return "High";
     } else if ((Score <= 6.9) && (Score >= 4.0)) {
-        return Array("Medium", "#ffff00");
+        return "Medium";
     } else if ((Score <= 3.9) && (Score >= 0.1)) {
-        return Array("Low", "#ffe5d0");
+        return "Low";
     } else if (Score == 0) {
-        return Array("None", "white");
+        return "None";
     }
 };
 
 
-var getSplitArray = function(full_vector) {
+const getSplitArray = function(full_vector) {
     return full_vector.replace(/\(|\)/g, '').split("/");
 };
 
-var getVectorV2 = {
+const getVectorV2 = {
 
     cvss: function(vector) {
-        var subscore = vector.split(":");
+        const subscore = vector.split(":");
 
         switch (subscore[0]) {
             case 'AV':
@@ -113,10 +113,10 @@ var getVectorV2 = {
 
 
 
-var getVectorV3 = {
+const getVectorV3 = {
 
     cvss: function(vector) {
-        var subscore = vector.split(":");
+        const subscore = vector.split(":");
 
         switch (subscore[0]) {
             case 'AV':
@@ -213,7 +213,7 @@ var getVectorV3 = {
     }
 };
 
-var getHelpMes = function(target, type) {
+const getHelpMes = function(target, type) {
 
     let helpMes = {
         jvn: {
@@ -386,7 +386,7 @@ var getHelpMes = function(target, type) {
     return '<table class="cvss_tooltip"><tbody>' + tmp_tr + '</tbody></table>';
 };
 
-var displayHelpMes = function() {
+const displayHelpMes = function() {
     $.each(["jvn", "nvd"], function(x, x_val) {
         $.each(["av", "ac", "au", "c", "i", "a"], function(x, y_val) {
             $("#tooltip_" + x_val + "_" + y_val).balloon({
@@ -400,3 +400,191 @@ var displayHelpMes = function() {
         });
     });
 };
+
+
+
+const displayHelpMesScore = function() {
+
+    $("#tooltip_score").balloon({
+        html: true,
+        position: "right",
+        offsetY: -250,
+        css: {
+            fontSize: '80%',
+            width: '900',
+            opacity: 0.95,
+            minLifetime: 2000
+        },
+        contents: isHelpHTMLScore()
+    });
+
+};
+
+const isHelpHTMLScore = function() {
+    return `
+    <div class="col-xs-12">
+        <div> NVD, JVN</div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-High">High</td>
+                    <td>7.0 ～ 10.0</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Medium">Medium</td>
+                    <td>4.0 ～ 6.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>0.1 ～ 3.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-None">None</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-12">&nbsp;</div>
+    <div class="col-xs-6">
+        <div>RedHat(v2), RedHat(v3) <a href="https://access.redhat.com/security/updates/classification" target="_blank">Understanding Red Hat security ratings</a></div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-Critical">Critical</td>
+                    <td>This rating is given to flaws that could be easily exploited by a remote unauthenticated attacker and lead to system compromise (arbitrary code execution) without requiring user interaction. These are the types of vulnerabilities that can be exploited by worms. Flaws that require an authenticated remote user, a local user, or an unlikely configuration are not classed as Critical impact.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Important">Important</td>
+                    <td>This rating is given to flaws that can easily compromise the confidentiality, integrity, or availability of resources. These are the types of vulnerabilities that allow local users to gain privileges, allow unauthenticated remote users to view resources that should otherwise be protected by authentication, allow authenticated remote users to execute arbitrary code, or allow remote users to cause a denial of service.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Moderate">Moderate</td>
+                    <td>This rating is given to flaws that may be more difficult to exploit but could still lead to some compromise of the confidentiality, integrity, or availability of resources, under certain circumstances. These are the types of vulnerabilities that could have had a Critical impact or Important impact but are less easily exploited based on a technical evaluation of the flaw, or affect unlikely configurations.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>This rating is given to all other issues that have a security impact. These are the types of vulnerabilities that are believed to require unlikely circumstances to be able to be exploited, or where a successful exploit would give minimal consequences.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-None">None</td>
+                    <td>None</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <div class="col-xs-6">
+        <div>Ubuntu, Debian <a href="https://people.canonical.com/~ubuntu-security/cve/priority.html" target="_blank">Ubuntu priority</a></div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-Critical">Critical</td>
+                    <td>Open vulnerability that is a world-burning problem, exploitable for nearly all people in a default installation. Includes remote root privilege escalations, or massive data loss.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-High">High</td>
+                    <td>Open vulnerability that is a real problem, exploitable for many people in a default installation. Includes serious remote denial of services, local root privilege escalations, or data loss.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Medium">Medium</td>
+                    <td>Open vulnerability that is a real security problem, and is exploitable for many people. Includes network daemon denial of service attacks, cross-site scripting, and gaining user privileges. Updates should be made soon for this priority of issue.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>Open vulnerability that is a security problem, but is hard to exploit due to environment, requires a user-assisted attack, a small install base, or does very little damage. These tend to be included in security updates only when higher priority issues require an update, or if many low priority issues have built up.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Negligible">Negligible</td>
+                    <td>Open vulnerability that is technically a security problem, but is only theoretical in nature, requires a very special situation, has almost no install base, or does no real damage. These tend not to get backported from upstream, and will likely not be included in security updates unless there is an easy fix and some other issue causes an update.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Unknown">Unknown</td>
+                    <td>Open vulnerability where the priority is currently unknown and needs to be triaged.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Pending">Pending</td>
+                    <td>A fix has been applied and updated packages are awaiting arrival into the archive. This often used when a package is received into -proposed for wider testing.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-NotVulnerable">Not Vulnerable</td>
+                    <td>Packages which do not exist (DNE) in the archive, are not affected by the vulnerability or have a fix applied in the archive.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    `;
+}
+
+
+const detailLink = {
+    cwe_nvd: {
+        url: "https://cwe.mitre.org/data/definitions/",
+    },
+    cwe_jvn: {
+        url: "http://jvndb.jvn.jp/ja/cwe/",
+    },
+    mitre: {
+        url: "https://cve.mitre.org/cgi-bin/cvename.cgi",
+        disp: "MITRE"
+    },
+    cveDetail: {
+        url: "http://www.cvedetails.com/cve/",
+        disp: "CveDetails"
+    },
+    nvd: {
+        url: "https://nvd.nist.gov/vuln/detail/",
+        disp: "NVD"
+    },
+    jvn: {
+        url: "http://jvndb.jvn.jp/search/index.php?mode=_vulnerability_search_IA_VulnSearch&keyword=",
+        disp: "JVN"
+    },
+    cvssV2Calculator: {
+        url: "https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?name=",
+        disp: "CVSSv2 Caluclator"
+    },
+    cvssV3Calculator: {
+        url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?name=",
+        disp: "CVSSv3 Caluclator"
+    },
+    rhel: {
+        url: "https://access.redhat.com/security/cve/",
+        disp: "RHEL"
+    },
+    debian: {
+        url: "https://security-tracker.debian.org/tracker/",
+        disp: "Debian"
+    },
+    ubuntu: {
+        url: "https://people.canonical.com/~ubuntu-security/cve/",
+        disp: "Ubuntu"
+    },
+    amazon: {
+        url: "https://alas.aws.amazon.com/",
+        disp: "Amazon"
+    },
+    rhn: {
+        url: "https://rhn.redhat.com/errata/",
+        disp: "RedHat Network",
+    },
+    oracle: {
+        url: "https://linux.oracle.com/cve/",
+        disp: "OracleLinux"
+    },
+    oracleErrata: {
+        url: "https://linux.oracle.com/errata/",
+        disp: "OracleLinux Errata"
+    }
+}

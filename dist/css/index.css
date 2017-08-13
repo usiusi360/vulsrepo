@@ -32,16 +32,65 @@ a {
     margin: 2%;
 }
 
-.cvss-info {
-    background-color: lightskyblue;
+.cvss-Critical {
+    background-color: #ff0000;
+    color: black
 }
 
-.cvss-warning {
-    background-color: orange;
+.cvss-High {
+    background-color: #ffc800;
+    color: black
 }
 
-.cvss-danger {
-    background-color: indianred;
+.cvss-Medium {
+    background-color: #ffff00;
+    color: black
+}
+
+.cvss-Low {
+    background-color: #ffe5d0;
+    color: black
+}
+
+.cvss-None {
+    background-color: gray;
+    color: black
+}
+
+
+/*for redhat https://access.redhat.com/security/updates/classification/*/
+
+.cvss-Important {
+    background-color: #ffc800;
+    color: black
+}
+
+.cvss-Moderate {
+    background-color: #ffff00;
+    color: black
+}
+
+
+/*for ubuntu https://people.canonical.com/~ubuntu-security/cve/priority.html*/
+
+.cvss-Negligible {
+    background-color: powderblue;
+    color: black
+}
+
+.cvss-Unknown {
+    background-color: gray;
+    color: black
+}
+
+.cvss-Pending {
+    background-color: lime;
+    color: black
+}
+
+.cvss-NotVulnerable {
+    background-color: green;
+    color: black
 }
 
 .detailTitle {
@@ -63,11 +112,6 @@ a {
 
 .detailCvssTable {
     text-align: center;
-}
-
-.linkCheckIcon {
-    width: 20px;
-    height: 20px;
 }
 
 #pivot_base {
@@ -115,7 +159,7 @@ a {
     background-color: #FFC107
 }
 
-.title-changelog {
+.changelog-title {
     font-weight: bold;
     background-color: #bfea95
 }
@@ -175,9 +219,11 @@ table.cvss_tooltip th {
     padding: 5px;
     font-weight: bold;
     vertical-align: top;
-    color: #153d73;
+    color: black;
+    font-weight: bold;
+    background-color: #ccc;
     border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid darkgrey;
 }
 
 table.cvss_tooltip td {
@@ -260,52 +306,12 @@ body.noscroll {
     margin-top: -5px;
 }
 
-.bs-callout-default {
-    border-left-color: #777;
-}
-
-.bs-callout-default h4 {
-    color: #777;
-}
-
 .bs-callout-primary {
     border-left-color: #428bca;
 }
 
 .bs-callout-primary h4 {
     color: #428bca;
-}
-
-.bs-callout-success {
-    border-left-color: #5cb85c;
-}
-
-.bs-callout-success h4 {
-    color: #5cb85c;
-}
-
-.bs-callout-danger {
-    border-left-color: #d9534f;
-}
-
-.bs-callout-danger h4 {
-    color: #d9534f;
-}
-
-.bs-callout-warning {
-    border-left-color: #f0ad4e;
-}
-
-.bs-callout-warning h4 {
-    color: #f0ad4e;
-}
-
-.bs-callout-info {
-    border-left-color: #5bc0de;
-}
-
-.bs-callout-info h4 {
-    color: #5bc0de;
 }
 
 .font-size-small {

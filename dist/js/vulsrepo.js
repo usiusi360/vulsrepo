@@ -9,7 +9,7 @@ $(document).ready(function() {
     $('#drawerLeft').drawer('show');
 });
 
-var initData = function() {
+const initData = function() {
     $.blockUI(blockUIoption);
     getData().done(function(resultArray) {
         vulsrepo.detailRawData = resultArray;
@@ -25,7 +25,7 @@ var initData = function() {
     });
 };
 
-var initPivotTable = function() {
+const initPivotTable = function() {
     $.blockUI(blockUIoption);
     setTimeout(function() {
         displayPivot(vulsrepo.detailPivotData);
@@ -36,10 +36,10 @@ var initPivotTable = function() {
     }, 500);
 };
 
-var packageTable = $("#table-package").DataTable();
-var clipboard = new Clipboard('.btn');
+let packageTable = $("#table-package").DataTable();
+const clipboard = new Clipboard('.btn');
 
-var db = {
+const db = {
     set: function(key, obj) {
         localStorage.setItem(key, JSON.stringify(obj));
     },
@@ -69,7 +69,7 @@ var db = {
     }
 };
 
-var filterDisp = {
+const filterDisp = {
     on: function(labelName) {
         $(labelName).removeClass("label-info").addClass("label-warning").text("Filter ON");
     },
@@ -79,11 +79,11 @@ var filterDisp = {
     }
 };
 
-var fadeAlert = function(target) {
+const fadeAlert = function(target) {
     $(target).fadeIn(1000).delay(2000).fadeOut(1000);
 };
 
-var showAlert = function(code, text) {
+const showAlert = function(code, text) {
     $("#alert_error_code").empty();
     $("#alert_responce_text").empty();
     $("#alert_error_code").append("<div>" + code + "</div>");
@@ -91,7 +91,7 @@ var showAlert = function(code, text) {
     $("#modal-alert").modal('show');
 };
 
-var blockUIoption = {
+const blockUIoption = {
     message: '<h4><img src="./dist/img/loading.gif" />　Please Wait...</h4>',
     fadeIn: 200,
     fadeOut: 200,
@@ -106,7 +106,7 @@ var blockUIoption = {
     }
 };
 
-var getData = function() {
+const getData = function() {
 
     $.ajaxSetup({
         timeout: vulsrepo.timeOut
@@ -151,7 +151,7 @@ var getData = function() {
     return defer.promise();
 };
 
-var getSelectedFile = function() {
+const getSelectedFile = function() {
     var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
         if (node.data.isFolder === false) {
             var data = {
@@ -165,7 +165,7 @@ var getSelectedFile = function() {
     return selectedFile;
 };
 
-var setPulldown = function(target) {
+const setPulldown = function(target) {
     $(target).empty();
     $.each(db.listPivotConf(), function(index, val) {
         $(target).append('<li><a href="javascript:void(0)" value=\"' + val + '\">' + val + '</a></li>');
@@ -179,7 +179,7 @@ var setPulldown = function(target) {
 
 };
 
-var setPulldownDisplayChangeEvent = function(target) {
+const setPulldownDisplayChangeEvent = function(target) {
     $(target + ' a').on('click', function() {
         var value = db.getPivotConf($(this).attr('value'));
         db.set("vulsrepo_pivot_conf", value);
@@ -187,7 +187,7 @@ var setPulldownDisplayChangeEvent = function(target) {
     });
 };
 
-var setEvents = function() {
+const setEvents = function() {
 
     // file select
     $(".submitSelectfile").click(function() {
@@ -293,6 +293,7 @@ var setEvents = function() {
     });
 
     displayHelpMes();
+    displayHelpMesScore();
 
     // all setting
     $("#Setting").click(function() {
@@ -304,13 +305,9 @@ var setEvents = function() {
     });
 
     //// switch
-    $("[name='chkAheadUrl']").bootstrapSwitch();
     $("[name='chkPivotSummary']").bootstrapSwitch();
     $("[name='chkPivotCvss']").bootstrapSwitch();
 
-    if (db.get("vulsrepo_chkAheadUrl") === "true") {
-        $('input[name="chkAheadUrl"]').bootstrapSwitch('state', true, true);
-    }
     if (db.get("vulsrepo_chkPivotSummary") === "false") {
         $('input[name="chkPivotSummary"]').bootstrapSwitch('state', false, false);
     }
@@ -318,13 +315,6 @@ var setEvents = function() {
         $('input[name="chkPivotCvss"]').bootstrapSwitch('state', false, false);
     }
 
-    $('input[name="chkAheadUrl"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state === true) {
-            db.set("vulsrepo_chkAheadUrl", "true");
-        } else {
-            db.remove("vulsrepo_chkAheadUrl");
-        }
-    });
     $('input[name="chkPivotSummary"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === false) {
             db.set("vulsrepo_chkPivotSummary", "false");
@@ -341,10 +331,21 @@ var setEvents = function() {
     });
 
     //// priority
-    if (db.get("vulsrepo_pivotPriority") === null) {
-        db.set("vulsrepo_pivotPriority", "nvd,jvn,redhat");
+
+    var priority = db.get("vulsrepo_pivotPriority");
+    if (priority === null) {
+        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
-    $.each(db.get("vulsrepo_pivotPriority").split(","), function(i, i_val) {
+
+    if (Array.isArray(priority) === false) {
+        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
+    }
+
+    if (db.get("vulsrepo_pivotPriority") === null) {
+        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
+    }
+
+    $.each(db.get("vulsrepo_pivotPriority"), function(i, i_val) {
         $("#pivot-priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
     });
     $('#pivot-priority').sortable({
@@ -358,7 +359,7 @@ var setEvents = function() {
             $("#pivot-priority li").each(function(index) {
                 tmp_pri.push($(this).text());
             });
-            db.set("vulsrepo_pivotPriority", tmp_pri.join(","));
+            db.set("vulsrepo_pivotPriority", tmp_pri);
         }
     });
     $('#pivot-priority').disableSelection();
@@ -372,7 +373,7 @@ var setEvents = function() {
 
 };
 
-var createFolderTree = function() {
+const createFolderTree = function() {
 
     var target;
     if (vulsrepo.demoFlag === true) {
@@ -404,7 +405,7 @@ var createFolderTree = function() {
     });
 };
 
-var isCheckNull = function(o) {
+const isCheckNull = function(o) {
     if (o === null) {
         return true;
     } else {
@@ -415,16 +416,17 @@ var isCheckNull = function(o) {
     return false;
 }
 
-var createPivotData = function(resultArray) {
+const createPivotData = function(resultArray) {
     let array = [];
-    let prioltyFlag = db.get("vulsrepo_pivotPriority").split(",");
-    let summaryFlag = db.get("vulsrepo_chkPivotSummary");
-    let cvssFlag = db.get("vulsrepo_chkPivotCvss");
+    let cveid_count = 0;
+    const prioltyFlag = db.get("vulsrepo_pivotPriority");
+    const summaryFlag = db.get("vulsrepo_chkPivotSummary");
+    const cvssFlag = db.get("vulsrepo_chkPivotCvss");
 
     $.each(resultArray, function(x, x_val) {
         if (x_val.data.ScannedCves === []) {
 
-            var result = {
+            let result = {
                 "ScanTime": x_val.scanTime,
                 "ServerName": x_val.data.ServerName,
                 "Family": x_val.data.Family,
@@ -459,19 +461,20 @@ var createPivotData = function(resultArray) {
             array.push(result);
         } else {
             $.each(x_val.data.ScannedCves, function(y, y_val) {
-                var targetNames;
+                let targetNames;
                 if (isCheckNull(y_val.CpeNames) === false) {
                     targetNames = y_val.CpeNames;
                 } else {
                     targetNames = y_val.PackageNames;
                 }
 
+                cveid_count = cveid_count + 1
                 $.each(targetNames, function(p, p_val) {
                     if (p_val.indexOf('cpe:/') === -1 && x_val.data.Packages[p_val] === undefined) {
-                        return
+                        return;
                     }
 
-                    var result = {
+                    let result = {
                         "ScanTime": x_val.scanTime,
                         "ServerName": x_val.data.ServerName,
                         "Family": x_val.data.Family,
@@ -498,52 +501,6 @@ var createPivotData = function(resultArray) {
                         result["Container"] = "None";
                     }
 
-                    let getCvss = function(target) {
-                        if (y_val.CveContents[target] !== undefined) {
-                            if (y_val.CveContents[target].Cvss2Score !== 0) {
-                                result["CVSS Score"] = y_val.CveContents[target].Cvss2Score;
-                                result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss2Score)[0];
-                                result["CVSS Score Type"] = target;
-                            } else {
-                                result["CVSS Score"] = y_val.CveContents[target].Cvss3Score;
-                                result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss3Score)[0];
-                                result["CVSS Score Type"] = "redhatV3";
-                            }
-
-                            if (summaryFlag !== "false") {
-                                result["Summary"] = y_val.CveContents[target].Summary;
-                            }
-                            if (cvssFlag !== "false") {
-                                if (y_val.CveContents[target].Cvss2Vector !== "") { //for CVE-2016-5483
-                                    var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
-                                    result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
-                                    result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
-                                    result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
-                                    result["CVSS (C)"] = getVectorV2.cvss(arrayVector[3])[0];
-                                    result["CVSS (I)"] = getVectorV2.cvss(arrayVector[4])[0];
-                                    result["CVSS (A)"] = getVectorV2.cvss(arrayVector[5])[0];
-                                } else {
-                                    result["CVSS (AV)"] = "None";
-                                    result["CVSS (AC)"] = "None";
-                                    result["CVSS (Au)"] = "None";
-                                    result["CVSS (C)"] = "None";
-                                    result["CVSS (I)"] = "None";
-                                    result["CVSS (A)"] = "None";
-                                }
-                            }
-                        }
-                    };
-
-                    var flag = false;
-                    $.each(prioltyFlag, function(i, i_val) {
-                        if (y_val.CveContents[i_val] !== undefined) {
-                            if (flag !== true) {
-                                getCvss(i_val);
-                                flag = true;
-                            }
-                        }
-                    });
-
                     DetectionMethod = y_val.Confidence.DetectionMethod;
                     result["DetectionMethod"] = DetectionMethod;
                     if (DetectionMethod === "ChangelogExactMatch") {
@@ -552,17 +509,85 @@ var createPivotData = function(resultArray) {
                         result["Changelog"] = "None";
                     }
 
+                    let getCvss = function(target) {
+                        if (y_val.CveContents[target] === undefined) {
+                            return false;
+                        }
+
+                        if (y_val.CveContents[target].Cvss2Score === 0 & y_val.CveContents[target].Cvss3Score === 0) {
+                            return false;
+                        }
+
+                        if (y_val.CveContents[target].Cvss2Score !== 0) {
+                            result["CVSS Score"] = y_val.CveContents[target].Cvss2Score;
+                            result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss2Score);
+                            result["CVSS Score Type"] = target;
+                        } else if (y_val.CveContents[target].Cvss3Score !== 0) {
+                            result["CVSS Score"] = y_val.CveContents[target].Cvss3Score;
+                            result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss3Score);
+                            result["CVSS Score Type"] = target + "V3";
+                        }
+
+                        if (summaryFlag !== "false") {
+                            result["Summary"] = y_val.CveContents[target].Summary;
+                        }
+
+                        if (cvssFlag !== "false") {
+                            if (y_val.CveContents[target].Cvss2Vector !== "") { //for CVE-2016-5483
+                                var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
+                                result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
+                                result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
+                                result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
+                                result["CVSS (C)"] = getVectorV2.cvss(arrayVector[3])[0];
+                                result["CVSS (I)"] = getVectorV2.cvss(arrayVector[4])[0];
+                                result["CVSS (A)"] = getVectorV2.cvss(arrayVector[5])[0];
+                            } else {
+                                result["CVSS (AV)"] = "Unknown";
+                                result["CVSS (AC)"] = "Unknown";
+                                result["CVSS (Au)"] = "Unknown";
+                                result["CVSS (C)"] = "Unknown";
+                                result["CVSS (I)"] = "Unknown";
+                                result["CVSS (A)"] = "Unknown";
+                            }
+                        }
+
+                        return true;
+                    };
+
+                    let flag = false;
+                    $.each(prioltyFlag, function(i, i_val) {
+                        // if (y_val.CveContents[i_val] !== undefined) {
+                        if (flag !== true) {
+                            flag = getCvss(i_val);
+                        }
+                        // }
+                    });
+
+                    if (flag === false) {
+                        result["Summary"] = "Unknown";
+                        result["CVSS Score"] = "Unknown";
+                        result["CVSS Severity"] = "Unknown";
+                        result["CVSS Score Type"] = "Unknown";
+                        result["CVSS (AV)"] = "Unknown";
+                        result["CVSS (AC)"] = "Unknown";
+                        result["CVSS (Au)"] = "Unknown";
+                        result["CVSS (C)"] = "Unknown";
+                        result["CVSS (I)"] = "Unknown";
+                        result["CVSS (A)"] = "Unknown";
+                    }
+
                     array.push(result);
                 });
             });
         }
     });
 
+    console.info("CveidCount: " + cveid_count);
     console.info("PivotDataCount: " + array.length);
     return array;
 };
 
-var displayPivot = function(array) {
+const displayPivot = function(array) {
 
     var url_param;
     if (location.search !== "") {
@@ -647,7 +672,7 @@ var displayPivot = function(array) {
 
 };
 
-var addCveIDLink = function() {
+const addCveIDLink = function() {
     let doms = $("#pivot_base").find("th:contains('CHK-cveid-')");
     doms.each(function() {
         let cveid = $(this).text().replace("CHK-cveid-", "");
@@ -659,7 +684,7 @@ var addCveIDLink = function() {
     });
 };
 
-var addChangelogLink = function() {
+const addChangelogLink = function() {
     let doms = $("#pivot_base").find("th:contains('CHK-changelog-')");
     doms.each(function() {
         let changelogSearch = $(this).text().replace("CHK-changelog-", "").split(",");
@@ -668,7 +693,7 @@ var addChangelogLink = function() {
     addEventDisplayChangelog();
 };
 
-var createDetailData = function(cveID) {
+const createDetailData = function(cveID) {
     var targetObj;
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         $.each(x_val.data.ScannedCves, function(y, y_val) {
@@ -682,218 +707,140 @@ var createDetailData = function(cveID) {
 };
 
 
-var initDetail = function() {
+const initDetail = function() {
     $("#modal-label").text("");
     $("#count-References").text("0");
     $("#CweID,#Link,#References").empty();
 
-    $("#published_nvd,#lastModified_nvd").text("------");
-    $("#scoreText_nvd").text("").css('background-color', 'gray');
-    $("#Summary_nvd").empty();
-    $("#table_title_nvd").empty();
-
-
-    $("#published_jvn,#lastModified_jvn").text("------");
-    $("#scoreText_jvn").text("").css('background-color', 'gray');
-    $("#Summary_jvn").empty();
-    $("#table_title_jvn").empty();
-
-    $("#published_redhat,#lastModified_redhat").text("------");
-    $("#scoreText_redhat").text("").css('background-color', 'gray');
-    $("#Summary_redhat").empty();
-    $("#table_title_redhat").empty();
-
-    $("#scoreText_redhatV3").text("").css('background-color', 'gray');
-    $("#table_title_redhatV3").empty();
-
-    // $("#cvss_av_jvn,#cvss_ac_jvn,#cvss_au_jvn,#cvss_c_jvn,#cvss_i_jvn,#cvss_a_jvn").removeClass().text("");
-    // $("#cvss_av_nvd,#cvss_ac_nvd,#cvss_au_nvd,#cvss_c_nvd,#cvss_i_nvd,#cvss_a_nvd").removeClass().text("");
-
+    $.each(vulsrepo.detailTaget, function(i, i_val) {
+        $("#typeName_" + i_val).empty();
+        $("#typeName_" + i_val + "V3").empty();
+        $("#scoreText_" + i_val).text("").removeClass();
+        $("#scoreText_" + i_val + "V3").text("").removeClass();
+        $("#summary_" + i_val).empty();
+        $("#lastModified_" + i_val).empty();
+    })
 };
 
 
-var displayDetail = function(cveID) {
+const displayDetail = function(cveID) {
     initDetail();
-    var data = createDetailData(cveID);
+    let data = createDetailData(cveID);
 
     // ---CVSS Detail
     $("#modal-label").text(data.CveID);
 
-    let dispCvssV2 = function(target) {
+    let dispCvss = function(target) {
         if (data.CveContents[target] !== undefined) {
-            if (data.CveContents[target].Cvss2Score !== 0) {
-                $("#published_" + target).text(data.CveContents[target].Published.split("T")[0]);
+            scoreV2 = data.CveContents[target].Cvss2Score;
+            scoreV3 = data.CveContents[target].Cvss3Score;
+            severity = data.CveContents[target].Severity;
+
+            // -- for nvd
+            if (severity === "") {
+                if (scoreV2 !== 0) {
+                    severity = getSeverity(scoreV2);
+                } else if (scoreV3 !== 0) {
+                    severity = getSeverity(scoreV3);
+                } else {
+                    severity = "None";
+                }
+            }
+
+            if (scoreV2 !== 0) {
+                $("#scoreText_" + target).text(scoreV2 + " (" + severity + ")").addClass("cvss-" + severity);
+            } else {
+                $("#scoreText_" + target).text("None").addClass("cvss-None");
+            }
+
+            if (scoreV3 !== 0) {
+                $("#scoreText_" + target + "V3").text(scoreV3 + " (" + severity + ")").addClass("cvss-" + severity);
+            } else {
+                $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
+            }
+
+            if (target === "ubuntu" || target === "debian") {
+                $("#scoreText_" + target).removeClass();
+                $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
+            }
+
+            if (data.CveContents[target].Summary !== "") {
+                $("#summary_" + target).append("<div>" + data.CveContents[target].Summary + "<div>");
+            }
+
+            if (data.CveContents[target].LastModified !== "0001-01-01T00:00:00Z") {
                 $("#lastModified_" + target).text(data.CveContents[target].LastModified.split("T")[0]);
-                $("#scoreText_" + target).text(data.CveContents[target].Cvss2Score + " (" + getSeverity(data.CveContents[target].Cvss2Score)[0] + ")").css('background-color', getSeverity(data.CveContents[target].Cvss2Score)[1]);
-                $("#Summary_" + target).append("<div>" + data.CveContents[target].Summary + "<div>");
-
-                var result = [];
-                var arrayVector = getSplitArray(data.CveContents[target].Cvss2Vector);
-                result.push(getVectorV2.cvss(arrayVector[0])[1]);
-                result.push(getVectorV2.cvss(arrayVector[1])[1]);
-                result.push(getVectorV2.cvss(arrayVector[2])[1]);
-                result.push(getVectorV2.cvss(arrayVector[3])[1]);
-                result.push(getVectorV2.cvss(arrayVector[4])[1]);
-                result.push(getVectorV2.cvss(arrayVector[5])[1]);
             } else {
-                $("#scoreText_" + target).text("NO DATA");
-                $("#Summary_" + target).append("NO DATA");
+                $("#lastModified_" + target).text("------");
+                $("#lastModified_" + target + "V3").text("------");
             }
-        } else {
-            $("#scoreText_" + target).text("NO DATA");
-            $("#Summary_" + target).append("NO DATA");
-        }
 
-        if (result === undefined) {
-            result = [0, 0, 0, 0, 0, 0];
-        }
-        return result;
-    }
-
-    let dispCvssV3 = function(target) {
-        if (data.CveContents[target] !== undefined) {
-            if (data.CveContents[target].Cvss3Score !== 0) {
-                $("#published_redhat").text(data.CveContents[target].Published.split("T")[0]);
-                $("#lastModified_redhat").text(data.CveContents[target].LastModified.split("T")[0]);
-                $("#scoreText_redhatV3").text(data.CveContents[target].Cvss3Score + " (" + getSeverityV3(data.CveContents[target].Cvss3Score)[0] + ")").css('background-color', getSeverityV3(data.CveContents[target].Cvss3Score)[1]);
-                $("#Summary_redhat").empty();
-                $("#Summary_redhat").append("<div>" + data.CveContents[target].Summary + "<div>");
-
-                var result = [];
-                var arrayVector = getSplitArray(data.CveContents[target].Cvss3Vector);
-                result.push(getVectorV3.cvss(arrayVector[0])[1]);
-                result.push(getVectorV3.cvss(arrayVector[1])[1]);
-                result.push(getVectorV3.cvss(arrayVector[2])[1]);
-                result.push(getVectorV3.cvss(arrayVector[3])[1]);
-                result.push(getVectorV3.cvss(arrayVector[4])[1]);
-                result.push(getVectorV3.cvss(arrayVector[5])[1]);
-                result.push(getVectorV3.cvss(arrayVector[6])[1]);
-                result.push(getVectorV3.cvss(arrayVector[7])[1]);
-            } else {
-                $("#scoreText_redhatV3").text("NO DATA");
+            var resultV2 = [];
+            if (data.CveContents[target].Cvss2Vector !== "") {
+                var arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[0])[1]);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[1])[1]);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[2])[1]);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[3])[1]);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[4])[1]);
+                resultV2.push(getVectorV2.cvss(arrayVectorV2[5])[1]);
             }
+
+            var resultV3 = [];
+            if (data.CveContents[target].Cvss3Vector !== "") {
+                var arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[0])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[1])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[2])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[3])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[4])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[5])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[6])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[7])[1]);
+            }
+
         } else {
-            $("#scoreText_redhatV3").text("NO DATA");
+            $("#scoreText_" + target).text("None").addClass("cvss-None");
+            $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
+            $("#summary_" + target).append("NO DATA");
+            $("#summary_" + target + "V3").append("NO DATA");
+            $("#lastModified_" + target).text("------");
+            $("#lastModified_" + target + "V3").text("------");
         }
 
-        if (result === undefined) {
-            result = [0, 0, 0, 0, 0, 0, 0, 0];
+        if (resultV2 === undefined) {
+            resultV2 = [0, 0, 0, 0, 0, 0];
         }
-        return result;
+
+        if (resultV3 === undefined) {
+            resultV3 = [0, 0, 0, 0, 0, 0, 0, 0];
+        }
+
+        return [resultV2, resultV3];
     }
 
-    var radarData_nvd = dispCvssV2("nvd");
-    var radarData_jvn = dispCvssV2("jvn");
-    var radarData_redhatV2 = dispCvssV2("redhat");
-    var radarData_redhatV3 = dispCvssV3("redhat")
+    // ---ChartRadar
+    let radarData_nvd
+    let radarData_jvn
+    let radarData_redhatV2
+    let radarData_redhatV3
 
-    // ---CweID---
-    if (data.CveContents.nvd !== undefined) {
-        if (data.CveContents.nvd.CweID !== "") {
-            $("#CweID").append("<span>NVD=[" + data.CveContents.nvd.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.CveContents.nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
-            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.CveContents.nvd.CweID + ".html\" target='_blank'>JVN)</a>");
+    $.each(vulsrepo.detailTaget, function(i, i_val) {
+        let r = dispCvss(i_val);
+        switch (i_val) {
+            case "nvd":
+                radarData_nvd = r[0];
+                break;
+            case "jvn":
+                radarData_jvn = r[0];
+                break;
+            case "redhat":
+                radarData_redhatV2 = r[0];
+                radarData_redhatV3 = r[1];
+                break;
         }
-    }
-    $("#CweID").append("<span>&emsp;</span>");
-    if (data.CveContents.redhat !== undefined) {
-        if (data.CveContents.redhat.CweID !== "") {
-            $("#CweID").append("<span>Redhat=[" + data.CveContents.redhat.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_nvd.url + data.CveContents.redhat.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
-            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + vulsrepo.link.cwe_jvn.url + data.CveContents.redhat.CweID + ".html\" target='_blank'>JVN)</a>");
-        }
-    }
 
-    // ---Link---
-    addLink("#Link", vulsrepo.link.mitre.url + "?name=" + data.CveID, vulsrepo.link.mitre.disp, vulsrepo.link.mitre.find, "mitre");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.cveDetail.url + data.CveID, vulsrepo.link.cveDetail.disp, vulsrepo.link.cveDetail.find, "cveDetail");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.cvssV2Calculator.url + data.CveID, vulsrepo.link.cvssV2Calculator.disp, vulsrepo.link.cvssV2Calculator.find, "cvssV2Calculator");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.cvssV3Calculator.url + data.CveID, vulsrepo.link.cvssV3Calculator.disp, vulsrepo.link.cvssV3Calculator.find, "cvssV3Calculator");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.debian.url + data.CveID, vulsrepo.link.debian.disp, vulsrepo.link.debian.find, "debian");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.ubuntu.url + data.CveID, vulsrepo.link.ubuntu.disp, vulsrepo.link.ubuntu.find, "ubuntu");
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", vulsrepo.link.oracle.url + data.CveID + ".html", vulsrepo.link.oracle.disp, vulsrepo.link.oracle.find, "oracle");
-    $("#Link").append("<span> / </span>");
-    $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
-        addLink("#Link", i_val.url, i_val.disp, i_val.find, i_val.imgID);
     });
-
-
-    addLink("#table_title_nvd", vulsrepo.link.nvd.url + data.CveID, vulsrepo.link.nvd.disp, vulsrepo.link.nvd.find, "nvd");
-    if (data.CveContents.jvn !== undefined) {
-        if (data.CveContents.jvn.JvnLink === "") {
-            $("#table_title_jvn").append("<a href=\"" + vulsrepo.link.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
-        } else {
-            $("#table_title_jvn").append("<a href=\"" + data.CveContents.jvn.SourceLink + "\" target='_blank'>JVN</a>");
-        }
-    } else {
-        $("#table_title_jvn").append("<a href=\"" + vulsrepo.link.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
-    }
-    addLink("#table_title_redhat", vulsrepo.link.rhel.url + data.CveID, "Redhat (v2)", vulsrepo.link.rhel.find, "rhel");
-    addLink("#table_title_redhatV3", vulsrepo.link.rhel.url + data.CveID, "Redhat (v3)", vulsrepo.link.rhel.find, "rhel");
-
-    // ---References---
-    let countRef = 0;
-
-    var addRef = function(target) {
-        if (data.CveContents[target] !== undefined) {
-            if (isCheckNull(data.CveContents[target].References) === false) {
-                $("#References").append("<div>===" + target + "===</div>");
-                $.each(data.CveContents[target].References, function(x, x_val) {
-                    $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
-                    countRef++;
-                });
-            }
-        }
-    }
-
-    addRef("nvd");
-    addRef("jvn");
-    addRef("redhat");
-    $("#count-References").text(countRef);
-
-    // ---Tab Package
-    var pkgData = createDetailPackageData(cveID);
-    packageTable.destroy();
-    packageTable = $("#table-package")
-        .DataTable({
-            "data": pkgData,
-            "fixedHeader": true,
-            "retrieve": true,
-            "scrollX": true,
-            "autoWidth": true,
-            "scrollCollapse": true,
-            "columns": [{
-                data: "ScanTime"
-            }, {
-                data: "ServerName"
-            }, {
-                data: "ContainerName"
-            }, {
-                data: "PackageName"
-            }, {
-                data: "PackageVersion"
-            }, {
-                data: "PackageRelease"
-            }, {
-                data: "PackageNewVersion"
-            }, {
-                data: "PackageNewRelease"
-            }]
-        });
-
-    // ---package changelog event
-    addEventDisplayChangelog();
-
-    $("#modal-detail").modal('show');
-    setTimeout(function() { packageTable.columns.adjust(); }, 200);
 
     var ctxV2 = document.getElementById("radar-chartV2");
     var ctxV3 = document.getElementById("radar-chartV3");
@@ -941,7 +888,7 @@ var displayDetail = function(cveID) {
                     data: radarData_jvn
                 },
                 {
-                    label: "RedhatV2",
+                    label: "RedHatV2",
                     backgroundColor: "rgba(51,204,204,0.2)",
                     borderColor: "rgba(51,204,204,1)",
                     pointBackgroundColor: "rgba(51,204,204,1)",
@@ -969,7 +916,7 @@ var displayDetail = function(cveID) {
         data: {
             labels: ["Access Vector(AV)", "Access Complexity(AC)", "Privileges Required(PR)", "User Interaction(UI)", "Scope(S)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
             datasets: [{
-                label: "RedhatV3",
+                label: "RedHatV3",
                 backgroundColor: "rgba(102,102,255,0.2)",
                 borderColor: "rgba(102,102,255,1)",
                 pointBackgroundColor: "rgba(102,102,255,1)",
@@ -983,40 +930,153 @@ var displayDetail = function(cveID) {
         }
     });
 
-    // $("#Summary_redhat").collapse('reInit');
-
+    // --collapse
     $('#Summary_redhat').collapser({
         mode: 'words',
         truncate: 50
     });
-
     // $("#Summary_redhat").collapse('reInit');
+
+    // ---CweID---
+    if (data.CveContents.nvd !== undefined) {
+        if (data.CveContents.nvd.CweID !== "") {
+            $("#CweID").append("<span>NVD:[" + data.CveContents.nvd.CweID + "] (</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.nvd.CweID + ".html\" target='_blank'>JVN)</a>");
+            $("#CweID").append("<span>&emsp;</span>");
+        }
+    }
+
+    if (data.CveContents.redhat !== undefined) {
+        if (data.CveContents.redhat.CweID !== "") {
+            $("#CweID").append("<span>RedHat:[" + data.CveContents.redhat.CweID + "] (</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.redhat.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.redhat.CweID + ".html\" target='_blank'>JVN)</a>");
+        }
+    }
+
+    // ---Link---
+    var addLink = function(target, url, disp) {
+        $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
+    };
+
+    addLink("#Link", detailLink.mitre.url + "?name=" + data.CveID, detailLink.mitre.disp);
+    $("#Link").append("<span> / </span>");
+    addLink("#Link", detailLink.cveDetail.url + data.CveID, detailLink.cveDetail.disp);
+    $("#Link").append("<span> / </span>");
+    addLink("#Link", detailLink.cvssV2Calculator.url + data.CveID, detailLink.cvssV2Calculator.disp);
+    $("#Link").append("<span> / </span>");
+    addLink("#Link", detailLink.cvssV3Calculator.url + data.CveID, detailLink.cvssV3Calculator.disp);
+    $("#Link").append("<span> / </span>");
+    addLink("#Link", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
+    $("#Link").append("<span> / </span>");
+    $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
+        addLink("#Link", i_val.url, i_val.disp);
+    });
+
+
+    addLink("#typeName_nvd", detailLink.nvd.url + data.CveID, detailLink.nvd.disp);
+    if (data.CveContents.jvn !== undefined) {
+        if (data.CveContents.jvn.JvnLink === "") {
+            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
+        } else {
+            $("#typeName_jvn").append("<a href=\"" + data.CveContents.jvn.SourceLink + "\" target='_blank'>JVN</a>");
+        }
+    } else {
+        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
+    }
+    addLink("#typeName_redhat", detailLink.rhel.url + data.CveID, "RedHat (v2)");
+    addLink("#typeName_redhatV3", detailLink.rhel.url + data.CveID, "RedHat (v3)");
+    addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.CveID, detailLink.ubuntu.disp);
+    addLink("#typeName_debian", detailLink.debian.url + data.CveID, detailLink.debian.disp);
+
+    // ---References---
+    let countRef = 0;
+
+    var addRef = function(target) {
+        if (data.CveContents[target] !== undefined) {
+            if (isCheckNull(data.CveContents[target].References) === false) {
+                $("#References").append("<div>===" + target + "===</div>");
+                $.each(data.CveContents[target].References, function(x, x_val) {
+                    $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
+                    countRef++;
+                });
+            }
+        }
+    }
+
+    addRef("nvd");
+    addRef("jvn");
+    addRef("redhat");
+    addRef("ubuntu");
+    addRef("debian");
+    $("#count-References").text(countRef);
+
+    // ---Tab Package
+    var pkgData = createDetailPackageData(cveID);
+    packageTable.destroy();
+    packageTable = $("#table-package")
+        .DataTable({
+            "data": pkgData,
+            "fixedHeader": true,
+            "retrieve": true,
+            "scrollX": true,
+            "autoWidth": true,
+            "scrollCollapse": true,
+            "columns": [{
+                data: "ScanTime"
+            }, {
+                data: "ServerName"
+            }, {
+                data: "ContainerName"
+            }, {
+                data: "PackageName"
+            }, {
+                data: "PackageVersion"
+            }, {
+                data: "PackageRelease"
+            }, {
+                data: "PackageNewVersion"
+            }, {
+                data: "PackageNewRelease"
+            }]
+        });
+
+    // ---package changelog event
+    addEventDisplayChangelog();
+
+    $("#modal-detail").modal('show');
+    setTimeout(function() { packageTable.columns.adjust(); }, 200);
+
+
 
 };
 
-var getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
+const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
     let distroAdvisoriesArray = [];
     $.each(DistroAdvisoriesData, function(x, x_val) {
         let tmp_Map = {};
         if (x_val.AdvisoryID.indexOf("ALAS-") != -1) {
             tmp_Map = {
-                url: vulsrepo.link.amazon.url + x_val.AdvisoryID + ".html",
-                disp: vulsrepo.link.amazon.disp,
-                find: vulsrepo.link.amazon.find,
+                url: detailLink.amazon.url + x_val.AdvisoryID + ".html",
+                disp: detailLink.amazon.disp,
+                find: detailLink.amazon.find,
                 imgID: "amazon"
             }
         } else if (x_val.AdvisoryID.indexOf("RHSA-") != -1) {
             tmp_Map = {
-                url: vulsrepo.link.rhn.url + x_val.AdvisoryID + ".html",
-                disp: vulsrepo.link.rhn.disp,
-                find: vulsrepo.link.rhn.find,
+                url: detailLink.rhn.url + x_val.AdvisoryID + ".html",
+                disp: detailLink.rhn.disp,
+                find: detailLink.rhn.find,
                 imgID: "rhn"
             }
         } else if ((x_val.AdvisoryID.indexOf("ELSA-") != -1) | (x_val.AdvisoryID.indexOf("OVMSA-") != -1)) {
             tmp_Map = {
-                url: vulsrepo.link.oracleErrata.url + x_val.AdvisoryID + ".html",
-                disp: vulsrepo.link.oracleErrata.disp,
-                find: vulsrepo.link.oracleErrata.find,
+                url: detailLink.oracleErrata.url + x_val.AdvisoryID + ".html",
+                disp: detailLink.oracleErrata.disp,
+                find: detailLink.oracleErrata.find,
                 imgID: "oracleErrata"
             }
         } else {
@@ -1029,7 +1089,7 @@ var getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
 };
 
 var scrollTop;
-var addEventDisplayChangelog = function() {
+const addEventDisplayChangelog = function() {
     $('.lightbox').colorbox({
         inline: true,
         href: "#changelog-content",
@@ -1051,51 +1111,7 @@ var addEventDisplayChangelog = function() {
     });
 }
 
-var addLink = function(target, url, disp, find, imgIdTarget) {
-    $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
-    if (db.get("vulsrepo_chkAheadUrl") === "true") {
-        $(target).append("<img class='linkCheckIcon' id=imgId_" + imgIdTarget + " src=\"dist/img/loading_small.gif\"></img>");
-        checkLink(url, find, "#imgId_" + imgIdTarget);
-    }
-};
-
-var checkLink = function(url, find, imgId) {
-    if ((imgId === '#imgId_cvssV2Calculator') | (imgId === '#imgId_cvssV3Calculator') | (imgId === '#imgId_nvd')) {
-        $(imgId).remove();
-        return
-    }
-
-    $.ajaxSetup({
-        timeout: 30 * 1000
-    });
-    $.get(url).done(function(data, textStatus, jqXHR) {
-        // console.log("done:" + imgID);
-        // console.log(data);
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        // console.log("fail:" + imgId);
-        // console.log(jqXHR);
-    }).always(function(data, textStatus, jqXHR) {
-        // console.log("always:" + imgId);
-        // console.log(data);
-        // console.log(textStatus);
-        // console.log(jqXHR);
-
-        var result_text = data.results[0];
-        if (result_text !== undefined) {
-            if (result_text.indexOf(find) !== -1) {
-                $(imgId).attr("src", "dist/img/error.svg");
-            } else {
-                $(imgId).attr("src", "dist/img/ok.svg");
-            }
-        } else {
-            $(imgId).attr("src", "dist/img/error.svg");
-        }
-    });
-
-};
-
-
-var createDetailPackageData = function(cveID) {
+const createDetailPackageData = function(cveID) {
     var array = [];
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         $.each(x_val.data.ScannedCves, function(y, y_val) {
@@ -1131,7 +1147,7 @@ var createDetailPackageData = function(cveID) {
     return array;
 };
 
-var displayChangelogDetail = function(ankerData) {
+const displayChangelogDetail = function(ankerData) {
     let scantime = $(ankerData).attr('data-scantime');
     let server = $(ankerData).attr('data-server');
     let container = $(ankerData).attr('data-container');
@@ -1163,7 +1179,7 @@ var displayChangelogDetail = function(ankerData) {
     }
 }
 
-var getChangeLogInfo = function(scantime, server, container, cveid, package) {
+const getChangeLogInfo = function(scantime, server, container, cveid, package) {
     let cveidInfo;
     let changelogContents = "";
     $.each(vulsrepo.detailRawData, function(x, x_val) {
@@ -1180,7 +1196,7 @@ var getChangeLogInfo = function(scantime, server, container, cveid, package) {
 };
 
 
-var shapeChangelog = function(changelogContents, cveid) {
+const shapeChangelog = function(changelogContents, cveid) {
     let tmpArray = changelogContents.split("\n");
     let resultArray = [];
     let regExpTarget = new RegExp('<span class="changelog-allcveid">' + cveid + '</span>', "g");
@@ -1188,8 +1204,8 @@ var shapeChangelog = function(changelogContents, cveid) {
     $.each(tmpArray, function(x, x_val) {
         let line = _.escape(x_val)
             .replace(/\s/g, "&nbsp;")
-            .replace(/^(\*.+)$/g, '<span class="title-changelog">$1</span>') //for centos
-            .replace(/^([a-zA-Z].+urgency=.+)$/g, '<span class="title-changelog">$1</span>') //for debian ubuntu
+            .replace(/^(\*.+)$/g, '<span class="changelog-title">$1</span>') //for centos
+            .replace(/^([a-zA-Z].+urgency=.+)$/g, '<span class="changelog-title">$1</span>') //for debian ubuntu
             .replace(/(CVE-[0-9]{4}-[0-9]+)/g, '<span class="changelog-allcveid">$1</span>')
             .replace(regExpTarget, '<span class="changelog-targetcveid">' + cveid + '</span>');
 
@@ -1199,7 +1215,7 @@ var shapeChangelog = function(changelogContents, cveid) {
     return resultArray;
 }
 
-var bringToFlont = function(id) {
+const bringToFlont = function(id) {
     var v = $('#' + id);
     v.appendTo(v.parent());
 }
