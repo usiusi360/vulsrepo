@@ -734,7 +734,7 @@ const displayDetail = function(cveID) {
         if (data.CveContents[target] !== undefined) {
             scoreV2 = data.CveContents[target].Cvss2Score;
             scoreV3 = data.CveContents[target].Cvss3Score;
-            severity = data.CveContents[target].Severity;
+            severity = toUpperFirstLetter(data.CveContents[target].Severity);
 
             // -- for nvd
             if (severity === "") {
@@ -1218,4 +1218,8 @@ const shapeChangelog = function(changelogContents, cveid) {
 const bringToFlont = function(id) {
     var v = $('#' + id);
     v.appendTo(v.parent());
+}
+
+const toUpperFirstLetter = function(str) {
+    return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
 }

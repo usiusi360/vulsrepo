@@ -10,6 +10,11 @@ VulsRepo is visualized based on the json report output in [vuls](https://github.
 ## Online Demo
 http://usiusi360.github.io/vulsrepo/
 
+## Requirements
+
+- [future-architect/Vuls](https://github.com/future-architect/vuls) >= v0.4.0
+- Web Browser : Google Chrome or Firefox
+
 ## Installation
 *A home folder of vuls is explained as /opt/vuls.*
 
@@ -103,14 +108,6 @@ http://VulsServer/vulsrepo/
 ### SETTING
 
 <img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="80%">
-
-- Detail screen of CVE-ID
-
-| Setting Name |  |
-|:-|:-|
-|The look-ahead check the URL|Prefetch Link's URL destination and check whether the page exists|
-|Show / Hide the Tab|Toggle display of NVD / JVN tab|
-
 
 - Pivot Table
 
