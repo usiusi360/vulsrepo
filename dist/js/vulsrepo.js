@@ -931,10 +931,12 @@ const displayDetail = function(cveID) {
     });
 
     // --collapse
-    $('#Summary_redhat').collapser({
+    // $("#summary_redhat").collapse('reInit');
+    $('#summary_redhat').collapser({
         mode: 'words',
         truncate: 50
     });
+    // $('#summary_redhat').reInit();
     // $("#Summary_redhat").collapse('reInit');
 
     // ---CweID---
@@ -1124,21 +1126,29 @@ const createDetailPackageData = function(cveID) {
 
                 $.each(targets, function(z, z_val) {
 
-                    if (x_val.data.Packages[z_val] === undefined) {
-                        return
-                    }
-
                     let tmp_Map = {
                         ScanTime: x_val.scanTime,
                         ServerName: x_val.data.ServerName,
                         ContainerName: x_val.data.Container.Name,
                     };
 
-                    tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
-                    tmp_Map["PackageVersion"] = x_val.data.Packages[z_val].Version;
-                    tmp_Map["PackageRelease"] = x_val.data.Packages[z_val].Release;
-                    tmp_Map["PackageNewVersion"] = x_val.data.Packages[z_val].NewVersion;
-                    tmp_Map["PackageNewRelease"] = x_val.data.Packages[z_val].NewRelease;
+
+                    if (z_val.indexOf('cpe:/') != -1) {
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
+                        tmp_Map["PackageVersion"] = "";
+                        tmp_Map["PackageRelease"] = "";
+                        tmp_Map["PackageNewVersion"] = "";
+                        tmp_Map["PackageNewRelease"] = "";
+                    } else if (x_val.data.Packages[z_val] !== undefined) {
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
+                        tmp_Map["PackageVersion"] = x_val.data.Packages[z_val].Version;
+                        tmp_Map["PackageRelease"] = x_val.data.Packages[z_val].Release;
+                        tmp_Map["PackageNewVersion"] = x_val.data.Packages[z_val].NewVersion;
+                        tmp_Map["PackageNewRelease"] = x_val.data.Packages[z_val].NewRelease;
+                    } else {
+                        return;
+                    }
+
                     array.push(tmp_Map);
                 });
             }
