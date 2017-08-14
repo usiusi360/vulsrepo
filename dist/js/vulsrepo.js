@@ -132,6 +132,13 @@ var getData = function() {
                 scanTime: value.parent_title,
                 data: json_data
             };
+
+            if (resultMap.data.JSONVersion !== undefined) {
+                showAlert("New JSON format.Please update VulsRepo.", value.url);
+                $.unblockUI(blockUIoption);
+                return;
+            }
+
             resultArray.push(resultMap);
             if (kickCount == endCount) {
                 defer.resolve(resultArray);
