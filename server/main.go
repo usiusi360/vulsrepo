@@ -75,8 +75,12 @@ func getfilelist(rw http.ResponseWriter, req *http.Request) {
 }
 
 func getTree(path string) (Tree, error) {
-	os.Chdir(path)
 	var tree Tree
+
+	if err := os.Chdir(path); err != nil {
+		return tree, err
+	}
+
 	fis, err := ioutil.ReadDir(".")
 	if err != nil {
 		return tree, err
@@ -93,7 +97,10 @@ func getTree(path string) (Tree, error) {
 			childPath, _ := getTree(fi.Name())
 			tmpFolder.Children = childPath
 			tree = append(tree, tmpFolder)
-			os.Chdir("../")
+			if err := os.Chdir("../"); err != nil {
+				return tree, err
+			}
+
 		} else {
 			r := regexp.MustCompile(`.json$`)
 			if r.MatchString(fi.Name()) == false {
