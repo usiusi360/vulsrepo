@@ -424,7 +424,9 @@ const createPivotData = function(resultArray) {
     const cvssFlag = db.get("vulsrepo_chkPivotCvss");
 
     $.each(resultArray, function(x, x_val) {
-        if (x_val.data.ScannedCves === []) {
+        console.log(x_val.data.ScannedCves);
+
+        if (Object.keys(x_val.data.ScannedCves).length === 0) {
 
             let result = {
                 "ScanTime": x_val.scanTime,

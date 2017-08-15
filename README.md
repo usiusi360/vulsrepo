@@ -74,7 +74,7 @@ Access the browser
 http://<server-address>:5111
 ````
 
-### Build vulsrepo-server
+## Build vulsrepo-server
 - It is necessary to build by yourself except for Linux 64bit
 - Install golang beforehand.
 
