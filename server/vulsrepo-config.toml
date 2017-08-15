@@ -1,0 +1,4 @@
+[Server]
+rootPath = "/home/vuls-user/vulsrepo"
+resultsPath  = "/opt/vuls/results"
+serverPort  = "5111"

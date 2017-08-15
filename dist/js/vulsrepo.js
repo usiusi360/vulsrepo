@@ -379,12 +379,12 @@ const createFolderTree = function() {
     if (vulsrepo.demoFlag === true) {
         target = "getfilelist.json"
     } else {
-        target = "getfilelist.cgi"
+        target = "getfilelist"
     }
 
     var tree = $("#folderTree").dynatree({
         initAjax: {
-            url: "dist/cgi/" + target
+            url: target
         },
         ajaxDefaults: {
             cache: false,
@@ -424,7 +424,9 @@ const createPivotData = function(resultArray) {
     const cvssFlag = db.get("vulsrepo_chkPivotCvss");
 
     $.each(resultArray, function(x, x_val) {
-        if (x_val.data.ScannedCves === []) {
+        console.log(x_val.data.ScannedCves);
+
+        if (Object.keys(x_val.data.ScannedCves).length === 0) {
 
             let result = {
                 "ScanTime": x_val.scanTime,
@@ -610,7 +612,6 @@ const displayPivot = function(array) {
 
 
     var derivers = $.pivotUtilities.derivers;
-    //var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers, $.pivotUtilities.d3_renderers);
     var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
     var dateFormat = $.pivotUtilities.derivers.dateFormat;
     var sortAs = $.pivotUtilities.sortAs;
@@ -931,13 +932,12 @@ const displayDetail = function(cveID) {
     });
 
     // --collapse
-    // $("#summary_redhat").collapse('reInit');
+    // $("#summary_redhat").collapser('reInit');
     $('#summary_redhat').collapser({
         mode: 'words',
         truncate: 50
     });
-    // $('#summary_redhat').reInit();
-    // $("#Summary_redhat").collapse('reInit');
+
 
     // ---CweID---
     if (data.CveContents.nvd !== undefined) {
