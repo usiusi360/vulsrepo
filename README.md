@@ -54,6 +54,8 @@ resultsPath  = "/opt/vuls/results"
 serverPort  = "5111"
 ```
 
+- Do not use the path of the symbolic link for resultsPath
+
 ### Step4. Start vulsrepo-server
 
 ```
