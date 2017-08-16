@@ -576,7 +576,7 @@ const detailLink = {
         disp: "Amazon"
     },
     rhn: {
-        url: "https://rhn.redhat.com/errata/",
+        url: "https://access.redhat.com/errata/",
         disp: "RedHat Network",
     },
     oracle: {

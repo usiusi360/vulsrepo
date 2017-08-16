@@ -189,7 +189,7 @@ const setPulldownDisplayChangeEvent = function(target) {
 
 const setEvents = function() {
 
-    // file select
+    // ---file select
     $(".submitSelectfile").click(function() {
         $('#drawerLeft').drawer('hide');
         setTimeout(initData, 500);
@@ -209,7 +209,7 @@ const setEvents = function() {
         return false;
     });
 
-    // pivot setting
+    // ---pivot setting
     $("#save_pivot_conf").click(function() {
         $("#alert_saveDiag_textbox").css("display", "none");
         $("#alert_saveDiag_dropdown").css("display", "none");
@@ -287,7 +287,7 @@ const setEvents = function() {
         initPivotTable();
     });
 
-    // detail cveid
+    // ---detail cveid
     $('a[href="#package-r"]').click(function() {
         setTimeout(function() { packageTable.columns.adjust(); }, 1);
     });
@@ -295,7 +295,7 @@ const setEvents = function() {
     displayHelpMes();
     displayHelpMesScore();
 
-    // all setting
+    // ---all setting
     $("#Setting").click(function() {
         $("#modal-setting").modal('show');
     });
@@ -304,7 +304,7 @@ const setEvents = function() {
         initData();
     });
 
-    //// switch
+    // ---switch
     $("[name='chkPivotSummary']").bootstrapSwitch();
     $("[name='chkPivotCvss']").bootstrapSwitch();
 
@@ -330,7 +330,7 @@ const setEvents = function() {
         }
     });
 
-    //// priority
+    // ---priority
 
     var priority = db.get("vulsrepo_pivotPriority");
     if (priority === null) {
@@ -535,7 +535,7 @@ const createPivotData = function(resultArray) {
                         }
 
                         if (cvssFlag !== "false") {
-                            if (y_val.CveContents[target].Cvss2Vector !== "") { //for CVE-2016-5483
+                            if (y_val.CveContents[target].Cvss2Vector !== "") { //ex) CVE-2016-5483
                                 var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
                                 result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
                                 result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
@@ -558,11 +558,9 @@ const createPivotData = function(resultArray) {
 
                     let flag = false;
                     $.each(prioltyFlag, function(i, i_val) {
-                        // if (y_val.CveContents[i_val] !== undefined) {
                         if (flag !== true) {
                             flag = getCvss(i_val);
                         }
-                        // }
                     });
 
                     if (flag === false) {
@@ -1064,22 +1062,16 @@ const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
             tmp_Map = {
                 url: detailLink.amazon.url + x_val.AdvisoryID + ".html",
                 disp: detailLink.amazon.disp,
-                find: detailLink.amazon.find,
-                imgID: "amazon"
             }
         } else if (x_val.AdvisoryID.indexOf("RHSA-") != -1) {
             tmp_Map = {
                 url: detailLink.rhn.url + x_val.AdvisoryID + ".html",
                 disp: detailLink.rhn.disp,
-                find: detailLink.rhn.find,
-                imgID: "rhn"
             }
         } else if ((x_val.AdvisoryID.indexOf("ELSA-") != -1) | (x_val.AdvisoryID.indexOf("OVMSA-") != -1)) {
             tmp_Map = {
                 url: detailLink.oracleErrata.url + x_val.AdvisoryID + ".html",
                 disp: detailLink.oracleErrata.disp,
-                find: detailLink.oracleErrata.find,
-                imgID: "oracleErrata"
             }
         } else {
             // For cases where other distros are increased

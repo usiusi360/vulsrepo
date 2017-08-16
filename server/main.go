@@ -41,6 +41,8 @@ var config Config
 
 func main() {
 	loadConfig()
+	pathChk()
+
 	http.Handle("/", http.FileServer(http.Dir(config.Server.RootPath)))
 	http.Handle("/results/", http.StripPrefix("/results/", http.FileServer(http.Dir(config.Server.ResultsPath))))
 	http.HandleFunc("/getfilelist/", getfilelist)
@@ -51,6 +53,23 @@ func main() {
 		log.Fatal("Error: ListenAndServe: ", err)
 	}
 
+}
+
+func pathChk() {
+	var flag bool = false
+	if _, err := os.Stat(config.Server.RootPath); err != nil {
+		log.Println("Error: RootPath not access: ", err)
+		flag = true
+	}
+
+	if _, err := os.Stat(config.Server.ResultsPath); err != nil {
+		log.Println("Error: ResultsPath not access : ", err)
+		flag = true
+	}
+
+	if flag == true {
+		log.Fatal("Error: Please see if the config setting is correct")
+	}
 }
 
 func loadConfig() {
