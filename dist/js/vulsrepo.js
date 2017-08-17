@@ -406,12 +406,12 @@ const createFolderTree = function() {
 };
 
 const isCheckNull = function(o) {
-    if (o === null) {
+    if (o === undefined) {
         return true;
-    } else {
-        if (o.length === 0) {
-            return true;
-        }
+    } else if (o === null) {
+        return true;
+    } else if (o.length === 0) {
+        return true;
     }
     return false;
 }
@@ -424,8 +424,6 @@ const createPivotData = function(resultArray) {
     const cvssFlag = db.get("vulsrepo_chkPivotCvss");
 
     $.each(resultArray, function(x, x_val) {
-        console.log(x_val.data.ScannedCves);
-
         if (Object.keys(x_val.data.ScannedCves).length === 0) {
 
             let result = {
@@ -435,6 +433,9 @@ const createPivotData = function(resultArray) {
                 "Release": x_val.data.Release,
                 "CveID": "healthy",
                 "Packages": "healthy",
+                "NotFixedYet": "healthy",
+                "PackageVer": "healthy",
+                "NewPackageVer": "healthy",
                 "CweID": "healthy",
                 "Summary": "healthy",
                 "CVSS Score": "healthy",
@@ -467,12 +468,21 @@ const createPivotData = function(resultArray) {
                 if (isCheckNull(y_val.CpeNames) === false) {
                     targetNames = y_val.CpeNames;
                 } else {
-                    targetNames = y_val.PackageNames;
+                    targetNames = y_val.AffectedPackages;
                 }
 
                 cveid_count = cveid_count + 1
                 $.each(targetNames, function(p, p_val) {
-                    if (p_val.indexOf('cpe:/') === -1 && x_val.data.Packages[p_val] === undefined) {
+                    if (p_val.Name === undefined) {
+                        pkgName = p_val;
+                        NotFixedYet = "Unknown";
+                    } else {
+                        pkgName = p_val.Name;
+                        NotFixedYet = p_val.NotFixedYet;
+                    }
+
+                    let pkgInfo = x_val.data.Packages[pkgName];
+                    if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
                         return;
                     }
 
@@ -482,13 +492,14 @@ const createPivotData = function(resultArray) {
                         "Family": x_val.data.Family,
                         "Release": x_val.data.Release,
                         "CveID": "CHK-cveid-" + y_val.CveID,
-                        "Packages": p_val
+                        "Packages": pkgName,
+                        "NotFixedYet": NotFixedYet,
                     };
 
                     if (y_val.CveContents.nvd !== undefined) {
                         result["CweID"] = y_val.CveContents.nvd.CweID;
                     } else {
-                        result["CweID"] = "Unknown";
+                        result["CweID"] = "None";
                     }
 
                     if (x_val.data.Platform.Name !== "") {
@@ -506,10 +517,29 @@ const createPivotData = function(resultArray) {
                     DetectionMethod = y_val.Confidence.DetectionMethod;
                     result["DetectionMethod"] = DetectionMethod;
                     if (DetectionMethod === "ChangelogExactMatch") {
-                        result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + p_val;
+                        result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
                     } else {
                         result["Changelog"] = "None";
                     }
+
+                    if (pkgInfo !== undefined) {
+                        if (pkgInfo.NewVersion !== "") {
+                            result["PackageVer"] = pkgInfo.Version + pkgInfo.Release;
+                        } else {
+                            result["PackageVer"] = "None";
+                        }
+
+                        if (pkgInfo.NewVersion !== "") {
+                            result["NewPackageVer"] = pkgInfo.NewVersion + pkgInfo.NewRelease;
+                        } else {
+                            result["NewPackageVer"] = "None";
+                        }
+                    } else {
+                        // ===for cpe
+                        result["PackageVer"] = "Unknown";
+                        result["NewPackageVer"] = "Unknown";
+                    }
+
 
                     let getCvss = function(target) {
                         if (y_val.CveContents[target] === undefined) {
@@ -695,13 +725,11 @@ const addChangelogLink = function() {
 const createDetailData = function(cveID) {
     var targetObj;
     $.each(vulsrepo.detailRawData, function(x, x_val) {
-        $.each(x_val.data.ScannedCves, function(y, y_val) {
-            if (cveID === y_val.CveID) {
-                targetObj = y_val;
-            }
-        });
+        tmpCve = x_val.data.ScannedCves[cveID];
+        if (tmpCve !== undefined) {
+            targetObj = tmpCve;
+        }
     });
-
     return targetObj;
 };
 
@@ -1113,10 +1141,17 @@ const createDetailPackageData = function(cveID) {
                 if (isCheckNull(y_val.CpeNames) === false) {
                     targets = y_val.CpeNames;
                 } else {
-                    targets = y_val.PackageNames;
+                    targets = y_val.AffectedPackages;
                 }
 
                 $.each(targets, function(z, z_val) {
+                    if (z_val.Name === undefined) {
+                        pkgName = z_val;
+                        NotFixedYet = "None";
+                    } else {
+                        pkgName = z_val.Name;
+                        NotFixedYet = z_val.NotFixedYet;
+                    }
 
                     let tmp_Map = {
                         ScanTime: x_val.scanTime,
@@ -1125,18 +1160,18 @@ const createDetailPackageData = function(cveID) {
                     };
 
 
-                    if (z_val.indexOf('cpe:/') != -1) {
-                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
+                    if (pkgName.indexOf('cpe:/') != -1) {
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
                         tmp_Map["PackageVersion"] = "";
                         tmp_Map["PackageRelease"] = "";
                         tmp_Map["PackageNewVersion"] = "";
                         tmp_Map["PackageNewRelease"] = "";
-                    } else if (x_val.data.Packages[z_val] !== undefined) {
-                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + z_val + '">' + z_val + '</a>';
-                        tmp_Map["PackageVersion"] = x_val.data.Packages[z_val].Version;
-                        tmp_Map["PackageRelease"] = x_val.data.Packages[z_val].Release;
-                        tmp_Map["PackageNewVersion"] = x_val.data.Packages[z_val].NewVersion;
-                        tmp_Map["PackageNewRelease"] = x_val.data.Packages[z_val].NewRelease;
+                    } else if (x_val.data.Packages[pkgName] !== undefined) {
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
+                        tmp_Map["PackageVersion"] = x_val.data.Packages[pkgName].Version;
+                        tmp_Map["PackageRelease"] = x_val.data.Packages[pkgName].Release;
+                        tmp_Map["PackageNewVersion"] = x_val.data.Packages[pkgName].NewVersion;
+                        tmp_Map["PackageNewRelease"] = x_val.data.Packages[pkgName].NewRelease;
                     } else {
                         return;
                     }
@@ -1166,18 +1201,20 @@ const displayChangelogDetail = function(ankerData) {
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
         $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);
-    }
-
-    if (changelogInfo.pkgContents.Changelog.Contents === "") {
-        $("#changelog-contents").append("NO DATA");
+        if (changelogInfo.pkgContents.Changelog.Contents === "") {
+            $("#changelog-contents").append("NO DATA");
+        } else {
+            $.each(shapeChangelog(changelogInfo.pkgContents.Changelog.Contents, cveid), function(y, y_val) {
+                if (y_val === "") {
+                    $("#changelog-contents").append("<br>");
+                } else {
+                    $("#changelog-contents").append("<div>" + y_val + "</div>");
+                }
+            });
+        }
     } else {
-        $.each(shapeChangelog(changelogInfo.pkgContents.Changelog.Contents, cveid), function(y, y_val) {
-            if (y_val === "") {
-                $("#changelog-contents").append("<br>");
-            } else {
-                $("#changelog-contents").append("<div>" + y_val + "</div>");
-            }
-        });
+        $("#changelog-packagename").append(package);
+        $("#changelog-contents").append("NO DATA");
     }
 }
 
