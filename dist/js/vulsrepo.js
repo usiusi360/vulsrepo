@@ -523,14 +523,14 @@ const createPivotData = function(resultArray) {
                     }
 
                     if (pkgInfo !== undefined) {
-                        if (pkgInfo.NewVersion !== "") {
-                            result["PackageVer"] = pkgInfo.Version + pkgInfo.Release;
+                        if (pkgInfo.Version !== "") {
+                            result["PackageVer"] = pkgInfo.Version + " " + pkgInfo.Release;
                         } else {
                             result["PackageVer"] = "None";
                         }
 
                         if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.NewVersion + pkgInfo.NewRelease;
+                            result["NewPackageVer"] = pkgInfo.NewVersion + " " + pkgInfo.NewRelease;
                         } else {
                             result["NewPackageVer"] = "None";
                         }
