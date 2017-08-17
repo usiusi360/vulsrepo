@@ -524,13 +524,13 @@ const createPivotData = function(resultArray) {
 
                     if (pkgInfo !== undefined) {
                         if (pkgInfo.Version !== "") {
-                            result["PackageVer"] = pkgInfo.Version + " " + pkgInfo.Release;
+                            result["PackageVer"] = pkgInfo.Version + "-" + pkgInfo.Release;
                         } else {
                             result["PackageVer"] = "None";
                         }
 
                         if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.NewVersion + " " + pkgInfo.NewRelease;
+                            result["NewPackageVer"] = pkgInfo.NewVersion + "-" + pkgInfo.NewRelease;
                         } else {
                             result["NewPackageVer"] = "None";
                         }
@@ -1069,6 +1069,8 @@ const displayDetail = function(cveID) {
                 data: "PackageNewVersion"
             }, {
                 data: "PackageNewRelease"
+            }, {
+                data: "NotFixedYet"
             }]
         });
 
@@ -1166,12 +1168,14 @@ const createDetailPackageData = function(cveID) {
                         tmp_Map["PackageRelease"] = "";
                         tmp_Map["PackageNewVersion"] = "";
                         tmp_Map["PackageNewRelease"] = "";
+                        tmp_Map["NotFixedYet"] = "";
                     } else if (x_val.data.Packages[pkgName] !== undefined) {
                         tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
                         tmp_Map["PackageVersion"] = x_val.data.Packages[pkgName].Version;
                         tmp_Map["PackageRelease"] = x_val.data.Packages[pkgName].Release;
                         tmp_Map["PackageNewVersion"] = x_val.data.Packages[pkgName].NewVersion;
                         tmp_Map["PackageNewRelease"] = x_val.data.Packages[pkgName].NewRelease;
+                        tmp_Map["NotFixedYet"] = NotFixedYet;
                     } else {
                         return;
                     }
@@ -1192,12 +1196,23 @@ const displayChangelogDetail = function(ankerData) {
     let package = $(ankerData).attr('data-package');
     let changelogInfo = getChangeLogInfo(scantime, server, container, cveid, package);
 
-    $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-score, #changelog-contents").empty();
+    $("#changelog-cveid, #changelog-servername, #changelog-containername, #changelog-packagename, #changelog-method, #changelog-score, #changelog-contents, #changelog-notfixedyet").empty();
     $("#changelog-cveid").append(cveid);
     $("#changelog-servername").append(server);
     $("#changelog-containername").append(container);
     $("#changelog-method").append(changelogInfo.cveidInfo.Confidence.DetectionMethod);
     $("#changelog-score").append(changelogInfo.cveidInfo.Confidence.Score);
+
+    let getPkg = function() {
+        let result;
+        $.each(changelogInfo.cveidInfo.AffectedPackages, function(i, i_val) {
+            if (i_val.Name = package) {
+                result = i_val.NotFixedYet;
+            };
+        });
+        return result;
+    };
+    $("#changelog-notfixedyet").append(getPkg);
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
         $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);
