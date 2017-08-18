@@ -666,6 +666,8 @@ const displayPivot = function(array) {
         onRefresh: function(config) {
             db.set("vulsrepo_pivot_conf_tmp", config);
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
+            $("#pivot_base").find("th:contains('true')").css("color", "red");
+            $("#pivot_base").find("th:contains('false')").css("color", "blue");
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
             addCveIDLink();
@@ -1074,6 +1076,9 @@ const displayDetail = function(cveID) {
             }]
         });
 
+    $("#table-package").find("td:contains('true')").css("color", "red");
+    $("#table-package").find("td:contains('false')").css("color", "blue");
+
     // ---package changelog event
     addEventDisplayChangelog();
 
@@ -1212,7 +1217,14 @@ const displayChangelogDetail = function(ankerData) {
         });
         return result;
     };
-    $("#changelog-notfixedyet").append(getPkg);
+
+    let notFixedYet = getPkg();
+    $("#changelog-notfixedyet").append(notFixedYet);
+    if (notFixedYet === true) {
+        $("#changelog-notfixedyet").css("color", "red");
+    } else if (notFixedYet === false) {
+        $("#changelog-notfixedyet").css("color", "blue");
+    }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
         $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);

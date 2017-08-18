@@ -74,9 +74,16 @@ func pathChk() {
 }
 
 func loadConfig() {
-	_, err := toml.DecodeFile("./vulsrepo-config.toml", &config)
+
+	fpath , _ := (os.Executable())
+
+
+	_, err := toml.DecodeFile(filepath.Dir(fpath) + "/vulsrepo-config.toml", &config)
 	if err != nil {
-		log.Fatal("Error: Load Config: ", err)
+			_, err := toml.DecodeFile("./vulsrepo-config.toml", &config)
+			if err != nil {
+				log.Fatal("Error: Load Config: ", err)
+			}
 	}
 }
 
