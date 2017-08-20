@@ -139,6 +139,12 @@ const getData = function() {
                 return;
             }
 
+            if (resultMap.data.ReportedAt === "0001-01-01T00:00:00Z") {
+                showAlert("Vuls report is not running ", value.url);
+                $.unblockUI(blockUIoption);
+                return;
+            }
+
             resultArray.push(resultMap);
             if (kickCount == endCount) {
                 defer.resolve(resultArray);
@@ -292,7 +298,7 @@ const setEvents = function() {
         setTimeout(function() { packageTable.columns.adjust(); }, 1);
     });
 
-    displayHelpMes();
+    // displayHelpMes();
     displayHelpMesScore();
 
     // ---all setting
@@ -1219,10 +1225,11 @@ const displayChangelogDetail = function(ankerData) {
     };
 
     let notFixedYet = getPkg();
-    $("#changelog-notfixedyet").append(notFixedYet);
     if (notFixedYet === true) {
+        $("#changelog-notfixedyet").append("true");
         $("#changelog-notfixedyet").css("color", "red");
     } else if (notFixedYet === false) {
+        $("#changelog-notfixedyet").append("false");
         $("#changelog-notfixedyet").css("color", "blue");
     }
 

@@ -386,20 +386,20 @@ const getHelpMes = function(target, type) {
     return '<table class="cvss_tooltip"><tbody>' + tmp_tr + '</tbody></table>';
 };
 
-const displayHelpMes = function() {
-    $.each(["jvn", "nvd"], function(x, x_val) {
-        $.each(["av", "ac", "au", "c", "i", "a"], function(x, y_val) {
-            $("#tooltip_" + x_val + "_" + y_val).balloon({
-                html: true,
-                css: {
-                    fontSize: '80%',
-                    maxWidth: '700px'
-                },
-                contents: getHelpMes(x_val, y_val)
-            });
-        });
-    });
-};
+// const displayHelpMes = function() {
+//     $.each(["jvn", "nvd"], function(x, x_val) {
+//         $.each(["av", "ac", "au", "c", "i", "a"], function(x, y_val) {
+//             $("#tooltip_" + x_val + "_" + y_val).balloon({
+//                 html: true,
+//                 css: {
+//                     fontSize: '80%',
+//                     maxWidth: '700px'
+//                 },
+//                 contents: getHelpMes(x_val, y_val)
+//             });
+//         });
+//     });
+// };
 
 
 
