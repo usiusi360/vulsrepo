@@ -1,3 +1,26 @@
+body {
+    /*background-color: #dedeef*/
+    background-color: rgb(238, 238, 238)
+}
+
+.pvtAxisContainer {
+    background-color: #ddd
+}
+
+.pvtVals {
+    background-color: #ddd
+}
+
+.notfixyet-true {
+    color: #CB4829;
+    font-weight: bold;
+}
+
+.notfixyet-false {
+    color: #39A869;
+    font-weight: bold;
+}
+
 .my-button {
     width: 70px;
 }
@@ -33,22 +56,22 @@ a {
 }
 
 .cvss-Critical {
-    background-color: #ff0000;
+    background-color: #CB4829;
     color: black
 }
 
 .cvss-High {
-    background-color: #ffc800;
+    background-color: #D59533;
     color: black
 }
 
 .cvss-Medium {
-    background-color: #ffff00;
+    background-color: #DFD238;
     color: black
 }
 
 .cvss-Low {
-    background-color: #ffe5d0;
+    background-color: #93B447;
     color: black
 }
 
@@ -61,12 +84,12 @@ a {
 /*for redhat https://access.redhat.com/security/updates/classification/*/
 
 .cvss-Important {
-    background-color: #ffc800;
+    background-color: #D59533;
     color: black
 }
 
 .cvss-Moderate {
-    background-color: #ffff00;
+    background-color: #DFD238;
     color: black
 }
 
@@ -74,7 +97,7 @@ a {
 /*for ubuntu https://people.canonical.com/~ubuntu-security/cve/priority.html*/
 
 .cvss-Negligible {
-    background-color: powderblue;
+    background-color: #61C1BE;
     color: black
 }
 
@@ -84,12 +107,12 @@ a {
 }
 
 .cvss-Pending {
-    background-color: lime;
+    background-color: #796BAF;
     color: black
 }
 
 .cvss-NotVulnerable {
-    background-color: green;
+    background-color: #BA79B1;
     color: black
 }
 

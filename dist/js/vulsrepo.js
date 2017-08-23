@@ -659,6 +659,15 @@ const displayPivot = function(array) {
         exclusions: "",
         aggregatorName: "Count",
         rendererName: "Heatmap",
+        rendererOptions: {
+            heatmap: {
+                colorScaleGenerator: function(values) {
+                    return d3.scale.sqrt()
+                        .domain([0, array.length])
+                        .range(["#ffffff", "#fa8072"])
+                }
+            }
+        },
         sorters: function(attr) {
             if (attr == "CVSS Severity") {
                 return sortAs(["healthy", "Low", "Medium", "High", "Unknown"]);
@@ -671,9 +680,9 @@ const displayPivot = function(array) {
         },
         onRefresh: function(config) {
             db.set("vulsrepo_pivot_conf_tmp", config);
-            $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "palegreen");
-            $("#pivot_base").find("th:contains('true')").css("color", "red");
-            $("#pivot_base").find("th:contains('false')").css("color", "blue");
+            $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "#b2f3b2");
+            $("#pivot_base").find("th:contains('true')").addClass("notfixyet-true");
+            $("#pivot_base").find("th:contains('false')").addClass("notfixyet-false");
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
             addCveIDLink();
@@ -1082,8 +1091,8 @@ const displayDetail = function(cveID) {
             }]
         });
 
-    $("#table-package").find("td:contains('true')").css("color", "red");
-    $("#table-package").find("td:contains('false')").css("color", "blue");
+    $("#table-package").find("td:contains('true')").addClass("notfixyet-true");
+    $("#table-package").find("td:contains('false')").addClass("notfixyet-false");
 
     // ---package changelog event
     addEventDisplayChangelog();
@@ -1226,11 +1235,9 @@ const displayChangelogDetail = function(ankerData) {
 
     let notFixedYet = getPkg();
     if (notFixedYet === true) {
-        $("#changelog-notfixedyet").append("true");
-        $("#changelog-notfixedyet").css("color", "red");
+        $("#changelog-notfixedyet").append("true").addClass("notfixyet-true");
     } else if (notFixedYet === false) {
-        $("#changelog-notfixedyet").append("false");
-        $("#changelog-notfixedyet").css("color", "blue");
+        $("#changelog-notfixedyet").append("false").addClass("notfixyet-false");
     }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
