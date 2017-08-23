@@ -1036,6 +1036,7 @@ const displayDetail = function(cveID) {
     addLink("#typeName_redhatV3", detailLink.rhel.url + data.CveID, "RedHat (v3)");
     addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.CveID, detailLink.ubuntu.disp);
     addLink("#typeName_debian", detailLink.debian.url + data.CveID, detailLink.debian.disp);
+    addLink("#typeName_oracle", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
 
     // ---References---
     let countRef = 0;
@@ -1057,6 +1058,7 @@ const displayDetail = function(cveID) {
     addRef("redhat");
     addRef("ubuntu");
     addRef("debian");
+    addRef("oracle");
     $("#count-References").text(countRef);
 
     // ---Tab Package

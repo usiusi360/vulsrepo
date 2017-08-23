@@ -581,7 +581,7 @@ const detailLink = {
     },
     oracle: {
         url: "https://linux.oracle.com/cve/",
-        disp: "OracleLinux"
+        disp: "Oracle"
     },
     oracleErrata: {
         url: "https://linux.oracle.com/errata/",
