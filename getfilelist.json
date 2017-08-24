@@ -1,0 +1,20 @@
+[
+  {
+    "isFolder": "true",
+    "title": "20170824",
+    "children": [
+      {
+        "title": "centos6.json",
+        "url": "/20170824/centos6.json"
+      },
+      {
+        "title": "debian8.json",
+        "url": "/20170824/debian8.json"
+      },
+      {
+        "title": "ubuntu16.json",
+        "url": "/20170824/ubuntu16.json"
+      }
+    ]
+  }
+]

@@ -10,6 +10,11 @@ VulsRepo is visualized based on the json report output in [vuls](https://github.
 ## Online Demo
 http://usiusi360.github.io/vulsrepo/
 
+## Requirements
+
+- [future-architect/Vuls](https://github.com/future-architect/vuls) >= v0.4.0
+- Web Browser : Google Chrome or Firefox
+
 ## Installation
 *A home folder of vuls is explained as /opt/vuls.*
 
@@ -17,100 +22,77 @@ http://usiusi360.github.io/vulsrepo/
 
 ````
 $ vuls scan 
-$ vuls report -to-localfile -format-json --cvedb-path=/opt/vuls/cve.sqlite3  
+$ vuls report -format-json 
 ````
 
-Output to a JSON files (/opt/vuls/results/current)
+Output to a JSON files (/opt/vuls/results/)
 
-### Step2. Install Http Server. 
-Apache HTTP Server is mentioned as installed one.
 
-### Step3. Installation
-2 ways to setup.
+
+### Step2. Installation
 
 From now on , executed by a user running the vuls scan.
 
-#### A. Zip download
-
-zip is downloaded and developed in a home folder of http server.
+- Git clone
 
 ````
-$ wget https://github.com/usiusi360/vulsrepo/archive/master.zip
-$ unzip master.zip
-$ sudo cp -Rp ./vulsrepo-master /var/www/html/vulsrepo
+$ cd $HOME
+$ git clone https://github.com/usiusi360/vulsrepo.git
 ````
 
-#### B. Git clone
+### Step3. Change the setting of vulsrepo-server
 
-````
-$ cd /var/www/html
-$ sudo git clone https://github.com/usiusi360/vulsrepo.git
-````
-
-### Step4. Change the execution of the user group of apache
-Set to the same user as the user to run the vuls scan.
+Set Path according to your own environment.
 
 ```
-$ vi httpd.conf
+$ cd $HOME/vulsrepo/server
 
-# If you wish httpd to run as a different user or group, you must run
-# httpd as root initially and it will switch.  
-#
-# User/Group: The name (or #number) of the user/group to run httpd as.
-# It is usually good practice to create a dedicated user and group for
-# running httpd, as with most system services.
-#
--User apache
--Group apache
-
-+User vuls
-+Group vuls
-
+$ vi vulsrepo-config.toml
+[Server]
+rootPath = "/home/vuls-user/vulsrepo"
+resultsPath  = "/opt/vuls/results"
+serverPort  = "5111"
 ```
 
-### Step5. The setting to make a CGI operate
+- Do not use the path of the symbolic link for resultsPath
 
-1. Copy the sample configuration file for apache configuration folder.
- - vulsrepo/dist/cgi/vulsrepo.conf.sample
+### Step4. Start vulsrepo-server
 
-2. Install library for perl. (CGI.pm/JSON.pm) 
- - In the case of RHEL or CentOS  
-    - Install perl-CGI and perl-JSON with the yum.
+```
+$ pwd
+$HOME/vulsrepo/server
 
- - In the case of Debian or Ubuntu.  
-    - Install libcgi-pm-perl and libjson-perl with the apt-get.  
-    - Enabling module cgid.(a2enmod cgid)
+$ ./vulsrepo-server
+2017/08/15 15:03:06 Start: Listening port: 5111
+```
 
-3. Restart http server
-
-### Step6. Link to vuls results folder
-
-````
-$ cd /var/www/html/vulsrepo/
-$ ln -s <VulsHome>/results results
-````
+- It is necessary to build by yourself except for Linux 64bit. Please look at the build section.
 
 ## Usage ##
 
 Access the browser
 
 ````
-http://VulsServer/vulsrepo/
+http://<server-address>:5111
 ````
+
+## Build vulsrepo-server
+- It is necessary to build by yourself except for Linux 64bit
+- Install golang beforehand.
+
+```
+$ pwd
+$HOME/vulsrepo/server
+
+$ go get -u "github.com/BurntSushi/toml"
+$ go build -o vulsrepo-server
+```
 
 ## Misc
 
 ### SETTING
 
 <img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image006.png" width="80%">
-
-- Detail screen of CVE-ID
-
-| Setting Name |  |
-|:-|:-|
-|The look-ahead check the URL|Prefetch Link's URL destination and check whether the page exists|
-|Show / Hide the Tab|Toggle display of NVD / JVN tab|
-
 
 - Pivot Table
 
@@ -129,6 +111,16 @@ http://VulsServer/vulsrepo/
 2. Click the copy button to clickboard.
 3. Pass the copied URL to another person.
 4. When you access the URL in the browser and select the file, the pivot is displayed with the same setting.
+
+### FAQ
+
+- Why does not Total of Vuls and VulsRepo result match ?
+
+Vuls aggregates the number of CveIDs included in the host.
+However, VulsRepo counts Packages related to CveID as one case.
+If more than one package is associated with one CveID, Total will increase more than Vuls.
+
+<img src="https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image008.png" width="80%">
 
 ## Gallery ##
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image001.png)
