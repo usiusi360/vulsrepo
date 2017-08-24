@@ -691,11 +691,22 @@ const displayPivot = function(array) {
         onRefresh: function(config) {
             db.set("vulsrepo_pivot_conf_tmp", config);
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "#b2f3b2");
-            $("#pivot_base").find("th:contains('true')").addClass("notfixyet-true");
-            $("#pivot_base").find("th:contains('false')").addClass("notfixyet-false");
+
+            $("#pivot_base").find("th:contains('true')").each(function() {
+                if ($(this).text() === "true") {
+                    $(this).addClass("notfixyet-true");
+                }
+            });
+
+            $("#pivot_base").find("th:contains('false')").each(function() {
+                if ($(this).text() === "false") {
+                    $(this).addClass("notfixyet-false");
+                }
+            });
+
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
-            $("th:contains('Reboot')").css("color", "#da0b00");
+            $("#pivot_base").find("th:contains('Reboot Required')").css("color", "#da0b00");
             addCveIDLink();
             addChangelogLink();
         }
