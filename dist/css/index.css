@@ -163,6 +163,10 @@ a {
     margin-bottom: 10px;
 }
 
+#cboxContent {
+    background-color: rgb(250, 250, 250);
+}
+
 #changelog-content {
     width: 800px;
     height: 600px;
@@ -174,21 +178,25 @@ a {
 
 .changelog-allcveid {
     font-weight: bold;
-    background-color: lightskyblue
+    background-color: #61C1BE;
 }
 
 .changelog-targetcveid {
     font-weight: bold;
-    background-color: #FFC107
+    background-color: #D59533;
 }
 
 .changelog-title {
     font-weight: bold;
-    background-color: #bfea95
+    background-color: #b2f3b2
 }
 
 .table-package {
     margin-bottom: 10px;
+}
+
+#cvss-detail {
+    background-color: rgb(250, 250, 250)
 }
 
 #modal-detail .panel-heading {

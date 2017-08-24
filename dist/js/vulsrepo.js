@@ -347,7 +347,7 @@ const setEvents = function() {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
-    if (db.get("vulsrepo_pivotPriority") === null) {
+    if (priority.length !== 6) {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
