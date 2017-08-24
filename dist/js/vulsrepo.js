@@ -434,7 +434,6 @@ const createPivotData = function(resultArray) {
 
             let result = {
                 "ScanTime": x_val.scanTime,
-                "ServerName": x_val.data.ServerName,
                 "Family": x_val.data.Family,
                 "Release": x_val.data.Release,
                 "CveID": "healthy",
@@ -455,6 +454,12 @@ const createPivotData = function(resultArray) {
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
             };
+
+            if (x_val.data.RunningKernel.RebootRequired === true) {
+                result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
+            } else {
+                result["ServerName"] = x_val.data.ServerName;
+            }
 
             if (x_val.data.Platform.Name !== "") {
                 result["Platform"] = x_val.data.Platform.Name;
@@ -494,13 +499,18 @@ const createPivotData = function(resultArray) {
 
                     let result = {
                         "ScanTime": x_val.scanTime,
-                        "ServerName": x_val.data.ServerName,
                         "Family": x_val.data.Family,
                         "Release": x_val.data.Release,
                         "CveID": "CHK-cveid-" + y_val.CveID,
                         "Packages": pkgName,
                         "NotFixedYet": NotFixedYet,
                     };
+
+                    if (x_val.data.RunningKernel.RebootRequired === true) {
+                        result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
+                    } else {
+                        result["ServerName"] = x_val.data.ServerName;
+                    }
 
                     if (y_val.CveContents.nvd !== undefined) {
                         result["CweID"] = y_val.CveContents.nvd.CweID;
@@ -685,6 +695,7 @@ const displayPivot = function(array) {
             $("#pivot_base").find("th:contains('false')").addClass("notfixyet-false");
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
+            $("th:contains('Reboot')").css("color", "#da0b00");
             addCveIDLink();
             addChangelogLink();
         }
@@ -1014,8 +1025,6 @@ const displayDetail = function(cveID) {
     addLink("#Link", detailLink.cvssV2Calculator.url + data.CveID, detailLink.cvssV2Calculator.disp);
     $("#Link").append("<span> / </span>");
     addLink("#Link", detailLink.cvssV3Calculator.url + data.CveID, detailLink.cvssV3Calculator.disp);
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
     $("#Link").append("<span> / </span>");
     $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
         addLink("#Link", i_val.url, i_val.disp);
