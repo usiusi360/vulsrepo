@@ -762,11 +762,17 @@ const addChangelogLink = function() {
 };
 
 const createDetailData = function(cveID) {
-    var targetObj;
+    var targetObj = { CveContents: {} };
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         tmpCve = x_val.data.ScannedCves[cveID];
         if (tmpCve !== undefined) {
-            targetObj = tmpCve;
+            targetObj["CveID"] = cveID;
+            targetObj["DistroAdvisories"] = tmpCve.DistroAdvisories;
+            $.each(vulsrepo.detailTaget, function(i, i_val) {
+                if (tmpCve.CveContents[i_val] !== undefined) {
+                    targetObj.CveContents[i_val] = tmpCve.CveContents[i_val];
+                }
+            });
         }
     });
     return targetObj;
@@ -785,7 +791,7 @@ const initDetail = function() {
         $("#scoreText_" + i_val + "V3").text("").removeClass();
         $("#summary_" + i_val).empty();
         $("#lastModified_" + i_val).empty();
-    })
+    });
 };
 
 
