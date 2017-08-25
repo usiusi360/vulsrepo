@@ -10,8 +10,6 @@
     <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <!-- bootstrapSwitch -->
     <link href="plugins/bootstrapSwitch/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-    <!-- font awesome -->
-    <link href="plugins/Font-Awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- c3.js -->
     <link href="plugins/c3.js/c3.min.css" rel="stylesheet" type="text/css" />
     <!-- pivot.js -->
@@ -27,7 +25,7 @@
     <!-- colorbox.js -->
     <link href="plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css" />
     <!-- main -->
-    <link href="dist/css/index.css?var=20170426-224756" rel="stylesheet" type="text/css" />
+    <link href="dist/css/index.css" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -35,7 +33,7 @@
 
     <div id="drawerLeft" class="drawer dw-xs-6 dw-sm-4 dw-md-2 fold" aria-labelledby="drawerLeft">
         <div class="drawer-controls">
-            <a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded" aria-expanded="false"><i class="fa fa-align-justify"></i></a>
+            <a href="#drawerLeft" data-toggle="drawer" aria-foldedopen="false" aria-controls="docDrawer" class="btn btn-default folded" aria-expanded="false"><i class="glyphicon glyphicon-align-justify"></i></a>
         </div>
         <div class="drawer-contents">
             <div class="drawer-heading">
@@ -141,150 +139,86 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="main-r">
                                         <div class="panel panel-info">
-                                            <div class="panel-body">
+                                            <div class="panel-body" id="cvss-detail">
 
+                                                <p class="bg-primary">
+                                                    CVSS Detail
+                                                </p>
+                                                <div class="col-xs-8">
+                                                    <table class="table table-hover table-condensed font-size-small">
+                                                        <tr class="active">
+                                                            <th>Type</th>
+                                                            <th>Score
+                                                                <div id="tooltip_score" class="glyphicon glyphicon-question-sign"></div>
+                                                            </th>
+                                                            <th>Summary</th>
+                                                            <th>LastModified Date</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_nvd"></td>
+                                                            <td id="scoreText_nvd"></td>
+                                                            <td id="summary_nvd"></td>
+                                                            <td id="lastModified_nvd"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_jvn"></td>
+                                                            <td id="scoreText_jvn"></td>
+                                                            <td id="summary_jvn"></td>
+                                                            <td id="lastModified_jvn"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_redhat"></td>
+                                                            <td id="scoreText_redhat"></td>
+                                                            <td id="summary_redhat" rowspan="2"></td>
+                                                            <td id="lastModified_redhat" rowspan="2"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_redhatV3"></td>
+                                                            <td id="scoreText_redhatV3"></td>
+                                                            <td id="summary_redhatV3" hidden></td>
+                                                            <td id="lastModified_redhatV3" hidden></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_ubuntu"></td>
+                                                            <td id="scoreText_ubuntu"></td>
+                                                            <td id="summary_ubuntu"></td>
+                                                            <td id="lastModified_ubuntu"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_debian"></td>
+                                                            <td id="scoreText_debian"></td>
+                                                            <td id="summary_debian"></td>
+                                                            <td id="lastModified_debian"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_oracle"></td>
+                                                            <td id="scoreText_oracle"></td>
+                                                            <td id="summary_oracle"></td>
+                                                            <td id="lastModified_oracle"></td>
+                                                        </tr>
 
-                                                <ul class="nav nav-tabs">
-                                                    <li class="active">
-                                                        <a href="#tab_nvd" data-toggle="tab">NVD</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tab_jvn" data-toggle="tab">JVN</a>
-                                                    </li>
-                                                </ul>
-
-                                                <div class="tab-content">
-
-                                                    <!--nvd-->
-                                                    <div class="tab-pane active" id="tab_nvd">
-                                                        <table class='dateDisplay'>
-                                                            <tr>
-                                                                <td class='dateDisplay_title'>Published Date :</td>
-                                                                <td class='dateDisplay_date' id='publishedDateNvd'></td>
-                                                                <td class='dateDisplay_title'>LastModified Date :</td>
-                                                                <td class='dateDisplay_date' id='lastModifiedDateNvd'></td>
-                                                            </tr>
-                                                        </table>
-
-                                                        <div id="detailTitle_nvd" class="detailTitle"></div>
-                                                        <p class="bg-primary">
-                                                            CVSS Score
-                                                        </p>
-                                                        <a class="pull-right" href="https://www.first.org/cvss/v2/guide" Target=”_blank”>Guide</a>
-                                                        <div class="glyphicon glyphicon-link pull-right"></div>
-                                                        <div class="detailScore">
-                                                            <table class='detailScoreTable'>
-                                                                <tr>
-                                                                    <td id='scoreText_nvd'></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <div>
-                                                            <table class="table table-condensed table-bordered detailCvssTable">
-                                                                <tr class="active">
-                                                                    <th>Access Vector(AV)
-                                                                        <div id="tooltip_nvd_av" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Access Complexity(AC)
-                                                                        <div id="tooltip_nvd_ac" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Authentication(Au)
-                                                                        <div id="tooltip_nvd_au" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Confidentiality Impact(C)
-                                                                        <div id="tooltip_nvd_c" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Integrity Impact(I)
-                                                                        <div id="tooltip_nvd_i" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>Availability Impact(A)
-                                                                        <div id="tooltip_nvd_a" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td id="cvss_av_nvd"></td>
-                                                                    <td id="cvss_ac_nvd"></td>
-                                                                    <td id="cvss_au_nvd"></td>
-                                                                    <td id="cvss_c_nvd"></td>
-                                                                    <td id="cvss_i_nvd"></td>
-                                                                    <td id="cvss_a_nvd"></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <p class="bg-primary">
-                                                            Summary
-                                                        </p>
-                                                        <div id="Summary_nvd"></div>
-                                                    </div>
-
-                                                    <!--jvn-->
-                                                    <div class="tab-pane" id="tab_jvn">
-
-                                                        <table class='dateDisplay'>
-                                                            <tr>
-                                                                <td class='dateDisplay_title'>Published Date :</td>
-                                                                <td class='dateDisplay_date' id='publishedDateJvn'></td>
-                                                                <td class='dateDisplay_title'>LastModified Date :</td>
-                                                                <td class='dateDisplay_date' id='lastModifiedDateJvn'></td>
-                                                            </tr>
-                                                        </table>
-
-                                                        <div id="detailTitle_jvn" class="detailTitle"></div>
-                                                        <p class="bg-primary">
-                                                            CVSS Score
-                                                        </p>
-                                                        <a class="pull-right" href="https://www.ipa.go.jp/security/vuln/CVSS.html" Target=”_blank”>Guide</a>
-                                                        <div class="glyphicon glyphicon-link pull-right"></div>
-                                                        <div class="detailScore">
-                                                            <table class='detailScoreTable'>
-                                                                <tr>
-                                                                    <td id='scoreText_jvn'></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <div>
-                                                            <table class="table table-condensed table-bordered detailCvssTable">
-                                                                <tr class="active">
-                                                                    <th>攻撃元区分(AV)
-                                                                        <div id="tooltip_jvn_av" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>攻撃条件の複雑さ(AC)
-                                                                        <div id="tooltip_jvn_ac" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>攻撃前の認証要否(Au)
-                                                                        <div id="tooltip_jvn_au" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>機密性への影響(C)
-                                                                        <div id="tooltip_jvn_c" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>完全性への影響(I)
-                                                                        <div id="tooltip_jvn_i" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                    <th>可用性への影響(A)
-                                                                        <div id="tooltip_jvn_a" class="glyphicon glyphicon-question-sign"></div>
-                                                                    </th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td id="cvss_av_jvn"></td>
-                                                                    <td id="cvss_ac_jvn"></td>
-                                                                    <td id="cvss_au_jvn"></td>
-                                                                    <td id="cvss_c_jvn"></td>
-                                                                    <td id="cvss_i_jvn"></td>
-                                                                    <td id="cvss_a_jvn"></td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-
-                                                        <p class="bg-primary">
-                                                            Summary
-                                                        </p>
-                                                        <div id="Summary_jvn"></div>
-                                                    </div>
-
+                                                    </table>
                                                 </div>
+                                                <div class="col-xs-4" style="padding-left: 0px;">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active">
+                                                            <a data-toggle="tab" href="#tab_chart_v2">CvssV2</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab" href="#tab_chart_v3">CvssV3</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-content">
+                                                        <div class="tab-pane active" id="tab_chart_v2">
+                                                            <canvas id="radar-chartV2" width="380" height="380"></canvas>
+                                                        </div>
+                                                        <div class="tab-pane" id="tab_chart_v3">
+                                                            <canvas id="radar-chartV3" width="380" height="380"></canvas>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                         <p class="bg-primary">
@@ -325,6 +259,7 @@
                                                     <th>Package<br>Release</th>
                                                     <th>Package<br>NewVersion</th>
                                                     <th>Package<br>NewRelease</th>
+                                                    <th>NotFixedYet</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -374,39 +309,6 @@
                 <div class="modal-body">
 
                     <div class="bs-callout bs-callout-primary">
-                        <h4>Detail screen of CVE-ID</h4>
-                        <br>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        The look-ahead check the URL
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="make-switch">
-                                            <input type="checkbox" name="chkAheadUrl">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        Show / Hide the Tab
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="make-switch">
-                                            <input type="checkbox" name="chkNvdUse" data-label-text="NVD" checked>
-                                            <input type="checkbox" name="chkJvnUse" data-label-text="JVN" checked>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bs-callout bs-callout-primary">
                         <h4>Pivot Table</h4>
                         <br>
                         <div class="row">
@@ -434,13 +336,22 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1</td>
-                                                    <td rowspan="2">
+                                                    <td rowspan="5">
                                                         <ul id="pivot-priority">
                                                         </ul>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -574,11 +485,13 @@
                         <th>ServerName</th>
                         <th>ContainerName</th>
                         <th>PackageName</th>
+                        <th>NotFixedYet</th>
                     </tr>
                     <tr>
                         <td id="changelog-servername"></td>
                         <td id="changelog-containername"></td>
                         <td id="changelog-packagename"></td>
+                        <td id="changelog-notfixedyet"></td>
                     </tr>
                 </table>
             </div>
@@ -628,12 +541,16 @@
 <!--jquery.balloon.js-->
 <script src="plugins/jquery.balloon/jquery.balloon.min.js" type="text/javascript"></script>
 <!--clipboard.js-->
-<script src="plugins/clipboard.js/clipboard.min.js"></script>
+<script src="plugins/clipboard.js/clipboard.min.js" type="text/javascript"></script>
 <!--lz-string.js-->
-<script src="plugins/lz-string/lz-string.min.js"></script>
+<script src="plugins/lz-string/lz-string.min.js" type="text/javascript"></script>
+
+<script src="plugins/jquery.collapser.js/jquery.collapser.min.js" type="text/javascript"></script>
+<script src="plugins/Chart.js/Chart.min.js" type="text/javascript"></script>
+
 <!-- main -->
-<script src="dist/js/vulsrepo_param.js?var=20170426-224756" type="text/javascript"></script>
-<script src="dist/js/vulsrepo_common.js?var=20170426-224756" type="text/javascript"></script>
-<script src="dist/js/vulsrepo.js?var=20170426-224756" type="text/javascript"></script>
+<script src="dist/js/vulsrepo_param.js" type="text/javascript"></script>
+<script src="dist/js/vulsrepo_common.js" type="text/javascript"></script>
+<script src="dist/js/vulsrepo.js" type="text/javascript"></script>
 
 </html>

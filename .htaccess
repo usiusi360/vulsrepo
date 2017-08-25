@@ -1,6 +1,0 @@
-<FilesMatch "\.json\.gz$">
-    ForceType application/json
-    AddEncoding x-gzip .gz  
-</FilesMatch>
- 
-
