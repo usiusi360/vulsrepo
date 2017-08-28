@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bufio"
+	"crypto/md5"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"os/user"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -27,8 +31,8 @@ type ServerConfig struct {
 }
 
 type AuthConfig struct {
-	AuthFilePath    string
-	Realm string
+	AuthFilePath string
+	Realm        string
 }
 
 type Tree []interface{}
@@ -48,9 +52,58 @@ var config Config
 
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	var m bool
+	var c, r, u string
+	uc, err := user.Current()
+	if err != nil {
+		log.Fatal("Error: get HomeDir: ", err)
+	}
+
+	flag.BoolVar(&m, "m", false, "make AuthFile")
+	flag.StringVar(&c, "c", uc.HomeDir+"/.htdigest", "AuthFile Path")
+	flag.StringVar(&r, "r", "vulsrepo_local", "realm")
+	flag.StringVar(&u, "u", "vuls", "login user")
+	flag.Parse()
+
+	if m == true {
+		createAuthfile(c, r, u)
+	} else {
+		startServer()
+	}
+}
+
+func createAuthfile(c string, r string, u string) {
+	var pass string
+	fmt.Printf("Password: ")
+	fmt.Scan(&pass)
+	fmt.Println("AuthFile Path\t: ", c)
+	fmt.Println("realm\t\t: ", r)
+	fmt.Println("login user\t: ", u)
+
+	f, err := os.OpenFile(c, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		log.Fatal("Error: File Open: ", err)
+	}
+	defer f.Close()
+	var writer *bufio.Writer
+	writer = bufio.NewWriter(f)
+
+	h := createMD5(u, r, pass)
+	if _, err := writer.WriteString(u + ":" + r + ":" + h + "\n"); err != nil {
+		log.Fatal("Error: File Write: ", err)
+	}
+	writer.Flush()
+	log.Println("Create Success")
+}
+
+func createMD5(user string, realm string, passwd string) string {
+	d := []byte(user + ":" + realm + ":" + passwd)
+	return fmt.Sprintf("%x", md5.Sum(d))
+}
+
+func startServer() {
 	loadConfig()
 	pathChk()
-
 	if config.Auth.AuthFilePath != "" {
 		authenticator := auth.NewDigestAuthenticator(config.Auth.Realm, getAuthFile(config.Auth.AuthFilePath))
 		http.HandleFunc("/", auth.JustCheck(authenticator, handleFileServer(config.Server.RootPath, "/")))
@@ -70,13 +123,13 @@ func main() {
 }
 
 func loadConfig() {
-	fpath , _ := (os.Executable())
-	_, err := toml.DecodeFile(filepath.Dir(fpath) + "/vulsrepo-config.toml", &config)
+	fpath, _ := (os.Executable())
+	_, err := toml.DecodeFile(filepath.Dir(fpath)+"/vulsrepo-config.toml", &config)
 	if err != nil {
-			_, err := toml.DecodeFile("./vulsrepo-config.toml", &config)
-			if err != nil {
-				log.Fatal("Error: Load Config: ", err)
-			}
+		_, err := toml.DecodeFile("./vulsrepo-config.toml", &config)
+		if err != nil {
+			log.Fatal("Error: Load Config: ", err)
+		}
 	}
 }
 
@@ -115,20 +168,20 @@ func getAuthFile(filename string) auth.SecretProvider {
 }
 
 func handleFileServer(dir, prefix string) http.HandlerFunc {
-    fs := http.FileServer(http.Dir(dir))
-    realHandler := http.StripPrefix(prefix, fs).ServeHTTP
-    return func(w http.ResponseWriter, req *http.Request) {
-        log.Println(req.URL)
-        realHandler(w, req)
-    }
+	fs := http.FileServer(http.Dir(dir))
+	realHandler := http.StripPrefix(prefix, fs).ServeHTTP
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Println(req.URL)
+		realHandler(w, req)
+	}
 }
 
-func accessAuth(rw http.ResponseWriter, req  *auth.AuthenticatedRequest) {
+func accessAuth(rw http.ResponseWriter, req *auth.AuthenticatedRequest) {
 	getfilelist(rw)
 }
 
 func accessDirect(rw http.ResponseWriter, req *http.Request) {
-	getfilelist(rw)	
+	getfilelist(rw)
 }
 
 func getfilelist(rw http.ResponseWriter) {

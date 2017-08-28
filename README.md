@@ -77,14 +77,29 @@ Access the browser
 ````
 http://<server-address>:5111
 ````
+
 ## DigestAuth
 
 1. To perform digest authentication, create an authentication file.
 ```
-htdigest -c <authFilePath> <realm> <userName>
+$ ./vulsrepo-server -h
+Usage of ./vulsrepo-server:
+  -c string
+        AuthFile Path (default "/home/vuls-user/.htdigest")
+  -m    make AuthFile
+  -r string
+        realm (default "vulsrepo_local")
+  -u string
+        login user (default "vuls")
 
 ex)
-htdigest -c /home/vuls-user/.htdigest vulsrepo_local vuls-user
+$ ./vulsrepo-server -m
+Password: ****
+AuthFile Path   :  /home/vuls-user/.htdigest
+realm           :  vulsrepo_local
+login user      :  vuls
+2017/08/28 19:11:59 main.go:96: Create Success
+
 ```
 
 2. Edit vulsrepo-config.toml.
@@ -98,9 +113,9 @@ realm = "vulsrepo_local"
 3. Start vulsrepo-server
 ```
 $ ./vulsrepo-server 
-2017/08/28 11:04:00 main.go:90: INFO: RootPath Load:  /root/work/vulsrepo
+2017/08/28 11:04:00 main.go:90: INFO: RootPath Load:  /home/vuls-user/vulsrepo
 2017/08/28 11:04:00 main.go:97: INFO: ResultsPath Load:  /opt/vuls/results
-2017/08/28 11:04:00 main.go:105: INFO: AuthFilePath Load:  /root/.htdigest ←※
+2017/08/28 11:04:00 main.go:105: INFO: AuthFilePath Load:  /home/vuls-user/.htdigest ←※
 2017/08/28 11:04:00 main.go:66: Start: Listening port: 5111
 ```
 
