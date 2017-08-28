@@ -62,8 +62,10 @@ serverPort  = "5111"
 $ pwd
 $HOME/vulsrepo/server
 
-$ ./vulsrepo-server
-2017/08/15 15:03:06 Start: Listening port: 5111
+$ ./vulsrepo-server 
+2017/08/28 11:04:00 main.go:90: INFO: RootPath Load:  /root/work/vulsrepo
+2017/08/28 11:04:00 main.go:97: INFO: ResultsPath Load:  /opt/vuls/results
+2017/08/28 11:04:00 main.go:66: Start: Listening port: 5111
 ```
 
 - It is necessary to build by yourself except for Linux 64bit. Please look at the build section.
@@ -75,16 +77,43 @@ Access the browser
 ````
 http://<server-address>:5111
 ````
+## DigestAuth
+
+1. To perform digest authentication, create an authentication file.
+```
+htdigest -c <authFilePath> <realm> <userName>
+
+ex)
+htdigest -c /home/vuls-user/.htdigest vulsrepo_local vuls-user
+```
+
+2. Edit vulsrepo-config.toml.
+```
+$ vi vulsrepo-config.toml
+[Auth]
+authFilePath = "/home/vuls-user/.htdigest"
+realm = "vulsrepo_local"
+```
+
+3. Start vulsrepo-server
+```
+$ ./vulsrepo-server 
+2017/08/28 11:04:00 main.go:90: INFO: RootPath Load:  /root/work/vulsrepo
+2017/08/28 11:04:00 main.go:97: INFO: ResultsPath Load:  /opt/vuls/results
+2017/08/28 11:04:00 main.go:105: INFO: AuthFilePath Load:  /root/.htdigest ←※
+2017/08/28 11:04:00 main.go:66: Start: Listening port: 5111
+```
 
 ## Build vulsrepo-server
 - It is necessary to build by yourself except for Linux 64bit
 - Install golang beforehand.
 
 ```
-$ pwd
-$HOME/vulsrepo/server
-
-$ go get -u "github.com/BurntSushi/toml"
+$ mkdir -p $GOPATH/github.com/usiusi360/
+$ cd $GOPATH/github.com/usiusi360/
+$ git clone https://github.com/usiusi360/vulsrepo.git
+$ cd vulsrepo/server
+$ dep ensure
 $ go build -o vulsrepo-server
 ```
 
