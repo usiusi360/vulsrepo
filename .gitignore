@@ -1,4 +1,3 @@
 .project
-dist/cgi/test.json
-results/*
 .vscode/*
+/server/vendor/
