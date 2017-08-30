@@ -394,7 +394,7 @@ const createFolderTree = function() {
         },
         ajaxDefaults: {
             cache: false,
-            timeout: 5000,
+            timeout: 120000,
             dataType: "json"
         },
         minExpandLevel: 1,
