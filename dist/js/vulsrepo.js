@@ -568,11 +568,11 @@ const createPivotData = function(resultArray) {
 
                         if (y_val.CveContents[target].Cvss2Score !== 0) {
                             result["CVSS Score"] = y_val.CveContents[target].Cvss2Score;
-                            result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss2Score);
+                            result["CVSS Severity"] = getSeverityV2(y_val.CveContents[target].Cvss2Score);
                             result["CVSS Score Type"] = target;
                         } else if (y_val.CveContents[target].Cvss3Score !== 0) {
                             result["CVSS Score"] = y_val.CveContents[target].Cvss3Score;
-                            result["CVSS Severity"] = getSeverity(y_val.CveContents[target].Cvss3Score);
+                            result["CVSS Severity"] = getSeverityV3(y_val.CveContents[target].Cvss3Score);
                             result["CVSS Score Type"] = target + "V3";
                         }
 
@@ -811,9 +811,9 @@ const displayDetail = function(cveID) {
             // -- for nvd
             if (severity === "") {
                 if (scoreV2 !== 0) {
-                    severity = getSeverity(scoreV2);
+                    severity = getSeverityV2(scoreV2);
                 } else if (scoreV3 !== 0) {
-                    severity = getSeverity(scoreV3);
+                    severity = getSeverityV3(scoreV3);
                 } else {
                     severity = "None";
                 }

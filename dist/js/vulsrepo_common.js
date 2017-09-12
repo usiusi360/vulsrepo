@@ -1,4 +1,4 @@
-const getSeverity = function(Score) {
+const getSeverityV2 = function(Score) {
     if (Score >= 7.0) {
         return "High";
     } else if ((Score <= 6.9) && (Score >= 4.0)) {
