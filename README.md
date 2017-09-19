@@ -47,7 +47,7 @@ Set Path according to your own environment.
 ```
 $ cd $HOME/vulsrepo/server
 
-$ cp vulsrepo-config.toml.master vulsrepo-config.toml
+$ cp vulsrepo-config.toml.sample vulsrepo-config.toml
 
 $ vi vulsrepo-config.toml
 [Server]
