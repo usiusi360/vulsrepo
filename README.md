@@ -130,6 +130,7 @@ $ mkdir -p $GOPATH/src/github.com/usiusi360/
 $ cd $GOPATH/src/github.com/usiusi360/
 $ git clone https://github.com/usiusi360/vulsrepo.git
 $ cd vulsrepo/server
+$ go get -u github.com/golang/dep/...
 $ dep ensure
 $ go build -o vulsrepo-server
 ```

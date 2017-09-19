@@ -11,10 +11,26 @@
   name = "github.com/abbot/go-http-auth"
   packages = ["."]
   revision = "0ddd408d5d60ea76e320503cc7dd091992dee608"
+  version = "v0.4.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["bcrypt","blowfish"]
+  revision = "7d9177d70076375b9a59c8fde23d52d9c4a7ecd5"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "8351a756f30f1297fe94bbf4b767ec589c6ea6d0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "19b0b2cb9991cde853db981a80155b1bf24d61516bc61e5d4fe0eb126a0c8c46"
+  inputs-digest = "eadb1944e177c58766d45b22bd5582cf489a3a26895ce78fdce4c97f9014ad9d"
   solver-name = "gps-cdcl"
   solver-version = 1
+
+
+
