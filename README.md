@@ -47,6 +47,8 @@ Set Path according to your own environment.
 ```
 $ cd $HOME/vulsrepo/server
 
+$ cp vulsrepo-config.toml.master vulsrepo-config.toml
+
 $ vi vulsrepo-config.toml
 [Server]
 rootPath = "/home/vuls-user/vulsrepo"
@@ -124,8 +126,8 @@ $ ./vulsrepo-server
 - Install golang beforehand.
 
 ```
-$ mkdir -p $GOPATH/github.com/usiusi360/
-$ cd $GOPATH/github.com/usiusi360/
+$ mkdir -p $GOPATH/github.com/src/usiusi360/
+$ cd $GOPATH/src/github.com/usiusi360/
 $ git clone https://github.com/usiusi360/vulsrepo.git
 $ cd vulsrepo/server
 $ dep ensure
