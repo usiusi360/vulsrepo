@@ -126,7 +126,7 @@ $ ./vulsrepo-server
 - Install golang beforehand.
 
 ```
-$ mkdir -p $GOPATH/github.com/src/usiusi360/
+$ mkdir -p $GOPATH/src/github.com/usiusi360/
 $ cd $GOPATH/src/github.com/usiusi360/
 $ git clone https://github.com/usiusi360/vulsrepo.git
 $ cd vulsrepo/server
