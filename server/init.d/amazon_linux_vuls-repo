@@ -1,0 +1,65 @@
+#!/bin/bash
+#chkconfig: 2345 85 15
+#descpriction: VulsRepo
+#OS Amazon Linux/CentOS6
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+
+start() {
+        echo -n $"Starting VulsRepo: " 
+        /usr/bin/nohup /home/vuls/vulsrepo/server/vulsrepo-server 2>/dev/null &
+        RETVAL=$?
+        if [ $RETVAL == 0 ]; then
+          success
+        else
+          failure
+        fi
+        echo
+}
+
+stop() {
+        echo -n $"Stopping VulsRepo: " 
+        /usr/bin/pkill vulsrepo
+        RETVAL=$?
+        if [ $RETVAL == 0 ]; then
+          success
+        else
+          failure
+        fi
+        echo
+}
+
+status() {
+        if pgrep vulsrepo > /dev/null
+        then
+          echo -n $"VulsRepo is running: "
+        else
+          echo -n $"VulsRepo is not running: "
+        fi
+        RETVAL=$?
+        echo
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  *)
+        echo -e $"Usage: $0 {start|stop|restart}" 
+        exit 1
+esac
+
+exit $RETVAL

@@ -72,6 +72,23 @@ $ ./vulsrepo-server
 
 - It is necessary to build by yourself except for Linux 64bit. Please look at the build section.
 
+### Step4. How to use vulsrepo for init file
+
+```
+$ pwd
+$HOME/vulsrepo/server/init.d
+
+$ sudo cp amazon_linux_vuls-repo /etc/init.d/vuls-repo
+$ sudo chmod 755 /etc/init.d/vuls-repo
+
+$ sudo chkconfig vuls-repo on
+
+$ sudo /etc/init.d/vuls-repo status
+$ sudo /etc/init.d/vuls-repo start
+$ sudo /etc/init.d/vuls-repo stop
+$ sudo /etc/init.d/vuls-repo restart
+```
+
 ## Usage ##
 
 Access the browser
