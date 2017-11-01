@@ -72,21 +72,58 @@ $ ./vulsrepo-server
 
 - It is necessary to build by yourself except for Linux 64bit. Please look at the build section.
 
-### Step4. How to use vulsrepo for init file
+### Step5. Always activate vulsrepo-server
+
+##### Case: SystemV (/etc/init.d)
+
+- Copy startup file. Change the contents according to the environment.
 
 ```
-$ pwd
-$HOME/vulsrepo/server/init.d
+$ sudo cp $HOME/vulsrepo/server/scripts/vulsrepo.init /etc/init.d/vulsrepo
+$ sudo chmod 755 /etc/init.d/vulsrepo
+$ sudo vi /etc/systemd/system/vulsrepo.service
+```
 
-$ sudo cp amazon_linux_vuls-repo /etc/init.d/vuls-repo
-$ sudo chmod 755 /etc/init.d/vuls-repo
+- Set to start automatically
 
-$ sudo chkconfig vuls-repo on
+```
+$ sudo chkconfig vulsrepo on
+```
 
-$ sudo /etc/init.d/vuls-repo status
-$ sudo /etc/init.d/vuls-repo start
-$ sudo /etc/init.d/vuls-repo stop
-$ sudo /etc/init.d/vuls-repo restart
+- Start vulsrepo-server
+
+```
+$ sudo /etc/init.d/vulsrepo start
+```
+
+##### Case: systemd (systemctl)
+
+- Copy startup file. Change the contents according to the environment.
+
+```
+$ sudo cp $HOME/vulsrepo/server/scripts/vulsrepo.service /lib/systemd/system/vulsrepo.service
+$ sudo vi /lib/systemd/system/vulsrepo.service
+
+```
+
+- Set to start automatically
+
+```
+$ sudo systemctl enable vulsrepo
+
+```
+
+- Check settings
+
+```
+$ sudo systemctl list-unit-files --type=service | grep vulsrepo
+vulsrepo.service                           enabled
+```
+
+- Start vulsrepo-server
+
+```
+$ sudo systemctl start vulsrepo
 ```
 
 ## Usage ##

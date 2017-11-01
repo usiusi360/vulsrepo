@@ -1,7 +1,11 @@
 #!/bin/bash
 #chkconfig: 2345 85 15
 #descpriction: VulsRepo
-#OS Amazon Linux/CentOS6
+#OS RedHat6 / CentOS6 / AmazonLinux
+
+# change according to the environment
+USER="vuls-user"
+BIN_DIR="/home/vuls-user/vulsrepo/server"
 
 # source function library
 . /etc/rc.d/init.d/functions
@@ -10,7 +14,7 @@ RETVAL=0
 
 start() {
         echo -n $"Starting VulsRepo: " 
-        /usr/bin/nohup /home/vuls/vulsrepo/server/vulsrepo-server 2>/dev/null &
+        su ${USER} -c "/usr/bin/nohup ${BIN_DIR}/vulsrepo-server 2>/dev/null &"
         RETVAL=$?
         if [ $RETVAL == 0 ]; then
           success
