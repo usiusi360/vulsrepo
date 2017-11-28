@@ -14,7 +14,7 @@ RETVAL=0
 
 start() {
         echo -n $"Starting VulsRepo: " 
-        su ${USER} -c "/usr/bin/nohup ${BIN_DIR}/vulsrepo-server 2>/dev/null &"
+        su ${USER} -c "/usr/bin/nohup ${BIN_DIR}/vulsrepo-server >/dev/null 2>&1 &"
         RETVAL=$?
         if [ $RETVAL == 0 ]; then
           success
