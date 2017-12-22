@@ -782,7 +782,7 @@ const createDetailData = function(cveID) {
 const initDetail = function() {
     $("#modal-label").text("");
     $("#count-References").text("0");
-    $("#CweID,#Link,#References").empty();
+    $("#CweID,#Link,#References,#radar-caluclatorV2,#radar-caluclatorV3").empty();
 
     $.each(vulsrepo.detailTaget, function(i, i_val) {
         $("#typeName_" + i_val).empty();
@@ -1030,6 +1030,10 @@ const displayDetail = function(cveID) {
         }
     }
 
+
+
+
+
     // ---Link---
     var addLink = function(target, url, disp) {
         $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
@@ -1039,14 +1043,9 @@ const displayDetail = function(cveID) {
     $("#Link").append("<span> / </span>");
     addLink("#Link", detailLink.cveDetail.url + data.CveID, detailLink.cveDetail.disp);
     $("#Link").append("<span> / </span>");
-    addLink("#Link", detailLink.cvssV2Calculator.url + data.CveID, detailLink.cvssV2Calculator.disp);
-    $("#Link").append("<span> / </span>");
-    addLink("#Link", detailLink.cvssV3Calculator.url + data.CveID, detailLink.cvssV3Calculator.disp);
-    $("#Link").append("<span> / </span>");
     $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
         addLink("#Link", i_val.url, i_val.disp);
     });
-
 
     addLink("#typeName_nvd", detailLink.nvd.url + data.CveID, detailLink.nvd.disp);
     if (data.CveContents.jvn !== undefined) {
@@ -1063,6 +1062,9 @@ const displayDetail = function(cveID) {
     addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.CveID, detailLink.ubuntu.disp);
     addLink("#typeName_debian", detailLink.debian.url + data.CveID, detailLink.debian.disp);
     addLink("#typeName_oracle", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
+
+    addLink("#radar-caluclatorV2", detailLink.cvssV2Calculator.url + data.CveID, detailLink.cvssV2Calculator.disp);
+    addLink("#radar-caluclatorV3", detailLink.cvssV3Calculator.url + data.CveID, detailLink.cvssV3Calculator.disp);
 
     // ---References---
     let countRef = 0;

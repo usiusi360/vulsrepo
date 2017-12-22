@@ -553,11 +553,11 @@ const detailLink = {
     },
     cvssV2Calculator: {
         url: "https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?name=",
-        disp: "CVSSv2 Caluclator"
+        disp: "CVSS Calculator V2"
     },
     cvssV3Calculator: {
         url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?name=",
-        disp: "CVSSv3 Caluclator"
+        disp: "CVSS Calculator V3"
     },
     rhel: {
         url: "https://access.redhat.com/security/cve/",
