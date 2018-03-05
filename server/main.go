@@ -28,6 +28,7 @@ type ServerConfig struct {
 	RootPath    string
 	ResultsPath string
 	ServerPort  string
+	ServerIP    string
 }
 
 type AuthConfig struct {
@@ -115,7 +116,7 @@ func startServer() {
 		http.HandleFunc("/getfilelist/", accessDirect)
 	}
 
-	log.Println("Start: Listening port: " + config.Server.ServerPort)
+	log.Println("Start: Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
 	err := http.ListenAndServe(config.Server.ServerIP+":"+config.Server.ServerPort, nil)
 	if err != nil {
 		log.Fatal("Error: ListenAndServe: ", err)
