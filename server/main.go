@@ -116,7 +116,7 @@ func startServer() {
 	}
 
 	log.Println("Start: Listening port: " + config.Server.ServerPort)
-	err := http.ListenAndServe(":"+config.Server.ServerPort, nil)
+	err := http.ListenAndServe(config.Server.ServerIP+":"+config.Server.ServerPort, nil)
 	if err != nil {
 		log.Fatal("Error: ListenAndServe: ", err)
 	}
