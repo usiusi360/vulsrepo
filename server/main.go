@@ -29,6 +29,9 @@ type ServerConfig struct {
 	ResultsPath string
 	ServerPort  string
 	ServerIP    string
+	ServerSSL   string
+	ServerCert  string
+	ServerKey   string
 }
 
 type AuthConfig struct {
@@ -115,11 +118,18 @@ func startServer() {
 		http.HandleFunc("/results/", handleFileServer(config.Server.ResultsPath, "/results/"))
 		http.HandleFunc("/getfilelist/", accessDirect)
 	}
-
-	log.Println("Start: Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
-	err := http.ListenAndServe(config.Server.ServerIP+":"+config.Server.ServerPort, nil)
-	if err != nil {
-		log.Fatal("Error: ListenAndServe: ", err)
+	if config.ServerSSL == "yes" {    
+		log.Println("Start: SSL Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
+		err := http.ListenAndServeTLS(config.Server.ServerIP+":"+config.Server.ServerPort, config.Server.ServerCert, config.Server.ServerKey, nil)
+		if err != nil {
+			log.Fatal("Error: ListenAndServeTLS: ", err)
+		}
+	} else {
+		log.Println("Start: Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
+		err := http.ListenAndServe(config.Server.ServerIP+":"+config.Server.ServerPort, nil)
+		if err != nil {
+			log.Fatal("Error: ListenAndServe: ", err)
+		}
 	}
 }
 
