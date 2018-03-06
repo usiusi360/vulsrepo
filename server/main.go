@@ -118,7 +118,7 @@ func startServer() {
 		http.HandleFunc("/results/", handleFileServer(config.Server.ResultsPath, "/results/"))
 		http.HandleFunc("/getfilelist/", accessDirect)
 	}
-	if config.ServerSSL == "yes" {    
+	if config.Server.ServerSSL == "yes" {    
 		log.Println("Start: SSL Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
 		err := http.ListenAndServeTLS(config.Server.ServerIP+":"+config.Server.ServerPort, config.Server.ServerCert, config.Server.ServerKey, nil)
 		if err != nil {
