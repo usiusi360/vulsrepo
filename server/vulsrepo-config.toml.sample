@@ -1,9 +1,12 @@
 [Server]
 rootPath = "/home/vuls-user/vulsrepo"
 resultsPath  = "/opt/vuls/results"
+serverIP = "127.0.0.1"
 serverPort  = "5111"
+#serverSSL = "yes"
+#serverCert = "cert.pem"
+#serverKey = "key.pem"
 
 #[Auth]
 #authFilePath = "/home/vuls-user/.htdigest"
 #realm = "vulsrepo_local"
-
