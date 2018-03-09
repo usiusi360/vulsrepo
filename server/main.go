@@ -169,6 +169,23 @@ func pathChk() {
 		}
 	}
 
+        if config.Server.ServerSSL == "yes" {
+                if _, err := os.Stat(config.Server.ServerCert); err != nil {
+                        log.Println("Error: serverCertPath not access: ", config.Server.ServerCert)
+                        flag = true
+                } else {
+                        log.Println("INFO: serverCertPath Load: ", config.Server.ServerCert)
+                }
+
+                if _, err := os.Stat(config.Server.ServerKey); err != nil {
+                        log.Println("Error: serverKeyPath not access: ", config.Server.ServerKey)
+                        flag = true
+                } else {
+                        log.Println("INFO: serverKeyPath Load: ", config.Server.ServerKey)
+                }
+        }
+
+
 	if flag == true {
 		log.Fatal("Error: Please see if the config setting is correct")
 	}
