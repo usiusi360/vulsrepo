@@ -1,8 +1,4 @@
 $(document).ready(function() {
-    $.each(vulsrepo_template, function(index, val) {
-        localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
-    });
-
     setEvents();
     createFolderTree();
     db.remove("vulsrepo_pivot_conf");
@@ -12,8 +8,8 @@ $(document).ready(function() {
 const initData = function() {
     $.blockUI(blockUIoption);
     getData().done(function(resultArray) {
-        vulsrepo.detailRawData = resultArray;
-        vulsrepo.detailPivotData = createPivotData(resultArray);
+        vulsrepo.detailRawData = resultArray; //for detailed screen
+        vulsrepo.detailPivotData = createPivotData(resultArray); //for Pivot
         initPivotTable();
     }).fail(function(result) {
         $.unblockUI(blockUIoption);
@@ -59,8 +55,8 @@ const db = {
         localStorage.removeItem("vulsrepo_pivot_conf_user_" + key);
     },
     listPivotConf: function(key) {
-        var array = [];
-        for (var i = 0; i < localStorage.length; i++) {
+        let array = [];
+        for (let i = 0; i < localStorage.length; i++) {
             if (localStorage.key(i).indexOf('vulsrepo_pivot_conf_user_') != -1) {
                 array.push(localStorage.key(i).replace(/vulsrepo_pivot_conf_user_/g, ''));
             }
@@ -112,12 +108,12 @@ const getData = function() {
         timeout: vulsrepo.timeOut
     });
 
-    var kickCount = 0;
-    var endCount = 0;
-    var resultArray = [];
-    var defer = new $.Deferred();
+    let kickCount = 0;
+    let endCount = 0;
+    let resultArray = [];
+    let defer = new $.Deferred();
 
-    var selectedFiles = getSelectedFile();
+    let selectedFiles = getSelectedFile();
 
     if (selectedFiles.length === 0) {
         defer.reject("notSelect");
@@ -125,15 +121,15 @@ const getData = function() {
     }
 
     $.each(selectedFiles, function(key, value) {
-        var url = value.url;
+        let url = value.url;
         $.getJSON(url).done(function(json_data) {
             endCount++;
-            var resultMap = {
+            let resultMap = {
                 scanTime: value.parent_title,
                 data: json_data
             };
 
-            if (resultMap.data.JSONVersion === undefined) {
+            if (resultMap.data.JSONVersion === undefined || resultMap.data.JSONVersion !== 4) {
                 showAlert("Old JSON format", value.url);
                 $.unblockUI(blockUIoption);
                 return;
@@ -158,9 +154,9 @@ const getData = function() {
 };
 
 const getSelectedFile = function() {
-    var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
+    let selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
         if (node.data.isFolder === false) {
-            var data = {
+            let data = {
                 title: node.data.title,
                 url: "results" + node.data.url,
                 parent_title: node.parent.data.title
@@ -187,13 +183,29 @@ const setPulldown = function(target) {
 
 const setPulldownDisplayChangeEvent = function(target) {
     $(target + ' a').on('click', function() {
-        var value = db.getPivotConf($(this).attr('value'));
+        let value = db.getPivotConf($(this).attr('value'));
         db.set("vulsrepo_pivot_conf", value);
         initPivotTable();
     });
 };
 
+
+const cutStr = function(str) {
+    let afterTxt = ' …';
+    let textLength = str.length;
+
+    if (vulsrepo.cutFigure > textLength) {
+        return str;
+    } else {
+        return str.substr(0, (vulsrepo.cutFigure)) + afterTxt;
+    }
+};
+
 const setEvents = function() {
+
+    $.each(vulsrepo_template, function(index, val) {
+        localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
+    });
 
     // ---file select
     $(".submitSelectfile").click(function() {
@@ -238,7 +250,7 @@ const setEvents = function() {
     });
 
     $("#ok_saveDiag").click(function() {
-        var configName;
+        let configName;
         if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
             configName = $("#input_saveDiag").val();
             if (configName !== "") {
@@ -311,34 +323,50 @@ const setEvents = function() {
     });
 
     // ---switch
-    $("[name='chkPivotSummary']").bootstrapSwitch();
-    $("[name='chkPivotCvss']").bootstrapSwitch();
+    $("[name='setting_summary']").bootstrapSwitch();
 
-    if (db.get("vulsrepo_chkPivotSummary") === "false") {
-        $('input[name="chkPivotSummary"]').bootstrapSwitch('state', false, false);
-    }
-    if (db.get("vulsrepo_chkPivotCvss") === "false") {
-        $('input[name="chkPivotCvss"]').bootstrapSwitch('state', false, false);
+    if (db.get("vulsrepo_setting_summary") === "false") {
+        $('input[name="setting_summary"]').bootstrapSwitch('state', false, false);
     }
 
-    $('input[name="chkPivotSummary"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    $('input[name="setting_summary"]').on('switchChange.bootstrapSwitch', function(event, state) {
         if (state === false) {
-            db.set("vulsrepo_chkPivotSummary", "false");
+            db.set("vulsrepo_setting_summary", "false");
         } else {
-            db.remove("vulsrepo_chkPivotSummary");
+            db.remove("vulsrepo_setting_summary");
         }
     });
-    $('input[name="chkPivotCvss"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state === false) {
-            db.set("vulsrepo_chkPivotCvss", "false");
+
+    if (db.get("vulsrepo_setting_cvssV2") === "true") {
+        $("#setting_cvssV2").prop("checked", true);
+    }
+
+    $("#setting_cvssV2").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_cvssV2", "true");
         } else {
-            db.remove("vulsrepo_chkPivotCvss");
+            db.remove("vulsrepo_setting_cvssV2");
         }
     });
+
+    if (db.get("vulsrepo_setting_cvssV3") === "true") {
+        $("#setting_cvssV3").prop("checked", true);
+    }
+
+    $("#setting_cvssV3").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_cvssV3", "true");
+        } else {
+            db.remove("vulsrepo_setting_cvssV3");
+        }
+    });
+
+
+
 
     // ---priority
 
-    var priority = db.get("vulsrepo_pivotPriority");
+    let priority = db.get("vulsrepo_pivotPriority");
     if (priority === null) {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
@@ -381,14 +409,14 @@ const setEvents = function() {
 
 const createFolderTree = function() {
 
-    var target;
+    let target;
     if (vulsrepo.demoFlag === true) {
         target = "getfilelist.json"
     } else {
         target = "getfilelist"
     }
 
-    var tree = $("#folderTree").dynatree({
+    let tree = $("#folderTree").dynatree({
         initAjax: {
             url: target
         },
@@ -411,7 +439,7 @@ const createFolderTree = function() {
     });
 };
 
-const isCheckNull = function(o) {
+const isCheckNone = function(o) {
     if (o === undefined) {
         return true;
     } else if (o === null) {
@@ -426,12 +454,12 @@ const createPivotData = function(resultArray) {
     let array = [];
     let cveid_count = 0;
     const prioltyFlag = db.get("vulsrepo_pivotPriority");
-    const summaryFlag = db.get("vulsrepo_chkPivotSummary");
-    const cvssFlag = db.get("vulsrepo_chkPivotCvss");
+    const summaryFlag = db.get("vulsrepo_setting_summary");
+    const cvssV2Flag = db.get("vulsrepo_setting_cvssV2");
+    const cvssV3Flag = db.get("vulsrepo_setting_cvssV3");
 
     $.each(resultArray, function(x, x_val) {
-        if (Object.keys(x_val.data.ScannedCves).length === 0) {
-
+        if (isCheckNone(x_val.data.ScannedCves)) {
             let result = {
                 "ScanTime": x_val.scanTime,
                 "Family": x_val.data.Family,
@@ -442,18 +470,35 @@ const createPivotData = function(resultArray) {
                 "PackageVer": "healthy",
                 "NewPackageVer": "healthy",
                 "CweID": "healthy",
-                "Summary": "healthy",
                 "CVSS Score": "healthy",
                 "CVSS Severity": "healthy",
-                "CVSS (AV)": "healthy",
-                "CVSS (AC)": "healthy",
-                "CVSS (Au)": "healthy",
-                "CVSS (C)": "healthy",
-                "CVSS (I)": "healthy",
-                "CVSS (A)": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
             };
+
+            if (summaryFlag !== "false") {
+                result["Summary"] = "healthy";
+            }
+
+            if (cvssV2Flag === "true") {
+                result["CvssV2 (AV)"] = "healthy";
+                result["CvssV2 (AC)"] = "healthy";
+                result["CvssV2 (Au)"] = "healthy";
+                result["CvssV2 (C)"] = "healthy";
+                result["CvssV2 (I)"] = "healthy";
+                result["CvssV2 (A)"] = "healthy";
+            }
+
+            if (cvssV3Flag === "true") {
+                result["CvssV3 (AV)"] = "healthy";
+                result["CvssV3 (AC)"] = "healthy";
+                result["CvssV3 (PR)"] = "healthy";
+                result["CvssV3 (UI)"] = "healthy";
+                result["CvssV3 (S)"] = "healthy";
+                result["CvssV3 (C)"] = "healthy";
+                result["CvssV3 (I)"] = "healthy";
+                result["CvssV3 (A)"] = "healthy";
+            }
 
             if (x_val.data.RunningKernel.RebootRequired === true) {
                 result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
@@ -462,7 +507,7 @@ const createPivotData = function(resultArray) {
             }
 
             if (x_val.data.Platform.Name !== "") {
-                result["Platform"] = x_val.data.Platform.Name;
+                result["Platform"] = x_val.data.Platform.Name + "(" + x_val.data.Platform.InstanceID + ")";
             } else {
                 result["Platform"] = "None";
             }
@@ -476,16 +521,18 @@ const createPivotData = function(resultArray) {
         } else {
             $.each(x_val.data.ScannedCves, function(y, y_val) {
                 let targetNames;
-                if (isCheckNull(y_val.CpeNames) === false) {
-                    targetNames = y_val.CpeNames;
-                } else {
+                if (isCheckNone(y_val.CpeNames)) {
                     targetNames = y_val.AffectedPackages;
+                } else {
+                    targetNames = y_val.CpeNames;
                 }
 
                 cveid_count = cveid_count + 1
                 $.each(targetNames, function(p, p_val) {
-                    if (p_val.Name === undefined) {
-                        pkgName = p_val;
+                    let pkgName;
+                    let NotFixedYet;
+                    if (isCheckNone(p_val.Name)) {
+                        pkgName = p_val; // for CPE
                         NotFixedYet = "Unknown";
                     } else {
                         pkgName = p_val.Name;
@@ -493,7 +540,7 @@ const createPivotData = function(resultArray) {
                     }
 
                     let pkgInfo = x_val.data.Packages[pkgName];
-                    if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
+                    if ((pkgName.indexOf('cpe:/') === -1) && (isCheckNone(pkgInfo))) {
                         return;
                     }
 
@@ -512,54 +559,50 @@ const createPivotData = function(resultArray) {
                         result["ServerName"] = x_val.data.ServerName;
                     }
 
-                    if (y_val.CveContents.nvd !== undefined) {
-                        result["CweID"] = y_val.CveContents.nvd.CweID;
-                    } else {
-                        result["CweID"] = "None";
-                    }
-
-                    if (x_val.data.Platform.Name !== "") {
-                        result["Platform"] = x_val.data.Platform.Name;
-                    } else {
+                    if (isCheckNone(x_val.data.Platform.Name)) {
                         result["Platform"] = "None";
+                    } else {
+                        result["Platform"] = x_val.data.Platform.Name;
                     }
 
-                    if (x_val.data.Container.Name !== "") {
-                        result["Container"] = x_val.data.Container.Name;
-                    } else {
+                    if (isCheckNone(x_val.data.Container.Name)) {
                         result["Container"] = "None";
+                    } else {
+                        result["Container"] = x_val.data.Container.Name;
                     }
 
-                    DetectionMethod = y_val.Confidence.DetectionMethod;
-                    result["DetectionMethod"] = DetectionMethod;
-                    if (DetectionMethod === "ChangelogExactMatch") {
-                        result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
-                    } else {
-                        result["Changelog"] = "None";
-                    }
+                    result["DetectionMethod"] = y_val.Confidence.DetectionMethod;
+                    result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
 
-                    if (pkgInfo !== undefined) {
-                        if (pkgInfo.Version !== "") {
-                            result["PackageVer"] = pkgInfo.Version + "-" + pkgInfo.Release;
-                        } else {
-                            result["PackageVer"] = "None";
-                        }
-
-                        if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.NewVersion + "-" + pkgInfo.NewRelease;
-                        } else {
-                            result["NewPackageVer"] = "None";
-                        }
-                    } else {
+                    if (isCheckNone(pkgInfo)) {
                         // ===for cpe
                         result["PackageVer"] = "Unknown";
                         result["NewPackageVer"] = "Unknown";
+                    } else {
+                        if (isCheckNone(pkgInfo.Version)) {
+                            result["PackageVer"] = "None";
+                        } else {
+                            result["PackageVer"] = pkgInfo.Version + "-" + pkgInfo.Release;
+                        }
+
+                        if (isCheckNone(pkgInfo.NewVersion)) {
+                            result["NewPackageVer"] = "None";
+                        } else {
+                            result["NewPackageVer"] = pkgInfo.NewVersion + "-" + pkgInfo.NewRelease;
+                        }
                     }
 
 
                     let getCvss = function(target) {
-                        if (y_val.CveContents[target] === undefined) {
+
+                        if (isCheckNone(y_val.CveContents[target])) {
                             return false;
+                        }
+
+                        if (isCheckNone(y_val.CveContents[target].CweIDs)) {
+                            result["CweIDs"] = "None";
+                        } else {
+                            result["CweIDs"] = y_val.CveContents[target].CweIDs.join(',');
                         }
 
                         if (y_val.CveContents[target].Cvss2Score === 0 & y_val.CveContents[target].Cvss3Score === 0) {
@@ -577,25 +620,48 @@ const createPivotData = function(resultArray) {
                         }
 
                         if (summaryFlag !== "false") {
-                            result["Summary"] = y_val.CveContents[target].Summary;
+                            result["Summary"] = cutStr(y_val.CveContents[target].Summary);
                         }
 
-                        if (cvssFlag !== "false") {
-                            if (y_val.CveContents[target].Cvss2Vector !== "") { //ex) CVE-2016-5483
-                                var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
-                                result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
-                                result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
-                                result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
-                                result["CVSS (C)"] = getVectorV2.cvss(arrayVector[3])[0];
-                                result["CVSS (I)"] = getVectorV2.cvss(arrayVector[4])[0];
-                                result["CVSS (A)"] = getVectorV2.cvss(arrayVector[5])[0];
+                        if (cvssV2Flag === "true") {
+                            if (y_val.CveContents[target].Cvss2Vector !== "") {
+                                let arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
+                                result["CvssV2 (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
+                                result["CvssV2 (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
+                                result["CvssV2 (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
+                                result["CvssV2 (C)"] = getVectorV2.cvss(arrayVector[3])[0];
+                                result["CvssV2 (I)"] = getVectorV2.cvss(arrayVector[4])[0];
+                                result["CvssV2 (A)"] = getVectorV2.cvss(arrayVector[5])[0];
                             } else {
-                                result["CVSS (AV)"] = "Unknown";
-                                result["CVSS (AC)"] = "Unknown";
-                                result["CVSS (Au)"] = "Unknown";
-                                result["CVSS (C)"] = "Unknown";
-                                result["CVSS (I)"] = "Unknown";
-                                result["CVSS (A)"] = "Unknown";
+                                result["CvssV2 (AV)"] = "Unknown";
+                                result["CvssV2 (AC)"] = "Unknown";
+                                result["CvssV2 (Au)"] = "Unknown";
+                                result["CvssV2 (C)"] = "Unknown";
+                                result["CvssV2 (I)"] = "Unknown";
+                                result["CvssV2 (A)"] = "Unknown";
+                            }
+                        }
+
+                        if (cvssV3Flag === "true") {
+                            if (y_val.CveContents[target].Cvss3Vector !== "") {
+                                let arrayVector = getSplitArray(y_val.CveContents[target].Cvss3Vector);
+                                result["CvssV3 (AV)"] = getVectorV3.cvss(arrayVector[1])[0];
+                                result["CvssV3 (AC)"] = getVectorV3.cvss(arrayVector[2])[0];
+                                result["CvssV3 (PR)"] = getVectorV3.cvss(arrayVector[3])[0];
+                                result["CvssV3 (UI)"] = getVectorV3.cvss(arrayVector[4])[0];
+                                result["CvssV3 (S)"] = getVectorV3.cvss(arrayVector[5])[0];
+                                result["CvssV3 (C)"] = getVectorV3.cvss(arrayVector[6])[0];
+                                result["CvssV3 (I)"] = getVectorV3.cvss(arrayVector[7])[0];
+                                result["CvssV3 (A)"] = getVectorV3.cvss(arrayVector[8])[0];
+                            } else {
+                                result["CvssV3 (AV)"] = "Unknown";
+                                result["CvssV3 (AC)"] = "Unknown";
+                                result["CvssV3 (PR)"] = "Unknown";
+                                result["CvssV3 (UI)"] = "Unknown";
+                                result["CvssV3 (S)"] = "Unknown";
+                                result["CvssV3 (C)"] = "Unknown";
+                                result["CvssV3 (I)"] = "Unknown";
+                                result["CvssV3 (A)"] = "Unknown";
                             }
                         }
 
@@ -610,16 +676,35 @@ const createPivotData = function(resultArray) {
                     });
 
                     if (flag === false) {
-                        result["Summary"] = "Unknown";
+                        result["CweIDs"] = "Unknown";
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
-                        result["CVSS (AV)"] = "Unknown";
-                        result["CVSS (AC)"] = "Unknown";
-                        result["CVSS (Au)"] = "Unknown";
-                        result["CVSS (C)"] = "Unknown";
-                        result["CVSS (I)"] = "Unknown";
-                        result["CVSS (A)"] = "Unknown";
+
+                        if (summaryFlag !== "false") {
+                            result["Summary"] = "Unknown";
+                        }
+
+                        if (cvssV2Flag === "true") {
+                            result["CvssV2 (AV)"] = "Unknown";
+                            result["CvssV2 (AC)"] = "Unknown";
+                            result["CvssV2 (Au)"] = "Unknown";
+                            result["CvssV2 (C)"] = "Unknown";
+                            result["CvssV2 (I)"] = "Unknown";
+                            result["CvssV2 (A)"] = "Unknown";
+                        }
+
+                        if (cvssV3Flag === "true") {
+                            result["CvssV3 (AV)"] = "Unknown";
+                            result["CvssV3 (AC)"] = "Unknown";
+                            result["CvssV3 (PR)"] = "Unknown";
+                            result["CvssV3 (UI)"] = "Unknown";
+                            result["CvssV3 (S)"] = "Unknown";
+                            result["CvssV3 (C)"] = "Unknown";
+                            result["CvssV3 (I)"] = "Unknown";
+                            result["CvssV3 (A)"] = "Unknown";
+                        }
+
                     }
 
                     array.push(result);
@@ -635,10 +720,10 @@ const createPivotData = function(resultArray) {
 
 const displayPivot = function(array) {
 
-    var url_param;
+    let url_param;
     if (location.search !== "") {
         try {
-            var decode_str = LZString.decompressFromEncodedURIComponent(location.search.substring(1).split('=')[1])
+            let decode_str = LZString.decompressFromEncodedURIComponent(location.search.substring(1).split('=')[1])
             if (decode_str === null) {
                 showAlert("param decode error", decode_str);
                 return;
@@ -650,17 +735,17 @@ const displayPivot = function(array) {
         }
     }
 
-    var url = window.location.href
-    var new_url = url.replace(/\?.*$/, "");
+    let url = window.location.href
+    let new_url = url.replace(/\?.*$/, "");
     history.replaceState(null, null, new_url);
 
 
-    var derivers = $.pivotUtilities.derivers;
-    var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
-    var dateFormat = $.pivotUtilities.derivers.dateFormat;
-    var sortAs = $.pivotUtilities.sortAs;
+    let derivers = $.pivotUtilities.derivers;
+    let renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
+    let dateFormat = $.pivotUtilities.derivers.dateFormat;
+    let sortAs = $.pivotUtilities.sortAs;
 
-    var pivot_attr = {
+    let pivot_attr = {
         renderers: renderers,
         menuLimit: 3000,
         rows: ["ScanTime", "ServerName", "Container"],
@@ -680,7 +765,7 @@ const displayPivot = function(array) {
         },
         sorters: function(attr) {
             if (attr == "CVSS Severity") {
-                return sortAs(["healthy", "Low", "Medium", "High", "Unknown"]);
+                return sortAs(["healthy", "Low", "Medium", "High", "Critical", "Unknown"]);
             }
 
             if (attr == "CveID" || attr == "CweID" || attr == "Packages" || attr == "CVSS Score" || attr == "Summary" || attr == "CVSS (AV)" || attr == "CVSS (AC)" || attr == "CVSS (Au)" || attr == "CVSS (C)" || attr == "CVSS (I)" || attr == "CVSS(I)") {
@@ -713,7 +798,7 @@ const displayPivot = function(array) {
 
     };
 
-    var pivot_obj;
+    let pivot_obj;
     if (url_param != null) {
         pivot_obj = url_param;
     } else {
@@ -762,7 +847,7 @@ const addChangelogLink = function() {
 };
 
 const createDetailData = function(cveID) {
-    var targetObj = { CveContents: {} };
+    let targetObj = { CveContents: {} };
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         tmpCve = x_val.data.ScannedCves[cveID];
         if (tmpCve !== undefined) {
@@ -847,9 +932,9 @@ const displayDetail = function(cveID) {
                 $("#lastModified_" + target + "V3").text("------");
             }
 
-            var resultV2 = [];
+            let resultV2 = [];
             if (data.CveContents[target].Cvss2Vector !== "") {
-                var arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
+                let arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[0])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[1])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[2])[1]);
@@ -858,9 +943,9 @@ const displayDetail = function(cveID) {
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[5])[1]);
             }
 
-            var resultV3 = [];
+            let resultV3 = [];
             if (data.CveContents[target].Cvss3Vector !== "") {
-                var arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
+                let arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[0])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[1])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[2])[1]);
@@ -914,8 +999,8 @@ const displayDetail = function(cveID) {
 
     });
 
-    var ctxV2 = document.getElementById("radar-chartV2");
-    var ctxV3 = document.getElementById("radar-chartV3");
+    let ctxV2 = document.getElementById("radar-chartV2");
+    let ctxV3 = document.getElementById("radar-chartV3");
 
     if (typeof chartV2 != "undefined") {
         chartV2.destroy();
@@ -1035,7 +1120,7 @@ const displayDetail = function(cveID) {
 
 
     // ---Link---
-    var addLink = function(target, url, disp) {
+    let addLink = function(target, url, disp) {
         $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
     };
 
@@ -1069,9 +1154,9 @@ const displayDetail = function(cveID) {
     // ---References---
     let countRef = 0;
 
-    var addRef = function(target) {
+    let addRef = function(target) {
         if (data.CveContents[target] !== undefined) {
-            if (isCheckNull(data.CveContents[target].References) === false) {
+            if (isCheckNone(data.CveContents[target].References) === false) {
                 $("#References").append("<div>===" + target + "===</div>");
                 $.each(data.CveContents[target].References, function(x, x_val) {
                     $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
@@ -1090,7 +1175,7 @@ const displayDetail = function(cveID) {
     $("#count-References").text(countRef);
 
     // ---Tab Package
-    var pkgData = createDetailPackageData(cveID);
+    let pkgData = createDetailPackageData(cveID);
     packageTable.destroy();
     packageTable = $("#table-package")
         .DataTable({
@@ -1162,7 +1247,7 @@ const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
     return distroAdvisoriesArray;
 };
 
-var scrollTop;
+let scrollTop;
 const addEventDisplayChangelog = function() {
     $('.lightbox').colorbox({
         inline: true,
@@ -1186,11 +1271,11 @@ const addEventDisplayChangelog = function() {
 }
 
 const createDetailPackageData = function(cveID) {
-    var array = [];
+    let array = [];
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         $.each(x_val.data.ScannedCves, function(y, y_val) {
             if (cveID === y_val.CveID) {
-                if (isCheckNull(y_val.CpeNames) === false) {
+                if (isCheckNone(y_val.CpeNames) === false) {
                     targets = y_val.CpeNames;
                 } else {
                     targets = y_val.AffectedPackages;
@@ -1270,7 +1355,11 @@ const displayChangelogDetail = function(ankerData) {
         $("#changelog-notfixedyet").append("false").addClass("notfixyet-false");
     }
 
-    if (isCheckNull(changelogInfo.pkgContents) !== true) {
+    if (isCheckNone(changelogInfo.pkgContents)) {
+        $("#changelog-packagename").append(package);
+        $("#changelog-contents").append("NO DATA");
+
+    } else {
         $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);
         if (changelogInfo.pkgContents.Changelog.Contents === "") {
             $("#changelog-contents").append("NO DATA");
@@ -1283,9 +1372,6 @@ const displayChangelogDetail = function(ankerData) {
                 }
             });
         }
-    } else {
-        $("#changelog-packagename").append(package);
-        $("#changelog-contents").append("NO DATA");
     }
 }
 
@@ -1326,7 +1412,7 @@ const shapeChangelog = function(changelogContents, cveid) {
 }
 
 const bringToFlont = function(id) {
-    var v = $('#' + id);
+    let v = $('#' + id);
     v.appendTo(v.parent());
 }
 

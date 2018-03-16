@@ -348,3 +348,7 @@ body.noscroll {
 .font-size-small {
     font-size: 90%;
 }
+
+.pretty {
+    margin-top: 15px;
+}

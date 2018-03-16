@@ -17,42 +17,11 @@ import (
 
 	"github.com/BurntSushi/toml"
 	auth "github.com/abbot/go-http-auth"
+
+	m "github.com/usiusi360/vulsrepo/server/models"
 )
 
-type Config struct {
-	Server ServerConfig
-	Auth   AuthConfig
-}
-
-type ServerConfig struct {
-	RootPath    string
-	ResultsPath string
-	ServerPort  string
-	ServerIP    string
-	ServerSSL   string
-	ServerCert  string
-	ServerKey   string
-}
-
-type AuthConfig struct {
-	AuthFilePath string
-	Realm        string
-}
-
-type Tree []interface{}
-
-type Folder struct {
-	IsFolder string        `json:"isFolder"`
-	Title    string        `json:"title"`
-	Children []interface{} `json:"children"`
-}
-
-type File struct {
-	Title string `json:"title"`
-	Url   string `json:"url"`
-}
-
-var config Config
+var config m.Config
 
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
@@ -118,14 +87,14 @@ func startServer() {
 		http.HandleFunc("/results/", handleFileServer(config.Server.ResultsPath, "/results/"))
 		http.HandleFunc("/getfilelist/", accessDirect)
 	}
-	if config.Server.ServerSSL == "yes" {    
-		log.Println("Start: SSL Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
+	if config.Server.ServerSSL == "yes" {
+		log.Println("Start: SSL Listening port: " + config.Server.ServerIP + ":" + config.Server.ServerPort)
 		err := http.ListenAndServeTLS(config.Server.ServerIP+":"+config.Server.ServerPort, config.Server.ServerCert, config.Server.ServerKey, nil)
 		if err != nil {
 			log.Fatal("Error: ListenAndServeTLS: ", err)
 		}
 	} else {
-		log.Println("Start: Listening port: " + config.Server.ServerIP+":"+config.Server.ServerPort)
+		log.Println("Start: Listening port: " + config.Server.ServerIP + ":" + config.Server.ServerPort)
 		err := http.ListenAndServe(config.Server.ServerIP+":"+config.Server.ServerPort, nil)
 		if err != nil {
 			log.Fatal("Error: ListenAndServe: ", err)
@@ -145,7 +114,7 @@ func loadConfig() {
 }
 
 func pathChk() {
-	var flag bool = false
+	var flag = false
 	if _, err := os.Stat(config.Server.RootPath); err != nil {
 		log.Println("Error: RootPath not access: ", err)
 		flag = true
@@ -169,22 +138,21 @@ func pathChk() {
 		}
 	}
 
-        if config.Server.ServerSSL == "yes" {
-                if _, err := os.Stat(config.Server.ServerCert); err != nil {
-                        log.Println("Error: serverCertPath not access: ", config.Server.ServerCert)
-                        flag = true
-                } else {
-                        log.Println("INFO: serverCertPath Load: ", config.Server.ServerCert)
-                }
+	if config.Server.ServerSSL == "yes" {
+		if _, err := os.Stat(config.Server.ServerCert); err != nil {
+			log.Println("Error: serverCertPath not access: ", config.Server.ServerCert)
+			flag = true
+		} else {
+			log.Println("INFO: serverCertPath Load: ", config.Server.ServerCert)
+		}
 
-                if _, err := os.Stat(config.Server.ServerKey); err != nil {
-                        log.Println("Error: serverKeyPath not access: ", config.Server.ServerKey)
-                        flag = true
-                } else {
-                        log.Println("INFO: serverKeyPath Load: ", config.Server.ServerKey)
-                }
-        }
-
+		if _, err := os.Stat(config.Server.ServerKey); err != nil {
+			log.Println("Error: serverKeyPath not access: ", config.Server.ServerKey)
+			flag = true
+		} else {
+			log.Println("INFO: serverKeyPath Load: ", config.Server.ServerKey)
+		}
+	}
 
 	if flag == true {
 		log.Fatal("Error: Please see if the config setting is correct")
@@ -226,8 +194,8 @@ func getfilelist(rw http.ResponseWriter) {
 	fmt.Fprint(rw, string(jsonBytes))
 }
 
-func getTree(path string) (Tree, error) {
-	var tree Tree
+func getTree(path string) (m.Tree, error) {
+	var tree m.Tree
 
 	if err := os.Chdir(path); err != nil {
 		return tree, err
@@ -243,7 +211,7 @@ func getTree(path string) (Tree, error) {
 			if fi.Name() == "current" {
 				continue
 			}
-			var tmpFolder Folder
+			var tmpFolder m.Folder
 			tmpFolder.IsFolder = "true"
 			tmpFolder.Title = fi.Name()
 			childPath, _ := getTree(fi.Name())
@@ -263,7 +231,7 @@ func getTree(path string) (Tree, error) {
 			fullPath := filepath.Join(c, fi.Name())
 			urlstr := strings.Replace(fullPath, config.Server.ResultsPath, "", 1)
 
-			var tmpFile File
+			var tmpFile m.File
 			tmpFile.Title = fi.Name()
 			tmpFile.Url = urlstr
 			tree = append(tree, tmpFile)

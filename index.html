@@ -29,6 +29,10 @@
     <!-- main -->
     <link href="dist/css/index.css" rel="stylesheet" type="text/css" />
 
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" type="text/css" />
+
+
+
 </head>
 
 <body class="has-drawer">
@@ -323,9 +327,28 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="make-switch">
-                                            <input type="checkbox" name="chkPivotSummary" data-label-text="Summary" checked>
-                                            <input type="checkbox" name="chkPivotCvss" data-label-text="Cvss Metrics" checked>
+                                            <input type="checkbox" name="setting_summary" data-label-text="Summary" checked>
+                                            <!-- <input type="checkbox" name="chkPivotCvss" data-label-text="Cvss Metrics" checked> -->
                                         </div>
+
+                                        <hr class="style-one">
+
+
+                                        <div class="pretty p-default">
+                                            <input id="setting_cvssV2" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>CVSS v2 Base Metrics</label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="pretty p-default">
+                                            <input id="setting_cvssV3" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>CVSS v3 Base Metrics</label>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +363,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1</td>
-                                                    <td rowspan="6">
+                                                    <td rowspan="7">
                                                         <ul id="pivot-priority">
                                                         </ul>
                                                     </td>
@@ -359,6 +382,9 @@
                                                 </tr>
                                                 <tr>
                                                     <td>6</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>7</td>
                                                 </tr>
                                             </tbody>
                                         </table>

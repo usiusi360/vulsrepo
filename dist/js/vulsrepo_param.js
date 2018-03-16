@@ -1,9 +1,10 @@
-var vulsrepo = {
+let vulsrepo = {
     detailRawData: null,
     detailPivotData: null,
     timeOut: 300 * 1000,
     demoFlag: false,
-    detailTaget: ["nvd", "jvn", "redhat", "ubuntu", "debian", "oracle"]
+    detailTaget: ["nvd", "nvdjson", "jvn", "redhat", "ubuntu", "debian", "oracle"],
+    cutFigure: 300
 };
 
 
