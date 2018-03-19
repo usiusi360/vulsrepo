@@ -76,7 +76,7 @@ a {
 }
 
 .cvss-None {
-    background-color: gray;
+    background-color: #bdbdbd;
     color: black
 }
 
@@ -351,4 +351,21 @@ body.noscroll {
 
 .pretty {
     margin-top: 15px;
+}
+
+.tr-center {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.tr-width {
+    width: 80px !important;
+}
+
+.tr-score {
+    font-size: 120% !important;
+    color: white;
+    font-weight: bolder;
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+    text-shadow: 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000, -1px -1px 1px #000;
 }

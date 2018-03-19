@@ -422,8 +422,8 @@ const displayHelpMesScore = function() {
 
 const isHelpHTMLScore = function() {
     return `
-    <div class="col-xs-12">
-        <div> NVD, JVN</div>
+    <div class="col-xs-3">
+        <div> NVD(v2), JVN(v3)</div>
         <table class="cvss_tooltip">
             <tbody>
                 <tr>
@@ -449,6 +449,40 @@ const isHelpHTMLScore = function() {
             </tbody>
         </table>
     </div>
+
+    <div class="col-xs-3">
+        <div> NVD(v3), JVN(v3)</div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                <td class="cvss-Critical">Critical</td>
+                    <td>9.0 ～ 10.0</td>
+                </tr>
+                <tr>
+                    <td class="cvss-High">High</td>
+                    <td>7.0 ～ 8.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Medium">Medium</td>
+                    <td>4.0 ～ 6.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>0.1 ～ 3.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-None">None</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
     <div class="col-xs-12">&nbsp;</div>
     <div class="col-xs-6">
         <div>RedHat(v2), RedHat(v3) <a href="https://access.redhat.com/security/updates/classification" target="_blank">Understanding Red Hat security ratings</a></div>
@@ -481,7 +515,7 @@ const isHelpHTMLScore = function() {
             </tbody>
         </table>
     </div>
-        <div class="col-xs-6">
+    <div class="col-xs-6">
         <div>Ubuntu, Debian <a href="https://people.canonical.com/~ubuntu-security/cve/priority.html" target="_blank">Ubuntu priority</a></div>
         <table class="cvss_tooltip">
             <tbody>

@@ -3,8 +3,8 @@ let vulsrepo = {
     detailPivotData: null,
     timeOut: 300 * 1000,
     demoFlag: false,
-    detailTaget: ["nvd", "nvdjson", "jvn", "redhat", "ubuntu", "debian", "oracle"],
-    cutFigure: 300
+    detailTaget: ["nvdjson", "nvd", , "jvn", "redhat", "ubuntu", "debian", "oracle"],
+    cutFigure: 250
 };
 
 
