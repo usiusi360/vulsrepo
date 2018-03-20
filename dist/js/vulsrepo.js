@@ -323,66 +323,151 @@ const setEvents = function() {
     });
 
     // ---switch
-    $("[name='setting_summary']").bootstrapSwitch();
+    // $("[name='setting_summary']").bootstrapSwitch();
 
-    if (db.get("vulsrepo_setting_summary") === "false") {
-        $('input[name="setting_summary"]').bootstrapSwitch('state', false, false);
+    // if (db.get("vulsrepo_setting_summary") === "false") {
+    //     $('input[name="setting_summary"]').bootstrapSwitch('state', false, false);
+    // }
+
+    // $('input[name="setting_summary"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    //     if (state === false) {
+    //         db.set("vulsrepo_setting_summary", "false");
+    //     } else {
+    //         db.remove("vulsrepo_setting_summary");
+    //     }
+    // });
+
+    if (db.get("vulsrepo_setting_PlatformName") === "true") {
+        $("#setting_PlatformName").prop("checked", true);
     }
 
-    $('input[name="setting_summary"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state === false) {
-            db.set("vulsrepo_setting_summary", "false");
-        } else {
-            db.remove("vulsrepo_setting_summary");
-        }
-    });
+    if (db.get("vulsrepo_setting_PlatformInstanceID") === "true") {
+        $("#setting_PlatformInstanceID").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_IPv4Addrs") === "true") {
+        $("#setting_IPv4Addrs").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ServerUUID") === "true") {
+        $("#setting_ServerUUID").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerName") === "true") {
+        $("#setting_ContainerName").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerImage") === "true") {
+        $("#setting_ContainerImage").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerType") === "true") {
+        $("#setting_ContainerType").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerUUID") === "true") {
+        $("#setting_ContainerUUID").prop("checked", true);
+    }
 
     if (db.get("vulsrepo_setting_cvssV2") === "true") {
         $("#setting_cvssV2").prop("checked", true);
     }
 
-    $("#setting_cvssV2").click(function() {
-        if ($(this).prop('checked') === true) {
-            db.set("vulsrepo_setting_cvssV2", "true");
-        } else {
-            db.remove("vulsrepo_setting_cvssV2");
-        }
-    });
-
     if (db.get("vulsrepo_setting_cvssV3") === "true") {
         $("#setting_cvssV3").prop("checked", true);
     }
 
-    $("#setting_cvssV3").click(function() {
+    $("#setting_PlatformName").click(function() {
         if ($(this).prop('checked') === true) {
-            db.set("vulsrepo_setting_cvssV3", "true");
+            db.set("vulsrepo_setting_PlatformName", "true");
         } else {
-            db.remove("vulsrepo_setting_cvssV3");
+            db.remove("vulsrepo_setting_PlatformName");
         }
     });
 
+    $("#setting_PlatformInstanceID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_PlatformInstanceID", "true");
+        } else {
+            db.remove("vulsrepo_setting_PlatformInstanceID");
+        }
+    });
 
+    $("#setting_IPv4Addrs").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_IPv4Addrs", "true");
+        } else {
+            db.remove("vulsrepo_setting_IPv4Addrs");
+        }
+    });
 
+    $("#setting_ServerUUID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ServerUUID", "true");
+        } else {
+            db.remove("vulsrepo_setting_ServerUUID");
+        }
+    });
+
+    $("#setting_ContainerName").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerName", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerName");
+        }
+    });
+
+    $("#setting_ContainerImage").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerImage", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerImage");
+        }
+    });
+
+    $("#setting_ContainerType").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerType", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerType");
+        }
+    });
+
+    $("#setting_ContainerUUID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerUUID", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerUUID");
+        }
+    });
+
+    $("#setting_CvssV2").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_CvssV2", "true");
+        } else {
+            db.remove("vulsrepo_setting_CvssV2");
+        }
+    });
+
+    $("#setting_CvssV3").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_CvssV3", "true");
+        } else {
+            db.remove("vulsrepo_setting_CvssV3");
+        }
+    });
 
     // ---priority
 
-    let priority = db.get("vulsrepo_pivotPriority");
-    if (priority === null) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
+    let priority = db.get("vulsrepo_setting_Priority");
+    if ((priority === null) || (Array.isArray(priority) === false) || (priority.length !== 8)) {
+        db.set("vulsrepo_setting_Priority", vulsrepo.detailTaget);
     }
 
-    if (Array.isArray(priority) === false) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
-    }
-
-    if (priority.length !== 7) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
-    }
-
-    $.each(db.get("vulsrepo_pivotPriority"), function(i, i_val) {
-        $("#pivot-priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
+    $.each(db.get("vulsrepo_setting_Priority"), function(i, i_val) {
+        $("#setting_Priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
     });
-    $('#pivot-priority').sortable({
+    $('#setting_Priority').sortable({
         tolerance: "pointer",
         distance: 1,
         cursor: "move",
@@ -390,13 +475,13 @@ const setEvents = function() {
         placeholder: "placeholder",
         update: function() {
             let tmp_pri = [];
-            $("#pivot-priority li").each(function(index) {
+            $("#setting_Priority li").each(function(index) {
                 tmp_pri.push($(this).text());
             });
-            db.set("vulsrepo_pivotPriority", tmp_pri);
+            db.set("vulsrepo_setting_Priority", tmp_pri);
         }
     });
-    $('#pivot-priority').disableSelection();
+    $('#setting_Priority').disableSelection();
 
     $("#pivot-link").click(function() {
         let str = location.href + "?vulsrepo_pivot_conf_tmp=" + LZString.compressToEncodedURIComponent(localStorage.getItem("vulsrepo_pivot_conf_tmp"));
@@ -453,10 +538,30 @@ const isCheckNone = function(o) {
 const createPivotData = function(resultArray) {
     let array = [];
     let cveid_count = 0;
-    const prioltyFlag = db.get("vulsrepo_pivotPriority");
-    const summaryFlag = db.get("vulsrepo_setting_summary");
-    const cvssV2Flag = db.get("vulsrepo_setting_cvssV2");
-    const cvssV3Flag = db.get("vulsrepo_setting_cvssV3");
+
+    const flagPlatformName = db.get("vulsrepo_setting_PlatformName");
+    const flagPlatformInstanceID = db.get("vulsrepo_setting_PlatformInstanceID");
+    const flagIPv4Addrs = db.get("vulsrepo_setting_IPv4Addrs");
+    const flagServerUUID = db.get("vulsrepo_setting_ServerUUID");
+    const flagContainerName = db.get("vulsrepo_setting_ContainerName");
+    const flagContainerImage = db.get("vulsrepo_setting_ContainerImage");
+    const flagContainerType = db.get("vulsrepo_setting_ContainerType");
+    const flagContainerUUID = db.get("vulsrepo_setting_ContainerUUID");
+    const flagCvssV2 = db.get("vulsrepo_setting_CvssV2");
+    const flagCvssV3 = db.get("vulsrepo_setting_CvssV3");
+    const flagPriolty = db.get("vulsrepo_setting_Priority");
+
+    let result = {};
+
+    let addColumn = function(resultName, insertData, flagName) {
+        if (isCheckNone(flagName) === false) {
+            if (isCheckNone(insertData)) {
+                result[resultName] = "None";
+            } else {
+                result[resultName] = insertData;
+            }
+        }
+    }
 
     $.each(resultArray, function(x, x_val) {
         if (isCheckNone(x_val.data.ScannedCves)) {
@@ -474,13 +579,55 @@ const createPivotData = function(resultArray) {
                 "CVSS Severity": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
+                "Summary": "healthy"
             };
 
-            if (summaryFlag !== "false") {
-                result["Summary"] = "healthy";
+            if (x_val.data.RunningKernel.RebootRequired === true) {
+                result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
+            } else {
+                result["ServerName"] = x_val.data.ServerName;
             }
 
-            if (cvssV2Flag === "true") {
+            if (isCheckNone(flagPlatformName) === false) {
+                if (isCheckNone(x_val.data.Platform.Name)) {
+                    result["PlatformName"] = "None";
+                } else {
+                    result["PlatformName"] = x_val.data.Platform.Name;
+                }
+            }
+
+            if (isCheckNone(flagPlatformInstanceID) === false) {
+                if (isCheckNone(x_val.data.Platform.InstanceID)) {
+                    result["PlatformInstanceID"] = "None";
+                } else {
+                    result["PlatformInstanceID"] = x_val.data.Platform.InstanceID;
+                }
+            }
+
+            if (isCheckNone(flagIPv4Addrs) === false) {
+                if (isCheckNone(x_val.data.IPv4Addrs)) {
+                    result["IPv4Addrs"] = "None";
+                } else {
+                    result["IPv4Addrs"] = x_val.data.IPv4Addrs.join(", ");
+                }
+            }
+
+            if (isCheckNone(flagServerUUID) === false) {
+                if (isCheckNone(x_val.data.ServerUUID)) {
+                    result["ServerUUID"] = "None";
+                } else {
+                    result["ServerUUID"] = x_val.data.ServerUUID;
+                }
+            }
+
+            if (x_val.data.Container.Name !== "") {
+                result["Container"] = x_val.data.Container.Name;
+            } else {
+                result["Container"] = "None";
+            }
+
+
+            if (flagCvssV2 === "true") {
                 result["CvssV2 (AV)"] = "healthy";
                 result["CvssV2 (AC)"] = "healthy";
                 result["CvssV2 (Au)"] = "healthy";
@@ -489,7 +636,7 @@ const createPivotData = function(resultArray) {
                 result["CvssV2 (A)"] = "healthy";
             }
 
-            if (cvssV3Flag === "true") {
+            if (flagCvssV3 === "true") {
                 result["CvssV3 (AV)"] = "healthy";
                 result["CvssV3 (AC)"] = "healthy";
                 result["CvssV3 (PR)"] = "healthy";
@@ -500,23 +647,7 @@ const createPivotData = function(resultArray) {
                 result["CvssV3 (A)"] = "healthy";
             }
 
-            if (x_val.data.RunningKernel.RebootRequired === true) {
-                result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
-            } else {
-                result["ServerName"] = x_val.data.ServerName;
-            }
 
-            if (x_val.data.Platform.Name !== "") {
-                result["Platform"] = x_val.data.Platform.Name + "(" + x_val.data.Platform.InstanceID + ")";
-            } else {
-                result["Platform"] = "None";
-            }
-
-            if (x_val.data.Container.Name !== "") {
-                result["Container"] = x_val.data.Container.Name;
-            } else {
-                result["Container"] = "None";
-            }
             array.push(result);
         } else {
             $.each(x_val.data.ScannedCves, function(y, y_val) {
@@ -544,14 +675,17 @@ const createPivotData = function(resultArray) {
                         return;
                     }
 
-                    let result = {
-                        "ScanTime": x_val.scanTime,
-                        "Family": x_val.data.Family,
-                        "Release": x_val.data.Release,
-                        "CveID": "CHK-cveid-" + y_val.CveID,
-                        "Packages": pkgName,
-                        "NotFixedYet": NotFixedYet,
-                    };
+
+                    // let result = {
+                    //     "ScanTime": x_val.scanTime,
+                    //     "Family": x_val.data.Family,
+                    //     "Release": x_val.data.Release,
+                    //     "CveID": "CHK-cveid-" + y_val.CveID,
+                    //     "Packages": pkgName,
+                    //     "NotFixedYet": NotFixedYet,
+                    // };
+
+                    addColumn("", "ScanTime", x_val.scanTime)
 
                     if (x_val.data.RunningKernel.RebootRequired === true) {
                         result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
@@ -559,17 +693,54 @@ const createPivotData = function(resultArray) {
                         result["ServerName"] = x_val.data.ServerName;
                     }
 
-                    if (isCheckNone(x_val.data.Platform.Name)) {
-                        result["Platform"] = "None";
-                    } else {
-                        result["Platform"] = x_val.data.Platform.Name;
+                    if (isCheckNone(flagPlatformName) === false) {
+                        if (isCheckNone(x_val.data.Platform.Name)) {
+                            result["PlatformName"] = "None";
+                        } else {
+                            result["PlatformName"] = x_val.data.Platform.Name;
+                        }
                     }
 
-                    if (isCheckNone(x_val.data.Container.Name)) {
-                        result["Container"] = "None";
-                    } else {
-                        result["Container"] = x_val.data.Container.Name;
+                    if (isCheckNone(flagPlatformInstanceID) === false) {
+                        if (isCheckNone(x_val.data.Platform.InstanceID)) {
+                            result["PlatformInstanceID"] = "None";
+                        } else {
+                            result["PlatformInstanceID"] = x_val.data.Platform.InstanceID;
+                        }
                     }
+
+                    if (isCheckNone(flagIPv4Addrs) === false) {
+                        if (isCheckNone(x_val.data.IPv4Addrs)) {
+                            result["IPv4Addrs"] = "None";
+                        } else {
+                            result["IPv4Addrs"] = x_val.data.IPv4Addrs.join(", ");
+                        }
+                    }
+
+                    if (isCheckNone(flagServerUUID) === false) {
+                        if (isCheckNone(x_val.data.ServerUUID)) {
+                            result["ServerUUID"] = "None";
+                        } else {
+                            result["ServerUUID"] = x_val.data.ServerUUID;
+                        }
+                    }
+
+                    if (isCheckNone(flagContainerName) === false) {
+                        if (isCheckNone(x_val.data.Container.Name)) {
+                            result["ContainerName"] = "None";
+                        } else {
+                            result["ContainerName"] = x_val.data.Container.Name;
+                        }
+                    }
+
+                    if (isCheckNone(flagContainerImage) === false) {
+                        if (isCheckNone(x_val.data.Container.Image)) {
+                            result["ContainerImage"] = "None";
+                        } else {
+                            result["ContainerImage"] = x_val.data.Container.Image;
+                        }
+                    }
+
 
                     result["DetectionMethod"] = y_val.Confidence.DetectionMethod;
                     result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
@@ -599,6 +770,8 @@ const createPivotData = function(resultArray) {
                             return false;
                         }
 
+                        result["Summary"] = cutStr(y_val.CveContents[target].Summary);
+
                         if (isCheckNone(y_val.CveContents[target].CweIDs)) {
                             result["CweIDs"] = "None";
                         } else {
@@ -619,11 +792,7 @@ const createPivotData = function(resultArray) {
                             result["CVSS Score Type"] = target + "V3";
                         }
 
-                        if (summaryFlag !== "false") {
-                            result["Summary"] = cutStr(y_val.CveContents[target].Summary);
-                        }
-
-                        if (cvssV2Flag === "true") {
+                        if (flagCvssV2 === "true") {
                             if (y_val.CveContents[target].Cvss2Vector !== "") {
                                 let arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
                                 result["CvssV2 (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
@@ -642,7 +811,7 @@ const createPivotData = function(resultArray) {
                             }
                         }
 
-                        if (cvssV3Flag === "true") {
+                        if (flagCvssV3 === "true") {
                             if (y_val.CveContents[target].Cvss3Vector !== "") {
                                 let arrayVector = getSplitArray(y_val.CveContents[target].Cvss3Vector);
                                 result["CvssV3 (AV)"] = getVectorV3.cvss(arrayVector[1])[0];
@@ -669,7 +838,7 @@ const createPivotData = function(resultArray) {
                     };
 
                     let flag = false;
-                    $.each(prioltyFlag, function(i, i_val) {
+                    $.each(flagPriolty, function(i, i_val) {
                         if (flag !== true) {
                             flag = getCvss(i_val);
                         }
@@ -680,12 +849,10 @@ const createPivotData = function(resultArray) {
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
+                        result["Summary"] = "Unknown";
 
-                        if (summaryFlag !== "false") {
-                            result["Summary"] = "Unknown";
-                        }
 
-                        if (cvssV2Flag === "true") {
+                        if (flagCvssV2 === "true") {
                             result["CvssV2 (AV)"] = "Unknown";
                             result["CvssV2 (AC)"] = "Unknown";
                             result["CvssV2 (Au)"] = "Unknown";
@@ -694,7 +861,7 @@ const createPivotData = function(resultArray) {
                             result["CvssV2 (A)"] = "Unknown";
                         }
 
-                        if (cvssV3Flag === "true") {
+                        if (flagCvssV3 === "true") {
                             result["CvssV3 (AV)"] = "Unknown";
                             result["CvssV3 (AC)"] = "Unknown";
                             result["CvssV3 (PR)"] = "Unknown";
@@ -963,11 +1130,11 @@ const displayDetail = function(cveID) {
             $("#lastModified_" + target + "V3").text("------");
         }
 
-        if (isCheckNone(resultV2) === true) {
+        if (isCheckNone(resultV2)) {
             resultV2 = [0, 0, 0, 0, 0, 0];
         }
 
-        if (isCheckNone(resultV3) === true) {
+        if (isCheckNone(resultV3)) {
             resultV3 = [0, 0, 0, 0, 0, 0, 0, 0];
         }
 
@@ -1443,5 +1610,7 @@ const bringToFlont = function(id) {
     v.appendTo(v.parent());
 }
 
-return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
-const toUpperFirstLetter = function(str) {}
+
+const toUpperFirstLetter = function(str) {
+    return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
+}

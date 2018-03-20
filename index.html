@@ -338,28 +338,77 @@
                                         Show / Hide the Item
                                     </div>
                                     <div class="panel-body">
-                                        <div class="make-switch">
+                                        <!-- <div class="make-switch">
                                             <input type="checkbox" name="setting_summary" data-label-text="Summary" checked>
+                                        </div> -->
+
+                                        <div class="pretty p-default">
+                                            <input id="setting_PlatformName" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>PlatformName</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_PlatformInstanceID" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>PlatformInstanceID</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_IPv4Addrs" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>IPv4Addrs</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ServerUUID" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>ServerUUID</label>
+                                            </div>
                                         </div>
 
                                         <hr class="style-one">
 
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerName" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerName</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerImage" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerImage</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerType" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerType</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerUUID" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerUUID</label>
+                                            </div>
+                                        </div>
+
+                                        <hr class="style-one">
 
                                         <div class="pretty p-default">
-                                            <input id="setting_cvssV2" type="checkbox" />
-                                            <div class="state p-primary">
+                                            <input id="setting_CvssV2" type="checkbox" />
+                                            <div class="state p-success">
                                                 <label>CvssV2 Base Metrics</label>
                                             </div>
                                         </div>
                                         <br>
                                         <div class="pretty p-default">
-                                            <input id="setting_cvssV3" type="checkbox" />
-                                            <div class="state p-primary">
+                                            <input id="setting_CvssV3" type="checkbox" />
+                                            <div class="state p-success">
                                                 <label>CvssV3 Base Metrics</label>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -374,8 +423,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1</td>
-                                                    <td rowspan="7">
-                                                        <ul id="pivot-priority">
+                                                    <td rowspan="8">
+                                                        <ul id="setting_Priority">
                                                         </ul>
                                                     </td>
                                                 </tr>
@@ -396,6 +445,9 @@
                                                 </tr>
                                                 <tr>
                                                     <td>7</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>8</td>
                                                 </tr>
                                             </tbody>
                                         </table>
