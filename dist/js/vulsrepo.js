@@ -385,7 +385,7 @@ const createFolderTree = function() {
     if (vulsrepo.demoFlag === true) {
         target = "getfilelist.json"
     } else {
-        target = "getfilelist"
+        target = "getfilelist/"
     }
 
     var tree = $("#folderTree").dynatree({
