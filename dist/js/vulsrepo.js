@@ -203,7 +203,7 @@ const cutStr = function(str) {
 
 const setEvents = function() {
 
-    $.each(vulsrepo_template, function(index, val) {
+    $.each(template, function(index, val) {
         localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
     });
 
@@ -321,21 +321,6 @@ const setEvents = function() {
     $("#modal-setting").on("hidden.bs.modal", function() {
         initData();
     });
-
-    // ---switch
-    // $("[name='setting_summary']").bootstrapSwitch();
-
-    // if (db.get("vulsrepo_setting_summary") === "false") {
-    //     $('input[name="setting_summary"]').bootstrapSwitch('state', false, false);
-    // }
-
-    // $('input[name="setting_summary"]').on('switchChange.bootstrapSwitch', function(event, state) {
-    //     if (state === false) {
-    //         db.set("vulsrepo_setting_summary", "false");
-    //     } else {
-    //         db.remove("vulsrepo_setting_summary");
-    //     }
-    // });
 
     if (db.get("vulsrepo_setting_PlatformName") === "true") {
         $("#setting_PlatformName").prop("checked", true);
@@ -458,7 +443,6 @@ const setEvents = function() {
     });
 
     // ---priority
-
     let priority = db.get("vulsrepo_setting_Priority");
     if ((priority === null) || (Array.isArray(priority) === false) || (priority.length !== 8)) {
         db.set("vulsrepo_setting_Priority", vulsrepo.detailTaget);
@@ -554,7 +538,7 @@ const createPivotData = function(resultArray) {
     let result = {};
 
     let addColumn = function(resultName, insertData, flagName) {
-        if (isCheckNone(flagName) === false) {
+        if (flagName !== "") {
             if (isCheckNone(insertData)) {
                 result[resultName] = "None";
             } else {
@@ -794,7 +778,7 @@ const createPivotData = function(resultArray) {
 
                         if (flagCvssV2 === "true") {
                             if (y_val.CveContents[target].Cvss2Vector !== "") {
-                                let arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
+                                let arrayVector = splitVectorString(y_val.CveContents[target].Cvss2Vector);
                                 result["CvssV2 (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
                                 result["CvssV2 (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
                                 result["CvssV2 (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
@@ -813,7 +797,7 @@ const createPivotData = function(resultArray) {
 
                         if (flagCvssV3 === "true") {
                             if (y_val.CveContents[target].Cvss3Vector !== "") {
-                                let arrayVector = getSplitArray(y_val.CveContents[target].Cvss3Vector);
+                                let arrayVector = splitVectorString(y_val.CveContents[target].Cvss3Vector);
                                 result["CvssV3 (AV)"] = getVectorV3.cvss(arrayVector[1])[0];
                                 result["CvssV3 (AC)"] = getVectorV3.cvss(arrayVector[2])[0];
                                 result["CvssV3 (PR)"] = getVectorV3.cvss(arrayVector[3])[0];

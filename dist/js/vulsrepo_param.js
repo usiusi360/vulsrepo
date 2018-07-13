@@ -3,28 +3,29 @@ let vulsrepo = {
     detailPivotData: null,
     timeOut: 300 * 1000,
     demoFlag: false,
-    detailTaget: ["nvdjson", "nvd", "jvn", "redhat", "ubuntu", "debian", "oracle", "suse"],
-    cutFigure: 250
+    defaultTagetOrder: ["nvdjson", "nvd", "jvn", "redhat", "ubuntu", "debian", "oracle", "suse"],
+    limitChar: 250
 };
 
 
-const vulsrepo_template = [{
-        key: '01. Graph: CVSS-Severity => ServerName',
+const template = [{
+        name: '01. Graph: CVSS-Severity => ServerName',
         value: '{"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["ServerName","Container"],"rows":["CVSS Severity"],"vals":[],"rowOrder":"key_a_to_z","colOrder":"value_z_to_a","exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"aggregatorName":"Count","rendererName":"Stacked Bar Chart","inclusionsInfo":{}}'
     },
     {
-        key: '02. Graph: CVSS-Severity => CVSS-Score',
+        name: '02. Graph: CVSS-Severity => CVSS-Score',
         value: '{"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["CVSS Score"],"rows":["CVSS Severity"],"vals":[],"rowOrder":"key_a_to_z","colOrder":"key_a_to_z","exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"aggregatorName":"Count","rendererName":"Stacked Bar Chart","inclusionsInfo":{}}'
     },
     {
-        key: '03. Pivot: Package/CVSS-Severity/CveID/Summary => ServerName',
+        name: '03. Pivot: Package/CVSS-Severity/CveID/Summary => ServerName',
         value: '{"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["ServerName","Container"],"rows":["Packages","CVSS Severity","CveID","Changelog","Summary"],"vals":[],"rowOrder":"key_a_to_z","colOrder":"key_a_to_z","exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"aggregatorName":"Count","rendererName":"Heatmap","inclusionsInfo":{}}'
     },
     {
-        key: '04. Pivot: Package/CveID => ScanTime',
+        name: '04. Pivot: Package/CveID => ScanTime',
         value: '{"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["ScanTime"],"rows":["CveID","Packages","Changelog"],"vals":[],"rowOrder":"key_a_to_z","colOrder":"key_a_to_z","exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"aggregatorName":"Count","rendererName":"Heatmap","inclusionsInfo":{}}'
-    }, {
-        key: '05. Pivot: CveID/PackageInfo => NotFixedYet',
+    },
+    {
+        name: '05. Pivot: CveID/PackageInfo => NotFixedYet',
         value: '{"rendererOptions":{"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"heatmap":{}},"localeStrings":{"renderError":"An error occurred rendering the PivotTable results.","computeError":"An error occurred computing the PivotTable results.","uiRenderError":"An error occurred rendering the PivotTable UI.","selectAll":"Select All","selectNone":"Select None","tooMany":"(too many to list)","filterResults":"Filter values","apply":"Apply","cancel":"Cancel","totals":"Totals","vs":"vs","by":"by"},"derivedAttributes":{},"aggregators":{},"renderers":{},"hiddenAttributes":[],"menuLimit":3000,"cols":["ScanTime"],"rows":["CveID","CVSS Severity","Packages","DetectionMethod","CVSS Score Type","PackageVer","NewPackageVer","NotFixedYet","Changelog"],"vals":[],"rowOrder":"key_a_to_z","colOrder":"key_a_to_z","exclusions":{},"inclusions":{},"unusedAttrsVertical":85,"autoSortUnusedAttrs":false,"aggregatorName":"Count","rendererName":"Heatmap","inclusionsInfo":{}}'
     }
 ];
