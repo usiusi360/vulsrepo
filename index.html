@@ -29,6 +29,10 @@
     <!-- main -->
     <link href="dist/css/index.css" rel="stylesheet" type="text/css" />
 
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" type="text/css" />
+
+
+
 </head>
 
 <body class="has-drawer">
@@ -147,54 +151,66 @@
                                                     CVSS Detail
                                                 </p>
                                                 <div class="col-xs-8">
-                                                    <table class="table table-hover table-condensed font-size-small">
+                                                    <table class="table table-hover table-condensed font-size-small table-bordered">
                                                         <tr class="active">
-                                                            <th>Type</th>
-                                                            <th>Score
+                                                            <th rowspan="2" class="tr-center">Type</th>
+                                                            <th colspan="2" class="tr-center">Cvss Score
                                                                 <div id="tooltip_score" class="glyphicon glyphicon-question-sign"></div>
                                                             </th>
-                                                            <th>Summary</th>
-                                                            <th>LastModified Date</th>
+                                                            <th hidden></th>
+                                                            <th rowspan="2" class="tr-center">Summary</th>
+                                                            <th rowspan="2" class="tr-center">LastModified Date</th>
+                                                        </tr>
+                                                        <tr class="active">
+                                                            <th hidden></th>
+                                                            <th class="tr-center tr-width">V2</th>
+                                                            <th class="tr-center tr-width">V3</th>
+                                                            <th hidden></th>
+                                                            <th hidden></th>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_nvd"></td>
+                                                            <td id="typeName_nvd" class="tr-center"></td>
                                                             <td id="scoreText_nvd"></td>
+                                                            <td id="scoreText_nvdV3"></td>
                                                             <td id="summary_nvd"></td>
                                                             <td id="lastModified_nvd"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_jvn"></td>
+                                                            <td id="typeName_nvdjson" class="tr-center"></td>
+                                                            <td id="scoreText_nvdjson"></td>
+                                                            <td id="scoreText_nvdjsonV3"></td>
+                                                            <td id="summary_nvdjson"></td>
+                                                            <td id="lastModified_nvdjson"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id="typeName_jvn" class="tr-center"></td>
                                                             <td id="scoreText_jvn"></td>
+                                                            <td id="scoreText_jvnV3"></td>
                                                             <td id="summary_jvn"></td>
                                                             <td id="lastModified_jvn"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_redhat"></td>
+                                                            <td id="typeName_redhat" class="tr-center"></td>
                                                             <td id="scoreText_redhat"></td>
-                                                            <td id="summary_redhat" rowspan="2"></td>
-                                                            <td id="lastModified_redhat" rowspan="2"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td id="typeName_redhatV3"></td>
                                                             <td id="scoreText_redhatV3"></td>
-                                                            <td id="summary_redhatV3" hidden></td>
-                                                            <td id="lastModified_redhatV3" hidden></td>
+                                                            <td id="summary_redhat"></td>
+                                                            <td id="lastModified_redhat"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_ubuntu"></td>
-                                                            <td id="scoreText_ubuntu"></td>
+                                                            <td id="typeName_ubuntu" class="tr-center"></td>
+                                                            <td id="scoreText_ubuntu" colspan="2"></td>
                                                             <td id="summary_ubuntu"></td>
                                                             <td id="lastModified_ubuntu"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_debian"></td>
-                                                            <td id="scoreText_debian"></td>
+                                                            <td id="typeName_debian" class="tr-center"></td>
+                                                            <td id="scoreText_debian" colspan="2"></td>
                                                             <td id="summary_debian"></td>
                                                             <td id="lastModified_debian"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td id="typeName_oracle"></td>
-                                                            <td id="scoreText_oracle"></td>
+                                                            <td id="typeName_oracle" class="tr-center"></td>
+                                                            <td id="scoreText_oracle" colspan="2"></td>
                                                             <td id="summary_oracle"></td>
                                                             <td id="lastModified_oracle"></td>
                                                         </tr>
@@ -322,9 +338,76 @@
                                         Show / Hide the Item
                                     </div>
                                     <div class="panel-body">
-                                        <div class="make-switch">
-                                            <input type="checkbox" name="chkPivotSummary" data-label-text="Summary" checked>
-                                            <input type="checkbox" name="chkPivotCvss" data-label-text="Cvss Metrics" checked>
+                                        <!-- <div class="make-switch">
+                                            <input type="checkbox" name="setting_summary" data-label-text="Summary" checked>
+                                        </div> -->
+
+                                        <div class="pretty p-default">
+                                            <input id="setting_PlatformName" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>PlatformName</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_PlatformInstanceID" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>PlatformInstanceID</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_IPv4Addrs" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>IPv4Addrs</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ServerUUID" type="checkbox" />
+                                            <div class="state p-primary">
+                                                <label>ServerUUID</label>
+                                            </div>
+                                        </div>
+
+                                        <hr class="style-one">
+
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerName" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerName</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerImage" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerImage</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerType" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerType</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default">
+                                            <input id="setting_ContainerUUID" type="checkbox" />
+                                            <div class="state p-warning">
+                                                <label>ContainerUUID</label>
+                                            </div>
+                                        </div>
+
+                                        <hr class="style-one">
+
+                                        <div class="pretty p-default">
+                                            <input id="setting_CvssV2" type="checkbox" />
+                                            <div class="state p-success">
+                                                <label>CvssV2 Base Metrics</label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="pretty p-default">
+                                            <input id="setting_CvssV3" type="checkbox" />
+                                            <div class="state p-success">
+                                                <label>CvssV3 Base Metrics</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -340,8 +423,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td>1</td>
-                                                    <td rowspan="6">
-                                                        <ul id="pivot-priority">
+                                                    <td rowspan="8">
+                                                        <ul id="setting_Priority">
                                                         </ul>
                                                     </td>
                                                 </tr>
@@ -359,6 +442,12 @@
                                                 </tr>
                                                 <tr>
                                                     <td>6</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>7</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>8</td>
                                                 </tr>
                                             </tbody>
                                         </table>

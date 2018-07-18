@@ -1,3 +1,5 @@
 .project
 .vscode/*
 /server/vendor/
+*.pem
+*.toml

@@ -76,7 +76,7 @@ a {
 }
 
 .cvss-None {
-    background-color: gray;
+    background-color: #bdbdbd;
     color: black
 }
 
@@ -272,14 +272,14 @@ body.noscroll {
     position: fixed;
 }
 
-#pivot-priority {
+#setting_Priority {
     list-style-type: none;
     margin: 0px 0px 0px 15px;
     padding: 0;
     width: 150px;
 }
 
-#pivot-priority li {
+#setting_Priority li {
     margin: 3px 3px 3px 3px;
     padding: 5px;
     font-size: 120%;
@@ -289,12 +289,12 @@ body.noscroll {
     color: white;
 }
 
-#pivot-priority li span {
+#setting_Priority li span {
     padding-left: 10px;
     padding-right: 40px;
 }
 
-#pivot-priority .placeholder {
+#setting_Priority .placeholder {
     border: 1px dashed red;
     background-color: pink;
 }
@@ -347,4 +347,25 @@ body.noscroll {
 
 .font-size-small {
     font-size: 90%;
+}
+
+.pretty {
+    margin-top: 15px;
+}
+
+.tr-center {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.tr-width {
+    width: 80px !important;
+}
+
+.tr-score {
+    font-size: 120% !important;
+    color: white;
+    font-weight: bolder;
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+    text-shadow: 1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 1px #000, -1px -1px 1px #000;
 }

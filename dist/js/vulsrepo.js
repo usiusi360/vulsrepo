@@ -1,8 +1,4 @@
 $(document).ready(function() {
-    $.each(vulsrepo_template, function(index, val) {
-        localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
-    });
-
     setEvents();
     createFolderTree();
     db.remove("vulsrepo_pivot_conf");
@@ -12,8 +8,8 @@ $(document).ready(function() {
 const initData = function() {
     $.blockUI(blockUIoption);
     getData().done(function(resultArray) {
-        vulsrepo.detailRawData = resultArray;
-        vulsrepo.detailPivotData = createPivotData(resultArray);
+        vulsrepo.detailRawData = resultArray; //for detailed screen
+        vulsrepo.detailPivotData = createPivotData(resultArray); //for Pivot
         initPivotTable();
     }).fail(function(result) {
         $.unblockUI(blockUIoption);
@@ -59,8 +55,8 @@ const db = {
         localStorage.removeItem("vulsrepo_pivot_conf_user_" + key);
     },
     listPivotConf: function(key) {
-        var array = [];
-        for (var i = 0; i < localStorage.length; i++) {
+        let array = [];
+        for (let i = 0; i < localStorage.length; i++) {
             if (localStorage.key(i).indexOf('vulsrepo_pivot_conf_user_') != -1) {
                 array.push(localStorage.key(i).replace(/vulsrepo_pivot_conf_user_/g, ''));
             }
@@ -112,12 +108,12 @@ const getData = function() {
         timeout: vulsrepo.timeOut
     });
 
-    var kickCount = 0;
-    var endCount = 0;
-    var resultArray = [];
-    var defer = new $.Deferred();
+    let kickCount = 0;
+    let endCount = 0;
+    let resultArray = [];
+    let defer = new $.Deferred();
 
-    var selectedFiles = getSelectedFile();
+    let selectedFiles = getSelectedFile();
 
     if (selectedFiles.length === 0) {
         defer.reject("notSelect");
@@ -125,15 +121,15 @@ const getData = function() {
     }
 
     $.each(selectedFiles, function(key, value) {
-        var url = value.url;
+        let url = value.url;
         $.getJSON(url).done(function(json_data) {
             endCount++;
-            var resultMap = {
+            let resultMap = {
                 scanTime: value.parent_title,
                 data: json_data
             };
 
-            if (resultMap.data.JSONVersion === undefined) {
+            if (resultMap.data.JSONVersion === undefined || resultMap.data.JSONVersion !== 4) {
                 showAlert("Old JSON format", value.url);
                 $.unblockUI(blockUIoption);
                 return;
@@ -158,9 +154,9 @@ const getData = function() {
 };
 
 const getSelectedFile = function() {
-    var selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
+    let selectedFile = $.map($("#folderTree").dynatree("getSelectedNodes"), function(node) {
         if (node.data.isFolder === false) {
-            var data = {
+            let data = {
                 title: node.data.title,
                 url: "results" + node.data.url,
                 parent_title: node.parent.data.title
@@ -187,13 +183,29 @@ const setPulldown = function(target) {
 
 const setPulldownDisplayChangeEvent = function(target) {
     $(target + ' a').on('click', function() {
-        var value = db.getPivotConf($(this).attr('value'));
+        let value = db.getPivotConf($(this).attr('value'));
         db.set("vulsrepo_pivot_conf", value);
         initPivotTable();
     });
 };
 
+
+const cutStr = function(str) {
+    let afterTxt = ' …';
+    let textLength = str.length;
+
+    if (vulsrepo.cutFigure > textLength) {
+        return str;
+    } else {
+        return str.substr(0, (vulsrepo.cutFigure)) + afterTxt;
+    }
+};
+
 const setEvents = function() {
+
+    $.each(template, function(index, val) {
+        localStorage.setItem("vulsrepo_pivot_conf_user_" + val.key, val.value);
+    });
 
     // ---file select
     $(".submitSelectfile").click(function() {
@@ -238,7 +250,7 @@ const setEvents = function() {
     });
 
     $("#ok_saveDiag").click(function() {
-        var configName;
+        let configName;
         if ($('input[name=radio_setting]:eq(0)').prop('checked')) {
             configName = $("#input_saveDiag").val();
             if (configName !== "") {
@@ -310,51 +322,136 @@ const setEvents = function() {
         initData();
     });
 
-    // ---switch
-    $("[name='chkPivotSummary']").bootstrapSwitch();
-    $("[name='chkPivotCvss']").bootstrapSwitch();
-
-    if (db.get("vulsrepo_chkPivotSummary") === "false") {
-        $('input[name="chkPivotSummary"]').bootstrapSwitch('state', false, false);
-    }
-    if (db.get("vulsrepo_chkPivotCvss") === "false") {
-        $('input[name="chkPivotCvss"]').bootstrapSwitch('state', false, false);
+    if (db.get("vulsrepo_setting_PlatformName") === "true") {
+        $("#setting_PlatformName").prop("checked", true);
     }
 
-    $('input[name="chkPivotSummary"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state === false) {
-            db.set("vulsrepo_chkPivotSummary", "false");
+    if (db.get("vulsrepo_setting_PlatformInstanceID") === "true") {
+        $("#setting_PlatformInstanceID").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_IPv4Addrs") === "true") {
+        $("#setting_IPv4Addrs").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ServerUUID") === "true") {
+        $("#setting_ServerUUID").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerName") === "true") {
+        $("#setting_ContainerName").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerImage") === "true") {
+        $("#setting_ContainerImage").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerType") === "true") {
+        $("#setting_ContainerType").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_ContainerUUID") === "true") {
+        $("#setting_ContainerUUID").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_cvssV2") === "true") {
+        $("#setting_cvssV2").prop("checked", true);
+    }
+
+    if (db.get("vulsrepo_setting_cvssV3") === "true") {
+        $("#setting_cvssV3").prop("checked", true);
+    }
+
+    $("#setting_PlatformName").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_PlatformName", "true");
         } else {
-            db.remove("vulsrepo_chkPivotSummary");
+            db.remove("vulsrepo_setting_PlatformName");
         }
     });
-    $('input[name="chkPivotCvss"]').on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state === false) {
-            db.set("vulsrepo_chkPivotCvss", "false");
+
+    $("#setting_PlatformInstanceID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_PlatformInstanceID", "true");
         } else {
-            db.remove("vulsrepo_chkPivotCvss");
+            db.remove("vulsrepo_setting_PlatformInstanceID");
+        }
+    });
+
+    $("#setting_IPv4Addrs").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_IPv4Addrs", "true");
+        } else {
+            db.remove("vulsrepo_setting_IPv4Addrs");
+        }
+    });
+
+    $("#setting_ServerUUID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ServerUUID", "true");
+        } else {
+            db.remove("vulsrepo_setting_ServerUUID");
+        }
+    });
+
+    $("#setting_ContainerName").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerName", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerName");
+        }
+    });
+
+    $("#setting_ContainerImage").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerImage", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerImage");
+        }
+    });
+
+    $("#setting_ContainerType").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerType", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerType");
+        }
+    });
+
+    $("#setting_ContainerUUID").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_ContainerUUID", "true");
+        } else {
+            db.remove("vulsrepo_setting_ContainerUUID");
+        }
+    });
+
+    $("#setting_CvssV2").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_CvssV2", "true");
+        } else {
+            db.remove("vulsrepo_setting_CvssV2");
+        }
+    });
+
+    $("#setting_CvssV3").click(function() {
+        if ($(this).prop('checked') === true) {
+            db.set("vulsrepo_setting_CvssV3", "true");
+        } else {
+            db.remove("vulsrepo_setting_CvssV3");
         }
     });
 
     // ---priority
-
-    var priority = db.get("vulsrepo_pivotPriority");
-    if (priority === null) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
+    let priority = db.get("vulsrepo_setting_Priority");
+    if ((priority === null) || (Array.isArray(priority) === false) || (priority.length !== 8)) {
+        db.set("vulsrepo_setting_Priority", vulsrepo.detailTaget);
     }
 
-    if (Array.isArray(priority) === false) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
-    }
-
-    if (priority.length !== 6) {
-        db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
-    }
-
-    $.each(db.get("vulsrepo_pivotPriority"), function(i, i_val) {
-        $("#pivot-priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
+    $.each(db.get("vulsrepo_setting_Priority"), function(i, i_val) {
+        $("#setting_Priority").append('<li class="ui-state-default"><span class="fa fa-arrows-v" aria-hidden="true"></span>' + i_val + '</li>');
     });
-    $('#pivot-priority').sortable({
+    $('#setting_Priority').sortable({
         tolerance: "pointer",
         distance: 1,
         cursor: "move",
@@ -362,13 +459,13 @@ const setEvents = function() {
         placeholder: "placeholder",
         update: function() {
             let tmp_pri = [];
-            $("#pivot-priority li").each(function(index) {
+            $("#setting_Priority li").each(function(index) {
                 tmp_pri.push($(this).text());
             });
-            db.set("vulsrepo_pivotPriority", tmp_pri);
+            db.set("vulsrepo_setting_Priority", tmp_pri);
         }
     });
-    $('#pivot-priority').disableSelection();
+    $('#setting_Priority').disableSelection();
 
     $("#pivot-link").click(function() {
         let str = location.href + "?vulsrepo_pivot_conf_tmp=" + LZString.compressToEncodedURIComponent(localStorage.getItem("vulsrepo_pivot_conf_tmp"));
@@ -381,14 +478,14 @@ const setEvents = function() {
 
 const createFolderTree = function() {
 
-    var target;
+    let target;
     if (vulsrepo.demoFlag === true) {
         target = "getfilelist.json"
     } else {
         target = "getfilelist/"
     }
 
-    var tree = $("#folderTree").dynatree({
+    let tree = $("#folderTree").dynatree({
         initAjax: {
             url: target
         },
@@ -411,7 +508,7 @@ const createFolderTree = function() {
     });
 };
 
-const isCheckNull = function(o) {
+const isCheckNone = function(o) {
     if (o === undefined) {
         return true;
     } else if (o === null) {
@@ -425,13 +522,33 @@ const isCheckNull = function(o) {
 const createPivotData = function(resultArray) {
     let array = [];
     let cveid_count = 0;
-    const prioltyFlag = db.get("vulsrepo_pivotPriority");
-    const summaryFlag = db.get("vulsrepo_chkPivotSummary");
-    const cvssFlag = db.get("vulsrepo_chkPivotCvss");
+
+    const flagPlatformName = db.get("vulsrepo_setting_PlatformName");
+    const flagPlatformInstanceID = db.get("vulsrepo_setting_PlatformInstanceID");
+    const flagIPv4Addrs = db.get("vulsrepo_setting_IPv4Addrs");
+    const flagServerUUID = db.get("vulsrepo_setting_ServerUUID");
+    const flagContainerName = db.get("vulsrepo_setting_ContainerName");
+    const flagContainerImage = db.get("vulsrepo_setting_ContainerImage");
+    const flagContainerType = db.get("vulsrepo_setting_ContainerType");
+    const flagContainerUUID = db.get("vulsrepo_setting_ContainerUUID");
+    const flagCvssV2 = db.get("vulsrepo_setting_CvssV2");
+    const flagCvssV3 = db.get("vulsrepo_setting_CvssV3");
+    const flagPriolty = db.get("vulsrepo_setting_Priority");
+
+    let result = {};
+
+    let addColumn = function(resultName, insertData, flagName) {
+        if (flagName !== "") {
+            if (isCheckNone(insertData)) {
+                result[resultName] = "None";
+            } else {
+                result[resultName] = insertData;
+            }
+        }
+    }
 
     $.each(resultArray, function(x, x_val) {
-        if (Object.keys(x_val.data.ScannedCves).length === 0) {
-
+        if (isCheckNone(x_val.data.ScannedCves)) {
             let result = {
                 "ScanTime": x_val.scanTime,
                 "Family": x_val.data.Family,
@@ -442,17 +559,11 @@ const createPivotData = function(resultArray) {
                 "PackageVer": "healthy",
                 "NewPackageVer": "healthy",
                 "CweID": "healthy",
-                "Summary": "healthy",
                 "CVSS Score": "healthy",
                 "CVSS Severity": "healthy",
-                "CVSS (AV)": "healthy",
-                "CVSS (AC)": "healthy",
-                "CVSS (Au)": "healthy",
-                "CVSS (C)": "healthy",
-                "CVSS (I)": "healthy",
-                "CVSS (A)": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
+                "Summary": "healthy"
             };
 
             if (x_val.data.RunningKernel.RebootRequired === true) {
@@ -461,10 +572,36 @@ const createPivotData = function(resultArray) {
                 result["ServerName"] = x_val.data.ServerName;
             }
 
-            if (x_val.data.Platform.Name !== "") {
-                result["Platform"] = x_val.data.Platform.Name;
-            } else {
-                result["Platform"] = "None";
+            if (isCheckNone(flagPlatformName) === false) {
+                if (isCheckNone(x_val.data.Platform.Name)) {
+                    result["PlatformName"] = "None";
+                } else {
+                    result["PlatformName"] = x_val.data.Platform.Name;
+                }
+            }
+
+            if (isCheckNone(flagPlatformInstanceID) === false) {
+                if (isCheckNone(x_val.data.Platform.InstanceID)) {
+                    result["PlatformInstanceID"] = "None";
+                } else {
+                    result["PlatformInstanceID"] = x_val.data.Platform.InstanceID;
+                }
+            }
+
+            if (isCheckNone(flagIPv4Addrs) === false) {
+                if (isCheckNone(x_val.data.IPv4Addrs)) {
+                    result["IPv4Addrs"] = "None";
+                } else {
+                    result["IPv4Addrs"] = x_val.data.IPv4Addrs.join(", ");
+                }
+            }
+
+            if (isCheckNone(flagServerUUID) === false) {
+                if (isCheckNone(x_val.data.ServerUUID)) {
+                    result["ServerUUID"] = "None";
+                } else {
+                    result["ServerUUID"] = x_val.data.ServerUUID;
+                }
             }
 
             if (x_val.data.Container.Name !== "") {
@@ -472,20 +609,45 @@ const createPivotData = function(resultArray) {
             } else {
                 result["Container"] = "None";
             }
+
+
+            if (flagCvssV2 === "true") {
+                result["CvssV2 (AV)"] = "healthy";
+                result["CvssV2 (AC)"] = "healthy";
+                result["CvssV2 (Au)"] = "healthy";
+                result["CvssV2 (C)"] = "healthy";
+                result["CvssV2 (I)"] = "healthy";
+                result["CvssV2 (A)"] = "healthy";
+            }
+
+            if (flagCvssV3 === "true") {
+                result["CvssV3 (AV)"] = "healthy";
+                result["CvssV3 (AC)"] = "healthy";
+                result["CvssV3 (PR)"] = "healthy";
+                result["CvssV3 (UI)"] = "healthy";
+                result["CvssV3 (S)"] = "healthy";
+                result["CvssV3 (C)"] = "healthy";
+                result["CvssV3 (I)"] = "healthy";
+                result["CvssV3 (A)"] = "healthy";
+            }
+
+
             array.push(result);
         } else {
             $.each(x_val.data.ScannedCves, function(y, y_val) {
                 let targetNames;
-                if (isCheckNull(y_val.CpeNames) === false) {
-                    targetNames = y_val.CpeNames;
-                } else {
+                if (isCheckNone(y_val.CpeNames)) {
                     targetNames = y_val.AffectedPackages;
+                } else {
+                    targetNames = y_val.CpeNames;
                 }
 
                 cveid_count = cveid_count + 1
                 $.each(targetNames, function(p, p_val) {
-                    if (p_val.Name === undefined) {
-                        pkgName = p_val;
+                    let pkgName;
+                    let NotFixedYet;
+                    if (isCheckNone(p_val.Name)) {
+                        pkgName = p_val; // for CPE
                         NotFixedYet = "Unknown";
                     } else {
                         pkgName = p_val.Name;
@@ -493,18 +655,21 @@ const createPivotData = function(resultArray) {
                     }
 
                     let pkgInfo = x_val.data.Packages[pkgName];
-                    if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
+                    if ((pkgName.indexOf('cpe:/') === -1) && (isCheckNone(pkgInfo))) {
                         return;
                     }
 
-                    let result = {
-                        "ScanTime": x_val.scanTime,
-                        "Family": x_val.data.Family,
-                        "Release": x_val.data.Release,
-                        "CveID": "CHK-cveid-" + y_val.CveID,
-                        "Packages": pkgName,
-                        "NotFixedYet": NotFixedYet,
-                    };
+
+                    // let result = {
+                    //     "ScanTime": x_val.scanTime,
+                    //     "Family": x_val.data.Family,
+                    //     "Release": x_val.data.Release,
+                    //     "CveID": "CHK-cveid-" + y_val.CveID,
+                    //     "Packages": pkgName,
+                    //     "NotFixedYet": NotFixedYet,
+                    // };
+
+                    addColumn("", "ScanTime", x_val.scanTime)
 
                     if (x_val.data.RunningKernel.RebootRequired === true) {
                         result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
@@ -512,54 +677,89 @@ const createPivotData = function(resultArray) {
                         result["ServerName"] = x_val.data.ServerName;
                     }
 
-                    if (y_val.CveContents.nvd !== undefined) {
-                        result["CweID"] = y_val.CveContents.nvd.CweID;
-                    } else {
-                        result["CweID"] = "None";
-                    }
-
-                    if (x_val.data.Platform.Name !== "") {
-                        result["Platform"] = x_val.data.Platform.Name;
-                    } else {
-                        result["Platform"] = "None";
-                    }
-
-                    if (x_val.data.Container.Name !== "") {
-                        result["Container"] = x_val.data.Container.Name;
-                    } else {
-                        result["Container"] = "None";
-                    }
-
-                    DetectionMethod = y_val.Confidence.DetectionMethod;
-                    result["DetectionMethod"] = DetectionMethod;
-                    if (DetectionMethod === "ChangelogExactMatch") {
-                        result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
-                    } else {
-                        result["Changelog"] = "None";
-                    }
-
-                    if (pkgInfo !== undefined) {
-                        if (pkgInfo.Version !== "") {
-                            result["PackageVer"] = pkgInfo.Version + "-" + pkgInfo.Release;
+                    if (isCheckNone(flagPlatformName) === false) {
+                        if (isCheckNone(x_val.data.Platform.Name)) {
+                            result["PlatformName"] = "None";
                         } else {
-                            result["PackageVer"] = "None";
+                            result["PlatformName"] = x_val.data.Platform.Name;
                         }
+                    }
 
-                        if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.NewVersion + "-" + pkgInfo.NewRelease;
+                    if (isCheckNone(flagPlatformInstanceID) === false) {
+                        if (isCheckNone(x_val.data.Platform.InstanceID)) {
+                            result["PlatformInstanceID"] = "None";
                         } else {
-                            result["NewPackageVer"] = "None";
+                            result["PlatformInstanceID"] = x_val.data.Platform.InstanceID;
                         }
-                    } else {
+                    }
+
+                    if (isCheckNone(flagIPv4Addrs) === false) {
+                        if (isCheckNone(x_val.data.IPv4Addrs)) {
+                            result["IPv4Addrs"] = "None";
+                        } else {
+                            result["IPv4Addrs"] = x_val.data.IPv4Addrs.join(", ");
+                        }
+                    }
+
+                    if (isCheckNone(flagServerUUID) === false) {
+                        if (isCheckNone(x_val.data.ServerUUID)) {
+                            result["ServerUUID"] = "None";
+                        } else {
+                            result["ServerUUID"] = x_val.data.ServerUUID;
+                        }
+                    }
+
+                    if (isCheckNone(flagContainerName) === false) {
+                        if (isCheckNone(x_val.data.Container.Name)) {
+                            result["ContainerName"] = "None";
+                        } else {
+                            result["ContainerName"] = x_val.data.Container.Name;
+                        }
+                    }
+
+                    if (isCheckNone(flagContainerImage) === false) {
+                        if (isCheckNone(x_val.data.Container.Image)) {
+                            result["ContainerImage"] = "None";
+                        } else {
+                            result["ContainerImage"] = x_val.data.Container.Image;
+                        }
+                    }
+
+
+                    result["DetectionMethod"] = y_val.Confidence.DetectionMethod;
+                    result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
+
+                    if (isCheckNone(pkgInfo)) {
                         // ===for cpe
                         result["PackageVer"] = "Unknown";
                         result["NewPackageVer"] = "Unknown";
+                    } else {
+                        if (isCheckNone(pkgInfo.Version)) {
+                            result["PackageVer"] = "None";
+                        } else {
+                            result["PackageVer"] = pkgInfo.Version + "-" + pkgInfo.Release;
+                        }
+
+                        if (isCheckNone(pkgInfo.NewVersion)) {
+                            result["NewPackageVer"] = "None";
+                        } else {
+                            result["NewPackageVer"] = pkgInfo.NewVersion + "-" + pkgInfo.NewRelease;
+                        }
                     }
 
 
                     let getCvss = function(target) {
-                        if (y_val.CveContents[target] === undefined) {
+
+                        if (isCheckNone(y_val.CveContents[target])) {
                             return false;
+                        }
+
+                        result["Summary"] = cutStr(y_val.CveContents[target].Summary);
+
+                        if (isCheckNone(y_val.CveContents[target].CweIDs)) {
+                            result["CweIDs"] = "None";
+                        } else {
+                            result["CweIDs"] = y_val.CveContents[target].CweIDs.join(',');
                         }
 
                         if (y_val.CveContents[target].Cvss2Score === 0 & y_val.CveContents[target].Cvss3Score === 0) {
@@ -576,26 +776,45 @@ const createPivotData = function(resultArray) {
                             result["CVSS Score Type"] = target + "V3";
                         }
 
-                        if (summaryFlag !== "false") {
-                            result["Summary"] = y_val.CveContents[target].Summary;
+                        if (flagCvssV2 === "true") {
+                            if (y_val.CveContents[target].Cvss2Vector !== "") {
+                                let arrayVector = splitVectorString(y_val.CveContents[target].Cvss2Vector);
+                                result["CvssV2 (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
+                                result["CvssV2 (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
+                                result["CvssV2 (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
+                                result["CvssV2 (C)"] = getVectorV2.cvss(arrayVector[3])[0];
+                                result["CvssV2 (I)"] = getVectorV2.cvss(arrayVector[4])[0];
+                                result["CvssV2 (A)"] = getVectorV2.cvss(arrayVector[5])[0];
+                            } else {
+                                result["CvssV2 (AV)"] = "Unknown";
+                                result["CvssV2 (AC)"] = "Unknown";
+                                result["CvssV2 (Au)"] = "Unknown";
+                                result["CvssV2 (C)"] = "Unknown";
+                                result["CvssV2 (I)"] = "Unknown";
+                                result["CvssV2 (A)"] = "Unknown";
+                            }
                         }
 
-                        if (cvssFlag !== "false") {
-                            if (y_val.CveContents[target].Cvss2Vector !== "") { //ex) CVE-2016-5483
-                                var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
-                                result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
-                                result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
-                                result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
-                                result["CVSS (C)"] = getVectorV2.cvss(arrayVector[3])[0];
-                                result["CVSS (I)"] = getVectorV2.cvss(arrayVector[4])[0];
-                                result["CVSS (A)"] = getVectorV2.cvss(arrayVector[5])[0];
+                        if (flagCvssV3 === "true") {
+                            if (y_val.CveContents[target].Cvss3Vector !== "") {
+                                let arrayVector = splitVectorString(y_val.CveContents[target].Cvss3Vector);
+                                result["CvssV3 (AV)"] = getVectorV3.cvss(arrayVector[1])[0];
+                                result["CvssV3 (AC)"] = getVectorV3.cvss(arrayVector[2])[0];
+                                result["CvssV3 (PR)"] = getVectorV3.cvss(arrayVector[3])[0];
+                                result["CvssV3 (UI)"] = getVectorV3.cvss(arrayVector[4])[0];
+                                result["CvssV3 (S)"] = getVectorV3.cvss(arrayVector[5])[0];
+                                result["CvssV3 (C)"] = getVectorV3.cvss(arrayVector[6])[0];
+                                result["CvssV3 (I)"] = getVectorV3.cvss(arrayVector[7])[0];
+                                result["CvssV3 (A)"] = getVectorV3.cvss(arrayVector[8])[0];
                             } else {
-                                result["CVSS (AV)"] = "Unknown";
-                                result["CVSS (AC)"] = "Unknown";
-                                result["CVSS (Au)"] = "Unknown";
-                                result["CVSS (C)"] = "Unknown";
-                                result["CVSS (I)"] = "Unknown";
-                                result["CVSS (A)"] = "Unknown";
+                                result["CvssV3 (AV)"] = "Unknown";
+                                result["CvssV3 (AC)"] = "Unknown";
+                                result["CvssV3 (PR)"] = "Unknown";
+                                result["CvssV3 (UI)"] = "Unknown";
+                                result["CvssV3 (S)"] = "Unknown";
+                                result["CvssV3 (C)"] = "Unknown";
+                                result["CvssV3 (I)"] = "Unknown";
+                                result["CvssV3 (A)"] = "Unknown";
                             }
                         }
 
@@ -603,23 +822,40 @@ const createPivotData = function(resultArray) {
                     };
 
                     let flag = false;
-                    $.each(prioltyFlag, function(i, i_val) {
+                    $.each(flagPriolty, function(i, i_val) {
                         if (flag !== true) {
                             flag = getCvss(i_val);
                         }
                     });
 
                     if (flag === false) {
-                        result["Summary"] = "Unknown";
+                        result["CweIDs"] = "Unknown";
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
-                        result["CVSS (AV)"] = "Unknown";
-                        result["CVSS (AC)"] = "Unknown";
-                        result["CVSS (Au)"] = "Unknown";
-                        result["CVSS (C)"] = "Unknown";
-                        result["CVSS (I)"] = "Unknown";
-                        result["CVSS (A)"] = "Unknown";
+                        result["Summary"] = "Unknown";
+
+
+                        if (flagCvssV2 === "true") {
+                            result["CvssV2 (AV)"] = "Unknown";
+                            result["CvssV2 (AC)"] = "Unknown";
+                            result["CvssV2 (Au)"] = "Unknown";
+                            result["CvssV2 (C)"] = "Unknown";
+                            result["CvssV2 (I)"] = "Unknown";
+                            result["CvssV2 (A)"] = "Unknown";
+                        }
+
+                        if (flagCvssV3 === "true") {
+                            result["CvssV3 (AV)"] = "Unknown";
+                            result["CvssV3 (AC)"] = "Unknown";
+                            result["CvssV3 (PR)"] = "Unknown";
+                            result["CvssV3 (UI)"] = "Unknown";
+                            result["CvssV3 (S)"] = "Unknown";
+                            result["CvssV3 (C)"] = "Unknown";
+                            result["CvssV3 (I)"] = "Unknown";
+                            result["CvssV3 (A)"] = "Unknown";
+                        }
+
                     }
 
                     array.push(result);
@@ -635,10 +871,10 @@ const createPivotData = function(resultArray) {
 
 const displayPivot = function(array) {
 
-    var url_param;
+    let url_param;
     if (location.search !== "") {
         try {
-            var decode_str = LZString.decompressFromEncodedURIComponent(location.search.substring(1).split('=')[1])
+            let decode_str = LZString.decompressFromEncodedURIComponent(location.search.substring(1).split('=')[1])
             if (decode_str === null) {
                 showAlert("param decode error", decode_str);
                 return;
@@ -650,17 +886,17 @@ const displayPivot = function(array) {
         }
     }
 
-    var url = window.location.href
-    var new_url = url.replace(/\?.*$/, "");
+    let url = window.location.href
+    let new_url = url.replace(/\?.*$/, "");
     history.replaceState(null, null, new_url);
 
 
-    var derivers = $.pivotUtilities.derivers;
-    var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
-    var dateFormat = $.pivotUtilities.derivers.dateFormat;
-    var sortAs = $.pivotUtilities.sortAs;
+    let derivers = $.pivotUtilities.derivers;
+    let renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
+    let dateFormat = $.pivotUtilities.derivers.dateFormat;
+    let sortAs = $.pivotUtilities.sortAs;
 
-    var pivot_attr = {
+    let pivot_attr = {
         renderers: renderers,
         menuLimit: 3000,
         rows: ["ScanTime", "ServerName", "Container"],
@@ -680,7 +916,7 @@ const displayPivot = function(array) {
         },
         sorters: function(attr) {
             if (attr == "CVSS Severity") {
-                return sortAs(["healthy", "Low", "Medium", "High", "Unknown"]);
+                return sortAs(["healthy", "Low", "Medium", "High", "Critical", "Unknown"]);
             }
 
             if (attr == "CveID" || attr == "CweID" || attr == "Packages" || attr == "CVSS Score" || attr == "Summary" || attr == "CVSS (AV)" || attr == "CVSS (AC)" || attr == "CVSS (Au)" || attr == "CVSS (C)" || attr == "CVSS (I)" || attr == "CVSS(I)") {
@@ -713,7 +949,7 @@ const displayPivot = function(array) {
 
     };
 
-    var pivot_obj;
+    let pivot_obj;
     if (url_param != null) {
         pivot_obj = url_param;
     } else {
@@ -762,7 +998,7 @@ const addChangelogLink = function() {
 };
 
 const createDetailData = function(cveID) {
-    var targetObj = { CveContents: {} };
+    let targetObj = { CveContents: {} };
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         tmpCve = x_val.data.ScannedCves[cveID];
         if (tmpCve !== undefined) {
@@ -775,6 +1011,7 @@ const createDetailData = function(cveID) {
             });
         }
     });
+
     return targetObj;
 };
 
@@ -787,13 +1024,16 @@ const initDetail = function() {
     $.each(vulsrepo.detailTaget, function(i, i_val) {
         $("#typeName_" + i_val).empty();
         $("#typeName_" + i_val + "V3").empty();
-        $("#scoreText_" + i_val).text("").removeClass();
-        $("#scoreText_" + i_val + "V3").text("").removeClass();
+        $("#scoreText_" + i_val).text("").removeClass().addClass("tr-score tr-center");
+        $("#scoreText_" + i_val + "V3").text("").removeClass().addClass("tr-score tr-center");
         $("#summary_" + i_val).empty();
         $("#lastModified_" + i_val).empty();
     });
 };
 
+
+let chartV2;
+let chartV3;
 
 const displayDetail = function(cveID) {
     initDetail();
@@ -802,41 +1042,38 @@ const displayDetail = function(cveID) {
     // ---CVSS Detail
     $("#modal-label").text(data.CveID);
 
-    let dispCvss = function(target) {
-        if (data.CveContents[target] !== undefined) {
-            scoreV2 = data.CveContents[target].Cvss2Score;
-            scoreV3 = data.CveContents[target].Cvss3Score;
-            severity = toUpperFirstLetter(data.CveContents[target].Severity);
 
-            // -- for nvd
-            if (severity === "") {
-                if (scoreV2 !== 0) {
-                    severity = getSeverityV2(scoreV2);
-                } else if (scoreV3 !== 0) {
-                    severity = getSeverityV3(scoreV3);
-                } else {
-                    severity = "None";
-                }
+    let dispCvss = function(target) {
+        let resultV2 = [];
+        let resultV3 = [];
+
+        if (data.CveContents[target] !== undefined) {
+            let scoreV2 = data.CveContents[target].Cvss2Score;
+            let scoreV3 = data.CveContents[target].Cvss3Score;
+            let severityV2 = toUpperFirstLetter(data.CveContents[target].Cvss2Severity);
+            let severityV3 = toUpperFirstLetter(data.CveContents[target].Cvss3Severity);
+
+            if (target === "nvd") {
+
             }
 
             if (scoreV2 !== 0) {
-                $("#scoreText_" + target).text(scoreV2 + " (" + severity + ")").addClass("cvss-" + severity);
+                $("#scoreText_" + target).text(scoreV2 + " (" + severityV2 + ")").addClass("cvss-" + severityV2);
             } else {
                 $("#scoreText_" + target).text("None").addClass("cvss-None");
             }
 
             if (scoreV3 !== 0) {
-                $("#scoreText_" + target + "V3").text(scoreV3 + " (" + severity + ")").addClass("cvss-" + severity);
+                $("#scoreText_" + target + "V3").text(scoreV3 + " (" + severityV3 + ")").addClass("cvss-" + severityV3);
             } else {
                 $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
             }
 
             if (target === "ubuntu" || target === "debian") {
-                $("#scoreText_" + target).removeClass();
                 $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
             }
 
-            if (data.CveContents[target].Summary !== "") {
+            if (isCheckNone(data.CveContents[target].Summary) === false) {
                 $("#summary_" + target).append("<div>" + data.CveContents[target].Summary + "<div>");
             }
 
@@ -844,12 +1081,10 @@ const displayDetail = function(cveID) {
                 $("#lastModified_" + target).text(data.CveContents[target].LastModified.split("T")[0]);
             } else {
                 $("#lastModified_" + target).text("------");
-                $("#lastModified_" + target + "V3").text("------");
             }
 
-            var resultV2 = [];
-            if (data.CveContents[target].Cvss2Vector !== "") {
-                var arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
+            if (isCheckNone(data.CveContents[target].Cvss2Vector) === false) {
+                let arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[0])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[1])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[2])[1]);
@@ -858,10 +1093,8 @@ const displayDetail = function(cveID) {
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[5])[1]);
             }
 
-            var resultV3 = [];
-            if (data.CveContents[target].Cvss3Vector !== "") {
-                var arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
-                resultV3.push(getVectorV3.cvss(arrayVectorV3[0])[1]);
+            if (isCheckNone(data.CveContents[target].Cvss3Vector) === false) {
+                let arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[1])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[2])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[3])[1]);
@@ -869,6 +1102,7 @@ const displayDetail = function(cveID) {
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[5])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[6])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[7])[1]);
+                resultV3.push(getVectorV3.cvss(arrayVectorV3[8])[1]);
             }
 
         } else {
@@ -880,47 +1114,55 @@ const displayDetail = function(cveID) {
             $("#lastModified_" + target + "V3").text("------");
         }
 
-        if (resultV2 === undefined) {
+        if (isCheckNone(resultV2)) {
             resultV2 = [0, 0, 0, 0, 0, 0];
         }
 
-        if (resultV3 === undefined) {
+        if (isCheckNone(resultV3)) {
             resultV3 = [0, 0, 0, 0, 0, 0, 0, 0];
         }
 
         return [resultV2, resultV3];
     }
 
+
+
     // ---ChartRadar
-    let radarData_nvd
-    let radarData_jvn
+    let radarData_nvdV2
+    let radarData_nvdV3
+    let radarData_jvnV2
+    let radarData_jvnV3
     let radarData_redhatV2
     let radarData_redhatV3
 
     $.each(vulsrepo.detailTaget, function(i, i_val) {
         let r = dispCvss(i_val);
         switch (i_val) {
+            case "nvdjson":
+                radarData_nvdV2 = r[0];
+                radarData_nvdV3 = r[1];
+                break;
             case "nvd":
-                radarData_nvd = r[0];
+                radarData_nvdV2 = r[0];
                 break;
             case "jvn":
-                radarData_jvn = r[0];
+                radarData_jvnV2 = r[0];
+                radarData_jvnV3 = r[1];
                 break;
             case "redhat":
                 radarData_redhatV2 = r[0];
                 radarData_redhatV3 = r[1];
                 break;
         }
-
     });
 
-    var ctxV2 = document.getElementById("radar-chartV2");
-    var ctxV3 = document.getElementById("radar-chartV3");
+    let ctxV2 = document.getElementById("radar-chartV2");
+    let ctxV3 = document.getElementById("radar-chartV3");
 
-    if (typeof chartV2 != "undefined") {
+    if (isCheckNone(chartV2) === false) {
         chartV2.destroy();
     }
-    if (typeof chartV3 != "undefined") {
+    if (isCheckNone(chartV3) === false) {
         chartV3.destroy();
     }
 
@@ -938,7 +1180,7 @@ const displayDetail = function(cveID) {
         data: {
             labels: ["Access Vector(AV)", "Access Complexity(AC)", "Authentication(Au)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
             datasets: [{
-                    label: "NVD",
+                    label: "NVD V2",
                     backgroundColor: "rgba(179,181,198,0.2)",
                     borderColor: "rgba(179,181,198,1)",
                     pointBackgroundColor: "rgba(179,181,198,1)",
@@ -946,10 +1188,10 @@ const displayDetail = function(cveID) {
                     pointHoverBackgroundColor: "#fff",
                     pointHoverBorderColor: "rgba(179,181,198,1)",
                     hitRadius: 5,
-                    data: radarData_nvd
+                    data: radarData_nvdV2
                 },
                 {
-                    label: "JVN",
+                    label: "JVN V2",
                     backgroundColor: "rgba(255,99,132,0.2)",
                     borderColor: "rgba(255,99,132,1)",
                     pointBackgroundColor: "rgba(255,99,132,1)",
@@ -957,10 +1199,10 @@ const displayDetail = function(cveID) {
                     pointHoverBackgroundColor: "#fff",
                     pointHoverBorderColor: "rgba(255,99,132,1)",
                     hitRadius: 5,
-                    data: radarData_jvn
+                    data: radarData_jvnV2
                 },
                 {
-                    label: "RedHatV2",
+                    label: "RedHat V2",
                     backgroundColor: "rgba(51,204,204,0.2)",
                     borderColor: "rgba(51,204,204,1)",
                     pointBackgroundColor: "rgba(51,204,204,1)",
@@ -988,17 +1230,38 @@ const displayDetail = function(cveID) {
         data: {
             labels: ["Access Vector(AV)", "Access Complexity(AC)", "Privileges Required(PR)", "User Interaction(UI)", "Scope(S)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
             datasets: [{
-                label: "RedHatV3",
-                backgroundColor: "rgba(102,102,255,0.2)",
-                borderColor: "rgba(102,102,255,1)",
-                pointBackgroundColor: "rgba(102,102,255,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(102,102,255,1)",
-                hitRadius: 5,
-                data: radarData_redhatV3
-
-            }]
+                    label: "NVD V3",
+                    backgroundColor: "rgba(179,181,198,0.2)",
+                    borderColor: "rgba(179,181,198,1)",
+                    pointBackgroundColor: "rgba(179,181,198,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(179,181,198,1)",
+                    hitRadius: 5,
+                    data: radarData_nvdV3
+                },
+                {
+                    label: "JVN V3",
+                    backgroundColor: "rgba(255,99,132,0.2)",
+                    borderColor: "rgba(255,99,132,1)",
+                    pointBackgroundColor: "rgba(255,99,132,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(255,99,132,1)",
+                    hitRadius: 5,
+                    data: radarData_jvnV3
+                }, {
+                    label: "RedHat V3",
+                    backgroundColor: "rgba(102,102,255,0.2)",
+                    borderColor: "rgba(102,102,255,1)",
+                    pointBackgroundColor: "rgba(102,102,255,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(102,102,255,1)",
+                    hitRadius: 5,
+                    data: radarData_redhatV3
+                }
+            ]
         }
     });
 
@@ -1011,31 +1274,31 @@ const displayDetail = function(cveID) {
 
 
     // ---CweID---
-    if (data.CveContents.nvd !== undefined) {
-        if (data.CveContents.nvd.CweID !== "") {
-            $("#CweID").append("<span>NVD:[" + data.CveContents.nvd.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
-            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.nvd.CweID + ".html\" target='_blank'>JVN)</a>");
-            $("#CweID").append("<span>&emsp;</span>");
-        }
-    }
+    // if (isCheckNone(data.CveContents.nvd) === false) {
+    //     if (isCheckNone(data.CveContents.nvd.CweIDs) === false) {
+    //         $("#CweID").append("<span>NVD:[" + data.CveContents.nvd.CweID + "] (</span>");
+    //         $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.nvd.CweIDs.split("-")[1] + "\" target='_blank'>MITRE</a>");
+    //         $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
+    //         $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.nvd.CweIDs + ".html\" target='_blank'>JVN)</a>");
+    //         $("#CweID").append("<span>&emsp;</span>");
+    //     }
+    // }
 
-    if (data.CveContents.redhat !== undefined) {
-        if (data.CveContents.redhat.CweID !== "") {
-            $("#CweID").append("<span>RedHat:[" + data.CveContents.redhat.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.redhat.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
-            $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.redhat.CweID + ".html\" target='_blank'>JVN)</a>");
-        }
-    }
+    // if (data.CveContents.redhat !== undefined) {
+    //     if (data.CveContents.redhat.CweID !== "") {
+    //         $("#CweID").append("<span>RedHat:[" + data.CveContents.redhat.CweID + "] (</span>");
+    //         $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.redhat.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+    //         $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
+    //         $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.redhat.CweID + ".html\" target='_blank'>JVN)</a>");
+    //     }
+    // }
 
 
 
 
 
     // ---Link---
-    var addLink = function(target, url, disp) {
+    let addLink = function(target, url, disp) {
         $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
     };
 
@@ -1047,9 +1310,10 @@ const displayDetail = function(cveID) {
         addLink("#Link", i_val.url, i_val.disp);
     });
 
-    addLink("#typeName_nvd", detailLink.nvd.url + data.CveID, detailLink.nvd.disp);
-    if (data.CveContents.jvn !== undefined) {
-        if (data.CveContents.jvn.JvnLink === "") {
+    addLink("#typeName_nvd", detailLink.nvd.url + data.CveID, "NVD");
+
+    if (isCheckNone(data.CveContents.jvn) === false) {
+        if (isCheckNone(data.CveContents.jvn.JvnLink) === false) {
             $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
         } else {
             $("#typeName_jvn").append("<a href=\"" + data.CveContents.jvn.SourceLink + "\" target='_blank'>JVN</a>");
@@ -1057,8 +1321,7 @@ const displayDetail = function(cveID) {
     } else {
         $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
     }
-    addLink("#typeName_redhat", detailLink.rhel.url + data.CveID, "RedHat (v2)");
-    addLink("#typeName_redhatV3", detailLink.rhel.url + data.CveID, "RedHat (v3)");
+    addLink("#typeName_redhat", detailLink.rhel.url + data.CveID, "RedHat");
     addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.CveID, detailLink.ubuntu.disp);
     addLink("#typeName_debian", detailLink.debian.url + data.CveID, detailLink.debian.disp);
     addLink("#typeName_oracle", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
@@ -1069,9 +1332,9 @@ const displayDetail = function(cveID) {
     // ---References---
     let countRef = 0;
 
-    var addRef = function(target) {
+    let addRef = function(target) {
         if (data.CveContents[target] !== undefined) {
-            if (isCheckNull(data.CveContents[target].References) === false) {
+            if (isCheckNone(data.CveContents[target].References) === false) {
                 $("#References").append("<div>===" + target + "===</div>");
                 $.each(data.CveContents[target].References, function(x, x_val) {
                     $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
@@ -1090,7 +1353,7 @@ const displayDetail = function(cveID) {
     $("#count-References").text(countRef);
 
     // ---Tab Package
-    var pkgData = createDetailPackageData(cveID);
+    let pkgData = createDetailPackageData(cveID);
     packageTable.destroy();
     packageTable = $("#table-package")
         .DataTable({
@@ -1162,7 +1425,7 @@ const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
     return distroAdvisoriesArray;
 };
 
-var scrollTop;
+let scrollTop;
 const addEventDisplayChangelog = function() {
     $('.lightbox').colorbox({
         inline: true,
@@ -1186,11 +1449,11 @@ const addEventDisplayChangelog = function() {
 }
 
 const createDetailPackageData = function(cveID) {
-    var array = [];
+    let array = [];
     $.each(vulsrepo.detailRawData, function(x, x_val) {
         $.each(x_val.data.ScannedCves, function(y, y_val) {
             if (cveID === y_val.CveID) {
-                if (isCheckNull(y_val.CpeNames) === false) {
+                if (isCheckNone(y_val.CpeNames) === false) {
                     targets = y_val.CpeNames;
                 } else {
                     targets = y_val.AffectedPackages;
@@ -1270,7 +1533,11 @@ const displayChangelogDetail = function(ankerData) {
         $("#changelog-notfixedyet").append("false").addClass("notfixyet-false");
     }
 
-    if (isCheckNull(changelogInfo.pkgContents) !== true) {
+    if (isCheckNone(changelogInfo.pkgContents)) {
+        $("#changelog-packagename").append(package);
+        $("#changelog-contents").append("NO DATA");
+
+    } else {
         $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);
         if (changelogInfo.pkgContents.Changelog.Contents === "") {
             $("#changelog-contents").append("NO DATA");
@@ -1283,9 +1550,6 @@ const displayChangelogDetail = function(ankerData) {
                 }
             });
         }
-    } else {
-        $("#changelog-packagename").append(package);
-        $("#changelog-contents").append("NO DATA");
     }
 }
 
@@ -1326,9 +1590,10 @@ const shapeChangelog = function(changelogContents, cveid) {
 }
 
 const bringToFlont = function(id) {
-    var v = $('#' + id);
+    let v = $('#' + id);
     v.appendTo(v.parent());
 }
+
 
 const toUpperFirstLetter = function(str) {
     return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
