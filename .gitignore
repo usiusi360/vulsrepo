@@ -1,5 +1,8 @@
+.appcache
 .project
 .vscode/*
 /server/vendor/
+/node_modules/*
 *.pem
 *.toml
+*.log

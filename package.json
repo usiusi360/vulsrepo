@@ -1,0 +1,46 @@
+{
+    "name": "VulsRepo",
+    "version": "0.3.0",
+    "main": "app.js",
+    "repository": "https://github.com/usiusi360/vulsrepo.git",
+    "author": "usiusi360 <kiyukatadasiu@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@coreui/coreui": "2.0.4",
+        "@coreui/icons": "^0.3.0",
+        "block-ui": "^2.70.1",
+        "bootstrap": "^4.1.2",
+        "c3": "^0.6.5",
+        "chart.js": "^2.7.2",
+        "datatables.net": "^1.10.19",
+        "datatables.net-dt": "^1.10.19",
+        "font-awesome": "^4.7.0",
+        "font-awesome-webpack": "https://github.com/jarecsni/font-awesome-webpack.git",
+        "jquery": "^3.3.1",
+        "jquery-balloon-js": "^1.1.2",
+        "jquery-colorbox": "^1.6.4",
+        "jquery-ui": "^1.12.1",
+        "jquery.fancytree": "^2.29.1",
+        "pathseg": "^1.2.0",
+        "perfect-scrollbar": "^1.4.0",
+        "pivottable": "^2.21.0",
+        "popper.js": "^1.14.3",
+        "underscore": "^1.9.1"
+    },
+    "devDependencies": {
+        "cache-loader": "^1.2.2",
+        "copy-webpack-plugin": "^4.5.2",
+        "css-loader": "^1.0.0",
+        "file-loader": "^1.1.11",
+        "less": "^3.8.0",
+        "less-loader": "^4.1.0",
+        "style-loader": "^0.21.0",
+        "url-loader": "^1.0.1",
+        "webpack": "^4.16.1",
+        "webpack-cli": "^3.0.8"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack"
+    }
+}

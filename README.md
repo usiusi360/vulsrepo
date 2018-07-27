@@ -38,3 +38,11 @@ For more information such as Installation, Usage, visit [vuls.io](https://vuls.i
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image003.png)
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image004.png)
 ![image](https://raw.githubusercontent.com/usiusi360/vulsrepo/master/gallery/image005.png)
+
+## Build
+
+```
+$ yarn
+$ yarn build
+```
+

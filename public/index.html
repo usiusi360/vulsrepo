@@ -1,0 +1,102 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title>VulsRepo</title>
+
+</head>
+
+
+<body class="app header-fixed sidebar-fixed sidebar-lg-show">
+    <header class="app-header navbar">
+        <button class="navbar-toggler sidebar-toggler d-lg-none " type="button" data-toggle="sidebar-show">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+            <!-- <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
+            <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo"> -->
+            <img class="navbar-brand-full" src="img/vulsrepo_logo.png" width="150" height="30" alt="VulsRepo">
+        </a>
+
+        <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <ul class="nav navbar-nav d-md-down-none">
+            <li class="nav-item px-3">
+                <a class="nav-link" href="#">Import</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="btn" href="#">
+                    <i class="fas fa-cogs"></i> &nbsp;Logout
+                </a>
+            </li>
+        </ul>
+
+    </header>
+
+    <!-- Left sidebar -->
+    <div class="app-body">
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav">
+                    <li class="nav-title">Menu</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="main.html">
+                            <i class="nav-icon icon-speedometer"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-title">Setting</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="nav-icon icon-puzzle"></i> PivotTable Item
+                        </a>
+                    </li>
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">
+                            <i class="nav-icon icon-cursor"></i> Ignore</a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" href="buttons/buttons.html">
+                                    <i class="nav-icon icon-cursor"></i> Packages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="buttons/brand-buttons.html">
+                                    <i class="nav-icon icon-cursor"></i> CveIDs</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+        <main class="main">
+
+            <ol class="breadcrumb">
+                <li class="breadcrumb-menu d-md-down-none">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <a class="btn" href="#">
+                            <i class="icon-speech"></i>
+                        </a>
+                        <a class="btn" href="./">
+                            <i class="icon-graph"></i> &nbsp;Dashboard</a>
+                        <a class="btn" href="#">
+                            <i class="fas fa-cogs"></i> &nbsp;Settings</a>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="container-fluid">
+                <div id="ui-view"></div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+
+<script src="js/libs.js" type="text/javascript"></script>
+<script src="js/app.js" type="text/javascript"></script>
+
+</html>
