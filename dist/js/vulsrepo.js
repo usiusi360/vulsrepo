@@ -133,13 +133,13 @@ const getData = function() {
                 data: json_data
             };
 
-            if (resultMap.data.JSONVersion === undefined) {
-                showAlert("Old JSON format", value.url);
-                $.unblockUI(blockUIoption);
+		if (resultMap.data.jsonVersion === undefined) {
+               showAlert("Old JSON format", value.url);
+               $.unblockUI(blockUIoption);
                 return;
             }
 
-            if (resultMap.data.ReportedAt === "0001-01-01T00:00:00Z") {
+            if (resultMap.data.reportedAt === "0001-01-01T00:00:00Z") {
                 showAlert("Vuls report is not running ", value.url);
                 $.unblockUI(blockUIoption);
                 return;
@@ -430,12 +430,12 @@ const createPivotData = function(resultArray) {
     const cvssFlag = db.get("vulsrepo_chkPivotCvss");
 
     $.each(resultArray, function(x, x_val) {
-        if (Object.keys(x_val.data.ScannedCves).length === 0) {
+        if (Object.keys(x_val.data.scannedCves).length === 0) {
 
             let result = {
                 "ScanTime": x_val.scanTime,
-                "Family": x_val.data.Family,
-                "Release": x_val.data.Release,
+                "Family": x_val.data.family,
+                "Release": x_val.data.release,
                 "CveID": "healthy",
                 "Packages": "healthy",
                 "NotFixedYet": "healthy",
@@ -455,85 +455,85 @@ const createPivotData = function(resultArray) {
                 "DetectionMethod": "healthy",
             };
 
-            if (x_val.data.RunningKernel.RebootRequired === true) {
-                result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
+            if (x_val.data.runningKernel.rebootRequired === true) {
+                result["ServerName"] = x_val.data.serverName + " [Reboot Required]";
             } else {
-                result["ServerName"] = x_val.data.ServerName;
+                result["ServerName"] = x_val.data.serverName;
             }
 
-            if (x_val.data.Platform.Name !== "") {
-                result["Platform"] = x_val.data.Platform.Name;
+            if (x_val.data.platform.name !== "") {
+                result["Platform"] = x_val.data.platform.name;
             } else {
                 result["Platform"] = "None";
             }
 
-            if (x_val.data.Container.Name !== "") {
-                result["Container"] = x_val.data.Container.Name;
+            if (x_val.data.container.name !== "") {
+                result["Container"] = x_val.data.container.name;
             } else {
                 result["Container"] = "None";
             }
             array.push(result);
         } else {
-            $.each(x_val.data.ScannedCves, function(y, y_val) {
+            $.each(x_val.data.scannedCves, function(y, y_val) {
                 let targetNames;
-                if (isCheckNull(y_val.CpeNames) === false) {
-                    targetNames = y_val.CpeNames;
+                if (isCheckNull(y_val.cpeNames) === false) {
+                    targetNames = y_val.cpeNames;
                 } else {
-                    targetNames = y_val.AffectedPackages;
+                    targetNames = y_val.affectedPackages;
                 }
 
                 cveid_count = cveid_count + 1
                 $.each(targetNames, function(p, p_val) {
-                    if (p_val.Name === undefined) {
+                    if (p_val.name === undefined) {
                         pkgName = p_val;
                         NotFixedYet = "Unknown";
                     } else {
-                        pkgName = p_val.Name;
-                        NotFixedYet = p_val.NotFixedYet;
+                        pkgName = p_val.name;
+                        NotFixedYet = p_val.notFixedYet;
                     }
 
-                    let pkgInfo = x_val.data.Packages[pkgName];
+                    let pkgInfo = x_val.data.packages[pkgName];
                     if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
                         return;
                     }
 
                     let result = {
                         "ScanTime": x_val.scanTime,
-                        "Family": x_val.data.Family,
-                        "Release": x_val.data.Release,
-                        "CveID": "CHK-cveid-" + y_val.CveID,
+                        "Family": x_val.data.family,
+                        "Release": x_val.data.release,
+                        "CveID": "CHK-cveid-" + y_val.cveID,
                         "Packages": pkgName,
                         "NotFixedYet": NotFixedYet,
                     };
 
-                    if (x_val.data.RunningKernel.RebootRequired === true) {
-                        result["ServerName"] = x_val.data.ServerName + " [Reboot Required]";
+                    if (x_val.data.runningKernel.rebootRequired === true) {
+                        result["ServerName"] = x_val.data.serverName + " [Reboot Required]";
                     } else {
-                        result["ServerName"] = x_val.data.ServerName;
+                        result["ServerName"] = x_val.data.serverName;
                     }
 
-                    if (y_val.CveContents.nvd !== undefined) {
-                        result["CweID"] = y_val.CveContents.nvd.CweID;
+                    if (y_val.cveContents.nvd !== undefined) {
+                        result["CweID"] = y_val.cveContents.nvd.cweID;
                     } else {
                         result["CweID"] = "None";
                     }
 
-                    if (x_val.data.Platform.Name !== "") {
-                        result["Platform"] = x_val.data.Platform.Name;
+                    if (x_val.data.platform.name !== "") {
+                        result["Platform"] = x_val.data.platform.name;
                     } else {
                         result["Platform"] = "None";
                     }
 
-                    if (x_val.data.Container.Name !== "") {
-                        result["Container"] = x_val.data.Container.Name;
+                    if (x_val.data.container.name !== "") {
+                        result["Container"] = x_val.data.container.name;
                     } else {
                         result["Container"] = "None";
                     }
 
-                    DetectionMethod = y_val.Confidence.DetectionMethod;
+                    DetectionMethod = y_val.confidences.detectionMethod;
                     result["DetectionMethod"] = DetectionMethod;
                     if (DetectionMethod === "ChangelogExactMatch") {
-                        result["Changelog"] = "CHK-changelog-" + y_val.CveID + "," + x_val.scanTime + "," + x_val.data.ServerName + "," + x_val.data.Container.Name + "," + pkgName;
+                        result["Changelog"] = "CHK-changelog-" + y_val.cveID + "," + x_val.scanTime + "," + x_val.data.serverName + "," + x_val.data.container.name + "," + pkgName;
                     } else {
                         result["Changelog"] = "None";
                     }
@@ -558,31 +558,31 @@ const createPivotData = function(resultArray) {
 
 
                     let getCvss = function(target) {
-                        if (y_val.CveContents[target] === undefined) {
+                        if (y_val.cveContents[target] === undefined) {
                             return false;
                         }
 
-                        if (y_val.CveContents[target].Cvss2Score === 0 & y_val.CveContents[target].Cvss3Score === 0) {
+                        if (y_val.cveContents[target].cvss2Score === 0 & y_val.cveContents[target].cvss3Score === 0) {
                             return false;
                         }
 
-                        if (y_val.CveContents[target].Cvss2Score !== 0) {
-                            result["CVSS Score"] = y_val.CveContents[target].Cvss2Score;
-                            result["CVSS Severity"] = getSeverityV2(y_val.CveContents[target].Cvss2Score);
+                        if (y_val.cveContents[target].cvss2Score !== 0) {
+                            result["CVSS Score"] = y_val.cveContents[target].cvss2Score;
+                            result["CVSS Severity"] = getSeverity(y_val.cveContents[target].cvss2Score);
                             result["CVSS Score Type"] = target;
-                        } else if (y_val.CveContents[target].Cvss3Score !== 0) {
-                            result["CVSS Score"] = y_val.CveContents[target].Cvss3Score;
-                            result["CVSS Severity"] = getSeverityV3(y_val.CveContents[target].Cvss3Score);
+                        } else if (y_val.cveContents[target].cvss3Score !== 0) {
+                            result["CVSS Score"] = y_val.cveContents[target].cvss3Score;
+                            result["CVSS Severity"] = getSeverity(y_val.cveContents[target].cvss3Score);
                             result["CVSS Score Type"] = target + "V3";
                         }
 
                         if (summaryFlag !== "false") {
-                            result["Summary"] = y_val.CveContents[target].Summary;
+                            result["Summary"] = y_val.cveContents[target].summary;
                         }
 
                         if (cvssFlag !== "false") {
-                            if (y_val.CveContents[target].Cvss2Vector !== "") { //ex) CVE-2016-5483
-                                var arrayVector = getSplitArray(y_val.CveContents[target].Cvss2Vector);
+                            if (y_val.cveContents[target].cvss2Vector !== "") { //ex) CVE-2016-5483
+                                var arrayVector = getSplitArray(y_val.cveContents[target].cvss2Vector);
                                 result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
                                 result["CVSS (AC)"] = getVectorV2.cvss(arrayVector[1])[0];
                                 result["CVSS (Au)"] = getVectorV2.cvss(arrayVector[2])[0];
@@ -764,7 +764,7 @@ const addChangelogLink = function() {
 const createDetailData = function(cveID) {
     var targetObj = { CveContents: {} };
     $.each(vulsrepo.detailRawData, function(x, x_val) {
-        tmpCve = x_val.data.ScannedCves[cveID];
+        tmpCve = x_val.data.scannedCves[cveID];
         if (tmpCve !== undefined) {
             targetObj["CveID"] = cveID;
             targetObj["DistroAdvisories"] = tmpCve.DistroAdvisories;
@@ -782,7 +782,7 @@ const createDetailData = function(cveID) {
 const initDetail = function() {
     $("#modal-label").text("");
     $("#count-References").text("0");
-    $("#CweID,#Link,#References,#radar-caluclatorV2,#radar-caluclatorV3").empty();
+    $("#CweID,#Link,#References").empty();
 
     $.each(vulsrepo.detailTaget, function(i, i_val) {
         $("#typeName_" + i_val).empty();
@@ -800,20 +800,20 @@ const displayDetail = function(cveID) {
     let data = createDetailData(cveID);
 
     // ---CVSS Detail
-    $("#modal-label").text(data.CveID);
+    $("#modal-label").text(data.cveID);
 
     let dispCvss = function(target) {
-        if (data.CveContents[target] !== undefined) {
-            scoreV2 = data.CveContents[target].Cvss2Score;
-            scoreV3 = data.CveContents[target].Cvss3Score;
-            severity = toUpperFirstLetter(data.CveContents[target].Severity);
+        if (data.cveContents[target] !== undefined) {
+            scoreV2 = data.cveContents[target].cvss2Score;
+            scoreV3 = data.cveContents[target].cvss3Score;
+            severity = toUpperFirstLetter(data.cveContents[target].Severity);
 
             // -- for nvd
             if (severity === "") {
                 if (scoreV2 !== 0) {
-                    severity = getSeverityV2(scoreV2);
+                    severity = getSeverity(scoreV2);
                 } else if (scoreV3 !== 0) {
-                    severity = getSeverityV3(scoreV3);
+                    severity = getSeverity(scoreV3);
                 } else {
                     severity = "None";
                 }
@@ -836,20 +836,20 @@ const displayDetail = function(cveID) {
                 $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
             }
 
-            if (data.CveContents[target].Summary !== "") {
-                $("#summary_" + target).append("<div>" + data.CveContents[target].Summary + "<div>");
+            if (data.cveContents[target].Summary !== "") {
+                $("#summary_" + target).append("<div>" + data.cveContents[target].Summary + "<div>");
             }
 
-            if (data.CveContents[target].LastModified !== "0001-01-01T00:00:00Z") {
-                $("#lastModified_" + target).text(data.CveContents[target].LastModified.split("T")[0]);
+            if (data.cveContents[target].LastModified !== "0001-01-01T00:00:00Z") {
+                $("#lastModified_" + target).text(data.cveContents[target].LastModified.split("T")[0]);
             } else {
                 $("#lastModified_" + target).text("------");
                 $("#lastModified_" + target + "V3").text("------");
             }
 
             var resultV2 = [];
-            if (data.CveContents[target].Cvss2Vector !== "") {
-                var arrayVectorV2 = getSplitArray(data.CveContents[target].Cvss2Vector);
+            if (data.cveContents[target].cvss2Vector !== "") {
+                var arrayVectorV2 = getSplitArray(data.cveContents[target].cvss2Vector);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[0])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[1])[1]);
                 resultV2.push(getVectorV2.cvss(arrayVectorV2[2])[1]);
@@ -859,8 +859,8 @@ const displayDetail = function(cveID) {
             }
 
             var resultV3 = [];
-            if (data.CveContents[target].Cvss3Vector !== "") {
-                var arrayVectorV3 = getSplitArray(data.CveContents[target].Cvss3Vector);
+            if (data.cveContents[target].cvss3Vector !== "") {
+                var arrayVectorV3 = getSplitArray(data.cveContents[target].cvss3Vector);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[0])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[1])[1]);
                 resultV3.push(getVectorV3.cvss(arrayVectorV3[2])[1]);
@@ -1011,70 +1011,68 @@ const displayDetail = function(cveID) {
 
 
     // ---CweID---
-    if (data.CveContents.nvd !== undefined) {
-        if (data.CveContents.nvd.CweID !== "") {
-            $("#CweID").append("<span>NVD:[" + data.CveContents.nvd.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.nvd.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+    if (data.cveContents.nvd !== undefined) {
+        if (data.cveContents.nvd.cweID !== "") {
+            $("#CweID").append("<span>NVD:[" + data.cveContents.nvd.cweID + "] (</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.nvd.cweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
             $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.nvd.CweID + ".html\" target='_blank'>JVN)</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.nvd.cweID + ".html\" target='_blank'>JVN)</a>");
             $("#CweID").append("<span>&emsp;</span>");
         }
     }
 
-    if (data.CveContents.redhat !== undefined) {
-        if (data.CveContents.redhat.CweID !== "") {
-            $("#CweID").append("<span>RedHat:[" + data.CveContents.redhat.CweID + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.CveContents.redhat.CweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
+    if (data.cveContents.redhat !== undefined) {
+        if (data.cveContents.redhat.cweID !== "") {
+            $("#CweID").append("<span>RedHat:[" + data.cveContents.redhat.cweID + "] (</span>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.redhat.cweID.split("-")[1] + "\" target='_blank'>MITRE</a>");
             $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.CveContents.redhat.CweID + ".html\" target='_blank'>JVN)</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.redhat.cweID + ".html\" target='_blank'>JVN)</a>");
         }
     }
-
-
-
-
 
     // ---Link---
     var addLink = function(target, url, disp) {
         $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
     };
 
-    addLink("#Link", detailLink.mitre.url + "?name=" + data.CveID, detailLink.mitre.disp);
+    addLink("#Link", detailLink.mitre.url + "?name=" + data.cveID, detailLink.mitre.disp);
     $("#Link").append("<span> / </span>");
-    addLink("#Link", detailLink.cveDetail.url + data.CveID, detailLink.cveDetail.disp);
+    addLink("#Link", detailLink.cveDetail.url + data.cveID, detailLink.cveDetail.disp);
     $("#Link").append("<span> / </span>");
-    $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
+    addLink("#Link", detailLink.cvssV2Calculator.url + data.cveID, detailLink.cvssV2Calculator.disp);
+    $("#Link").append("<span> / </span>");
+    addLink("#Link", detailLink.cvssV3Calculator.url + data.cveID, detailLink.cvssV3Calculator.disp);
+    $("#Link").append("<span> / </span>");
+    $.each(getDistroAdvisoriesArray(data.distroAdvisories), function(i, i_val) {
         addLink("#Link", i_val.url, i_val.disp);
     });
 
-    addLink("#typeName_nvd", detailLink.nvd.url + data.CveID, detailLink.nvd.disp);
-    if (data.CveContents.jvn !== undefined) {
-        if (data.CveContents.jvn.JvnLink === "") {
-            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
+
+    addLink("#typeName_nvd", detailLink.nvd.url + data.cveID, detailLink.nvd.disp);
+    if (data.cveContents.jvn !== undefined) {
+        if (data.cveContents.jvn.jvnLink === "") {
+            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN</a>");
         } else {
-            $("#typeName_jvn").append("<a href=\"" + data.CveContents.jvn.SourceLink + "\" target='_blank'>JVN</a>");
+            $("#typeName_jvn").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN</a>");
         }
     } else {
-        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.CveID + "\" target='_blank'>JVN</a>");
+        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN</a>");
     }
-    addLink("#typeName_redhat", detailLink.rhel.url + data.CveID, "RedHat (v2)");
-    addLink("#typeName_redhatV3", detailLink.rhel.url + data.CveID, "RedHat (v3)");
-    addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.CveID, detailLink.ubuntu.disp);
-    addLink("#typeName_debian", detailLink.debian.url + data.CveID, detailLink.debian.disp);
-    addLink("#typeName_oracle", detailLink.oracle.url + data.CveID + ".html", detailLink.oracle.disp);
-
-    addLink("#radar-caluclatorV2", detailLink.cvssV2Calculator.url + data.CveID, detailLink.cvssV2Calculator.disp);
-    addLink("#radar-caluclatorV3", detailLink.cvssV3Calculator.url + data.CveID, detailLink.cvssV3Calculator.disp);
+    addLink("#typeName_redhat", detailLink.rhel.url + data.cveID, "RedHat (v2)");
+    addLink("#typeName_redhatV3", detailLink.rhel.url + data.cveID, "RedHat (v3)");
+    addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.cveID, detailLink.ubuntu.disp);
+    addLink("#typeName_debian", detailLink.debian.url + data.cveID, detailLink.debian.disp);
+    addLink("#typeName_oracle", detailLink.oracle.url + data.cveID + ".html", detailLink.oracle.disp);
 
     // ---References---
     let countRef = 0;
 
     var addRef = function(target) {
-        if (data.CveContents[target] !== undefined) {
-            if (isCheckNull(data.CveContents[target].References) === false) {
+        if (data.cveContents[target] !== undefined) {
+            if (isCheckNull(data.cveContents[target].references) === false) {
                 $("#References").append("<div>===" + target + "===</div>");
-                $.each(data.CveContents[target].References, function(x, x_val) {
-                    $("#References").append("<div>[" + x_val.Source + "]<a href=\"" + x_val.Link + "\" target='_blank'> (" + x_val.Link + ")</a></div>");
+                $.each(data.cveContents[target].references, function(x, x_val) {
+                    $("#References").append("<div>[" + x_val.source + "]<a href=\"" + x_val.link + "\" target='_blank'> (" + x_val.link + ")</a></div>");
                     countRef++;
                 });
             }
@@ -1138,19 +1136,19 @@ const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
     let distroAdvisoriesArray = [];
     $.each(DistroAdvisoriesData, function(x, x_val) {
         let tmp_Map = {};
-        if (x_val.AdvisoryID.indexOf("ALAS-") != -1) {
+        if (x_val.advisoryID.indexOf("ALAS-") != -1) {
             tmp_Map = {
-                url: detailLink.amazon.url + x_val.AdvisoryID + ".html",
+                url: detailLink.amazon.url + x_val.advisoryID + ".html",
                 disp: detailLink.amazon.disp,
             }
-        } else if (x_val.AdvisoryID.indexOf("RHSA-") != -1) {
+        } else if (x_val.advisoryID.indexOf("RHSA-") != -1) {
             tmp_Map = {
-                url: detailLink.rhn.url + x_val.AdvisoryID + ".html",
+                url: detailLink.rhn.url + x_val.advisoryID + ".html",
                 disp: detailLink.rhn.disp,
             }
-        } else if ((x_val.AdvisoryID.indexOf("ELSA-") != -1) | (x_val.AdvisoryID.indexOf("OVMSA-") != -1)) {
+        } else if ((x_val.advisoryID.indexOf("ELSA-") != -1) | (x_val.advisoryID.indexOf("OVMSA-") != -1)) {
             tmp_Map = {
-                url: detailLink.oracleErrata.url + x_val.AdvisoryID + ".html",
+                url: detailLink.oracleErrata.url + x_val.advisoryID + ".html",
                 disp: detailLink.oracleErrata.disp,
             }
         } else {
@@ -1188,12 +1186,12 @@ const addEventDisplayChangelog = function() {
 const createDetailPackageData = function(cveID) {
     var array = [];
     $.each(vulsrepo.detailRawData, function(x, x_val) {
-        $.each(x_val.data.ScannedCves, function(y, y_val) {
-            if (cveID === y_val.CveID) {
-                if (isCheckNull(y_val.CpeNames) === false) {
-                    targets = y_val.CpeNames;
+        $.each(x_val.data.scannedCves, function(y, y_val) {
+            if (cveID === y_val.cveID) {
+                if (isCheckNull(y_val.cpeNames) === false) {
+                    targets = y_val.cpeNames;
                 } else {
-                    targets = y_val.AffectedPackages;
+                    targets = y_val.affectedPackages;
                 }
 
                 $.each(targets, function(z, z_val) {
@@ -1207,25 +1205,25 @@ const createDetailPackageData = function(cveID) {
 
                     let tmp_Map = {
                         ScanTime: x_val.scanTime,
-                        ServerName: x_val.data.ServerName,
-                        ContainerName: x_val.data.Container.Name,
+                        ServerName: x_val.data.serverName,
+                        ContainerName: x_val.data.container.name,
                     };
 
 
                     if (pkgName.indexOf('cpe:/') != -1) {
-                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.serverName + '" data-container="' + x_val.data.container.name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
                         tmp_Map["PackageVersion"] = "";
                         tmp_Map["PackageRelease"] = "";
                         tmp_Map["PackageNewVersion"] = "";
                         tmp_Map["PackageNewRelease"] = "";
                         tmp_Map["NotFixedYet"] = "";
-                    } else if (x_val.data.Packages[pkgName] !== undefined) {
-                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.ServerName + '" data-container="' + x_val.data.Container.Name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
-                        tmp_Map["PackageVersion"] = x_val.data.Packages[pkgName].Version;
-                        tmp_Map["PackageRelease"] = x_val.data.Packages[pkgName].Release;
-                        tmp_Map["PackageNewVersion"] = x_val.data.Packages[pkgName].NewVersion;
-                        tmp_Map["PackageNewRelease"] = x_val.data.Packages[pkgName].NewRelease;
-                        tmp_Map["NotFixedYet"] = NotFixedYet;
+                    } else if (x_val.data.packages[pkgName] !== undefined) {
+                        tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.serverName + '" data-container="' + x_val.data.container.name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
+                        tmp_Map["PackageVersion"] = x_val.data.packages[pkgName].version;
+                        tmp_Map["PackageRelease"] = x_val.data.packages[pkgName].release;
+                        tmp_Map["PackageNewVersion"] = x_val.data.packages[pkgName].newVersion;
+                        tmp_Map["PackageNewRelease"] = x_val.data.packages[pkgName].newRelease;
+                        tmp_Map["NotFixedYet"] = notFixedYet;
                     } else {
                         return;
                     }
@@ -1250,8 +1248,8 @@ const displayChangelogDetail = function(ankerData) {
     $("#changelog-cveid").append(cveid);
     $("#changelog-servername").append(server);
     $("#changelog-containername").append(container);
-    $("#changelog-method").append(changelogInfo.cveidInfo.Confidence.DetectionMethod);
-    $("#changelog-score").append(changelogInfo.cveidInfo.Confidence.Score);
+    $("#changelog-method").append(changelogInfo.cveidInfo.confidences.detectionMethod);
+    $("#changelog-score").append(changelogInfo.cveidInfo.confidences.score);
 
     let getPkg = function() {
         let result;
@@ -1293,13 +1291,13 @@ const getChangeLogInfo = function(scantime, server, container, cveid, package) {
     let cveidInfo;
     let changelogContents = "";
     $.each(vulsrepo.detailRawData, function(x, x_val) {
-        if ((x_val.scanTime === scantime) && (x_val.data.ServerName === server) && (x_val.data.Container.Name === container)) {
-            $.each(x_val.data.ScannedCves, function(y, y_val) {
-                if (y_val.CveID === cveid) {
+        if ((x_val.scanTime === scantime) && (x_val.data.serverName === server) && (x_val.data.container.name === container)) {
+            $.each(x_val.data.scannedCves, function(y, y_val) {
+                if (y_val.cveID === cveid) {
                     cveidInfo = y_val;
                 }
             });
-            pkgContents = x_val.data.Packages[package];
+            pkgContents = x_val.data.packages[package];
         }
     });
     return { "cveidInfo": cveidInfo, "pkgContents": pkgContents };
