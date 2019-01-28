@@ -478,6 +478,8 @@ const createPivotData = function(resultArray) {
                 let targetNames;
                 if (isCheckNull(y_val.cpeNames) === false) {
                     targetNames = y_val.cpeNames;
+                } else if(isCheckNull(y_val.cpeURIs) === false) {
+                    targetNames = y_val.cpeURIs;
                 } else {
                     targetNames = y_val.affectedPackages;
                 }
@@ -1185,13 +1187,15 @@ const createDetailPackageData = function(cveID) {
             if (cveID === y_val.cveID) {
                 if (isCheckNull(y_val.cpeNames) === false) {
                     targets = y_val.cpeNames;
+                } else if(isCheckNull(y_val.cpeURIs) === false) {
+                    targets = y_val.cpeURIs;
                 } else {
                     targets = y_val.affectedPackages;
                 }
 
                 $.each(targets, function(z, z_val) {
                     if (z_val.name === undefined) {
-                        pkgName = z_val.name;
+                        pkgName = z_val;
                         NotFixedYet = "None";
                     } else {
                         pkgName = z_val.name;
