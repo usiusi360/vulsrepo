@@ -30,6 +30,10 @@ For more information such as Installation, Usage, visit [vuls.io](https://vuls.i
 
 [日本語翻訳ドキュメント](https://vuls.io/docs/ja/vulsrepo.html)
 
+# Issue
+
+https://github.com/future-architect/vuls/issues
+
 
 ## Gallery
 
