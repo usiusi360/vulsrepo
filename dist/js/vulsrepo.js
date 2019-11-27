@@ -347,7 +347,7 @@ const setEvents = function() {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
-    if (priority != null && priority.length !== 6) {
+    if (priority != null && priority.length !== 7) {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
@@ -451,6 +451,7 @@ const createPivotData = function(resultArray) {
                 "CVSS (C)": "healthy",
                 "CVSS (I)": "healthy",
                 "CVSS (A)": "healthy",
+                "AdvisoryID": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
             };
@@ -530,6 +531,12 @@ const createPivotData = function(resultArray) {
                         result["Container"] = x_val.data.container.name;
                     } else {
                         result["Container"] = "None";
+                    }
+
+                    if (y_val.distroAdvisories !== undefined) {
+                        result["AdvisoryID"] = "CHK-advisoryid-" + y_val.distroAdvisories[0].advisoryID;
+                    } else {
+                        result["AdvisoryID"] = "None";
                     }
 
                     DetectionMethod = y_val.confidences[0].detectionMethod;
@@ -709,6 +716,7 @@ const displayPivot = function(array) {
             $("#pivot_base").find("th:contains('healthy')").css("background-color", "lightskyblue");
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
             $("#pivot_base").find("th:contains('Reboot Required')").css("color", "#da0b00");
+            addAdvisoryIDLink();
             addCveIDLink();
             addChangelogLink();
         }
@@ -751,6 +759,23 @@ const addCveIDLink = function() {
 
     $('.cveid').on('click', function() {
         displayDetail(this.text);
+    });
+};
+
+const addAdvisoryIDLink = function() {
+    let doms = $("#pivot_base").find("th:contains('CHK-advisoryid-')");
+    doms.each(function() {
+        let advisoryid = $(this).text().replace("CHK-advisoryid-", "");
+        // アドバイザリーに応じたページを開く
+        if (advisoryid.indexOf('ALAS2-') != -1) {
+            // ALAS2- なら
+            $(this).text("").append("<a href=\"" + detailLink.amazon.url + "AL2/" + advisoryid.replace("ALAS2-", "ALAS-") + ".html\" target='_blank'>" + advisoryid + '</a>');
+        } else if (advisoryid.indexOf('ALAS-') != -1) {
+            // TODO ALAS- なら
+        }
+        // TODO RHSA
+        // TODO ELSA
+        // TODO OVMSA
     });
 };
 
@@ -829,7 +854,8 @@ const displayDetail = function(cveID) {
                 $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
             }
 
-            if (target === "ubuntu" || target === "debian") {
+            if (target === "ubuntu" || target === "debian" || target === "amazon") {
+                severity = data.cveContents[target].cvss2Severity;
                 $("#scoreText_" + target).removeClass();
                 $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
             }
@@ -1007,6 +1033,10 @@ const displayDetail = function(cveID) {
         truncate: 50
     });
 
+    $('#summary_amazon > div').collapser({
+        mode: 'words',
+        truncate: 50
+    });
 
     // ---CweID---
     if (data.cveContents.nvd !== undefined) {
@@ -1060,6 +1090,15 @@ const displayDetail = function(cveID) {
     addLink("#typeName_ubuntu", detailLink.ubuntu.url + data.cveID, detailLink.ubuntu.disp);
     addLink("#typeName_debian", detailLink.debian.url + data.cveID, detailLink.debian.disp);
     addLink("#typeName_oracle", detailLink.oracle.url + data.cveID + ".html", detailLink.oracle.disp);
+    if (data.cveContents.amazon !== undefined) {
+        if (data.cveContents.amazon.title.indexOf('ALAS2-') != -1) {
+            $("#typeName_amazon").append("<a href=\"" + detailLink.amazon.url + "AL2/" + data.cveContents.amazon.title.replace("ALAS2-", "ALAS-") + ".html\" target='_blank'>Amazon</a>");
+        } else {
+            // TODO Amazon Linux 1
+        }
+    } else {
+        $("#typeName_amazon").append("Amazon");
+    }
 
     // ---References---
     let countRef = 0;
@@ -1082,6 +1121,7 @@ const displayDetail = function(cveID) {
     addRef("ubuntu");
     addRef("debian");
     addRef("oracle");
+    addRef("amazon");
     $("#count-References").text(countRef);
 
     // ---Tab Package
@@ -1136,6 +1176,11 @@ const getDistroAdvisoriesArray = function(DistroAdvisoriesData) {
         if (x_val.advisoryID.indexOf("ALAS-") != -1) {
             tmp_Map = {
                 url: detailLink.amazon.url + x_val.advisoryID + ".html",
+                disp: detailLink.amazon.disp,
+            }
+        } else if (x_val.advisoryID.indexOf("ALAS2-") != -1) {
+            tmp_Map = {
+                url: detailLink.amazon.url + "AL2/" + x_val.advisoryID.replace("ALAS2-", "ALAS-") + ".html",
                 disp: detailLink.amazon.disp,
             }
         } else if (x_val.advisoryID.indexOf("RHSA-") != -1) {
