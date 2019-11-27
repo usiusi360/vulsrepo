@@ -1343,7 +1343,7 @@ const displayChangelogDetail = function(ankerData) {
 
     let getPkg = function() {
         let result;
-        $.each(changelogInfo.cveidInfo.AffectedPackages, function(i, i_val) {
+        $.each(changelogInfo.cveidInfo.affectedPackages, function (i, i_val) {
             if (i_val.Name = package) {
                 result = i_val.notFixedYet;
             };
@@ -1359,11 +1359,11 @@ const displayChangelogDetail = function(ankerData) {
     }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
-        $("#changelog-packagename").append(pkgContents.Name + "-" + pkgContents.Version + "." + pkgContents.Release + " => " + pkgContents.NewVersion + "." + pkgContents.NewRelease);
-        if (changelogInfo.pkgContents.Changelog.Contents === "") {
+        $("#changelog-packagename").append(pkgContents.name + "-" + pkgContents.version + "." + pkgContents.release + " => " + pkgContents.newVersion + "." + pkgContents.newRelease);
+        if (changelogInfo.pkgContents.changelog.contents === "") {
             $("#changelog-contents").append("NO DATA");
         } else {
-            $.each(shapeChangelog(changelogInfo.pkgContents.Changelog.Contents, cveid), function(y, y_val) {
+            $.each(shapeChangelog(changelogInfo.pkgContents.changelog.contents, cveid), function (y, y_val) {
                 if (y_val === "") {
                     $("#changelog-contents").append("<br>");
                 } else {
