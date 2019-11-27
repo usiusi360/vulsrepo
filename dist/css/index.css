@@ -80,6 +80,30 @@ a {
     color: black
 }
 
+/*for Amazon Linux */
+.cvss-critical {
+    text-transform: capitalize;
+    background-color: #CB4829;
+    color: black
+}
+
+.cvss-important {
+    text-transform: capitalize;
+    background-color: #D59533;
+    color: black
+}
+
+.cvss-medium {
+    text-transform: capitalize;
+    background-color: #DFD238;
+    color: black
+}
+
+.cvss-low {
+    text-transform: capitalize;
+    background-color: #93B447;
+    color: black
+}
 
 /*for redhat https://access.redhat.com/security/updates/classification/*/
 

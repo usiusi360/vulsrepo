@@ -408,10 +408,10 @@ const displayHelpMesScore = function() {
     $("#tooltip_score").balloon({
         html: true,
         position: "right",
-        offsetY: -250,
+        offsetY: -350,
         css: {
             fontSize: '80%',
-            width: '900',
+            width: '1024',
             opacity: 0.95,
             minLifetime: 2000
         },
@@ -422,7 +422,7 @@ const displayHelpMesScore = function() {
 
 const isHelpHTMLScore = function() {
     return `
-    <div class="col-xs-12">
+    <div class="col-xs-2">
         <div> NVD, JVN</div>
         <table class="cvss_tooltip">
             <tbody>
@@ -445,6 +445,37 @@ const isHelpHTMLScore = function() {
                 <tr>
                     <td class="cvss-None">None</td>
                     <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-8">
+        <div> Amazon</div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-Critical">Critical</td>
+                    <td>Findings that are associated with an adversary completing their objectives, such as active data loss or compromise or a denial of service. This generally aligns to the Effects namespace under a findings type.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-High">Important</td>
+                    <td>Findings that are associated with an adversary completing their objectives, such as active data loss or compromise or a denial of service. This generally aligns to the Effects namespace under a findings type.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Medium">Medium</td>
+                    <td>Findings that are associated with issues that indicate an active compromise, but no indication that an adversary has completed their objectives (e.g., malware activity, hacking activity, or unusual behavior detection). This generally aligns to the Threat Detections and Unusual Behavior namespaces under a findings type.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>Findings that are associated with issues that could result in future compromises (e.g., vulnerabilities, configuration weaknesses, exposed passwords). This generally aligns to the Software and Configuration Checks namespace under a findings type.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-None">None</td>
+                    <td>None</td>
                 </tr>
             </tbody>
         </table>
