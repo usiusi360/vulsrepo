@@ -159,14 +159,26 @@
                                                         <tr>
                                                             <td id="typeName_nvd"></td>
                                                             <td id="scoreText_nvd"></td>
-                                                            <td id="summary_nvd"></td>
-                                                            <td id="lastModified_nvd"></td>
+                                                            <td id="summary_nvd" rowspan="2"></td>
+                                                            <td id="lastModified_nvd" rowspan="2"></td>
                                                         </tr>
                                                         <tr>
+                                                            <td id="typeName_nvdV3"></td>
+                                                            <td id="scoreText_nvdV3"></td>
+                                                            <td id="summary_nvdV3" hidden></td>
+                                                            <td id="lastModified_nvdV3" hidden></td>
+                                                            </tr>
+                                                            <tr>
                                                             <td id="typeName_jvn"></td>
                                                             <td id="scoreText_jvn"></td>
-                                                            <td id="summary_jvn"></td>
-                                                            <td id="lastModified_jvn"></td>
+                                                            <td id="summary_jvn" rowspan="2"></td>
+                                                            <td id="lastModified_jvn" rowspan="2"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td id="typeName_jvnV3"></td>
+                                                                <td id="scoreText_jvnV3"></td>
+                                                                <td id="summary_jvnV3" hidden></td>
+                                                                <td id="lastModified_jvnV3" hidden></td>
                                                         </tr>
                                                         <tr>
                                                             <td id="typeName_amazon"></td>
@@ -209,19 +221,19 @@
                                                 </div>
                                                 <div class="col-xs-4" style="padding-left: 0px;">
                                                     <ul class="nav nav-tabs">
-                                                        <li class="active">
+                                                        <li>
                                                             <a data-toggle="tab" href="#tab_chart_v2">CvssV2</a>
                                                         </li>
-                                                        <li>
+                                                        <li class="active">
                                                             <a data-toggle="tab" href="#tab_chart_v3">CvssV3</a>
                                                         </li>
                                                     </ul>
                                                     <div class="tab-content">
-                                                        <div class="tab-pane active" id="tab_chart_v2">
+                                                        <div class="tab-pane" id="tab_chart_v2">
                                                             <canvas id="radar-chartV2" width="380" height="380"></canvas>
                                                             <div id="radar-caluclatorV2" Align="center"></div>
                                                         </div>
-                                                        <div class="tab-pane" id="tab_chart_v3">
+                                                        <div class="tab-pane active" id="tab_chart_v3">
                                                             <canvas id="radar-chartV3" width="380" height="380"></canvas>
                                                             <div id="radar-caluclatorV3" Align="center"></div>
                                                         </div>

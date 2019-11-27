@@ -445,6 +445,14 @@ const createPivotData = function(resultArray) {
                 "Summary": "healthy",
                 "CVSS Score": "healthy",
                 "CVSS Severity": "healthy",
+                "CVSSv3 (AV)": "healthy",
+                "CVSSv3 (AC)": "healthy",
+                "CVSSv3 (PR)": "healthy",
+                "CVSSv3 (UI)": "healthy",
+                "CVSSv3 (S)": "healthy",
+                "CVSSv3 (C)": "healthy",
+                "CVSSv3 (I)": "healthy",
+                "CVSSv3 (A)": "healthy",
                 "CVSS (AV)": "healthy",
                 "CVSS (AC)": "healthy",
                 "CVSS (Au)": "healthy",
@@ -575,14 +583,14 @@ const createPivotData = function(resultArray) {
                             return false;
                         }
 
-                        if (y_val.cveContents[target].cvss2Score !== 0) {
-                            result["CVSS Score"] = y_val.cveContents[target].cvss2Score;
-                            result["CVSS Severity"] = getSeverityV2(y_val.cveContents[target].cvss2Score);
-                            result["CVSS Score Type"] = target;
-                        } else if (y_val.cveContents[target].cvss3Score !== 0) {
+                        if (y_val.cveContents[target].cvss3Score !== 0) {
                             result["CVSS Score"] = y_val.cveContents[target].cvss3Score;
                             result["CVSS Severity"] = getSeverityV3(y_val.cveContents[target].cvss3Score);
                             result["CVSS Score Type"] = target + "V3";
+                        } else if (y_val.cveContents[target].cvss2Score !== 0) {
+                            result["CVSS Score"] = y_val.cveContents[target].cvss2Score;
+                            result["CVSS Severity"] = getSeverityV2(y_val.cveContents[target].cvss2Score);
+                            result["CVSS Score Type"] = target;
                         }
 
                         if (summaryFlag !== "false") {
@@ -590,6 +598,34 @@ const createPivotData = function(resultArray) {
                         }
 
                         if (cvssFlag !== "false") {
+                            if (y_val.cveContents[target].cvss3Vector !== "") { //ex) CVE-2016-5483
+                                var arrayVector = getSplitArray(y_val.cveContents[target].cvss3Vector);
+                                let cvssv3 = getVectorV3.cvss(arrayVector[1]);
+                                result["CVSSv3 (AV)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[2]);
+                                result["CVSSv3 (AC)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[3]);
+                                result["CVSSv3 (PR)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[4]);
+                                result["CVSSv3 (UI)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[5]);
+                                result["CVSSv3 (S)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[6]);
+                                result["CVSSv3 (C)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[7]);
+                                result["CVSSv3 (I)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                                cvssv3 = getVectorV3.cvss(arrayVector[8]);
+                                result["CVSSv3 (A)"] = cvssv3[0] + "(" + cvssv3[1] + ")";
+                            } else {
+                                result["CVSSv3 (AV)"] = "Unknown";
+                                result["CVSSv3 (AC)"] = "Unknown";
+                                result["CVSSv3 (PR)"] = "Unknown";
+                                result["CVSSv3 (UI)"] = "Unknown";
+                                result["CVSSv3 (S)"] = "Unknown";
+                                result["CVSSv3 (C)"] = "Unknown";
+                                result["CVSSv3 (I)"] = "Unknown";
+                                result["CVSSv3 (A)"] = "Unknown";
+                            }
                             if (y_val.cveContents[target].cvss2Vector !== "") { //ex) CVE-2016-5483
                                 var arrayVector = getSplitArray(y_val.cveContents[target].cvss2Vector);
                                 result["CVSS (AV)"] = getVectorV2.cvss(arrayVector[0])[0];
@@ -623,6 +659,14 @@ const createPivotData = function(resultArray) {
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
+                        result["CVSSv3 (AV)"] = "Unknown";
+                        result["CVSSv3 (AC)"] = "Unknown";
+                        result["CVSSv3 (PR)"] = "Unknown";
+                        result["CVSSv3 (UI)"] = "Unknown";
+                        result["CVSSv3 (S)"] = "Unknown";
+                        result["CVSSv3 (C)"] = "Unknown";
+                        result["CVSSv3 (I)"] = "Unknown";
+                        result["CVSSv3 (A)"] = "Unknown";
                         result["CVSS (AV)"] = "Unknown";
                         result["CVSS (AC)"] = "Unknown";
                         result["CVSS (Au)"] = "Unknown";
@@ -835,21 +879,20 @@ const displayDetail = function(cveID) {
             scoreV3 = data.cveContents[target].cvss3Score;
 
             if (scoreV2 !== 0) {
-                severity = getSeverityV2(scoreV2);
-            } else if (scoreV3 !== 0) {
-                severity = getSeverityV3(scoreV3);
-            } else {
-                severity = "None";
+                severityV2 = getSeverityV2(scoreV2);
+            }
+            if (scoreV3 !== 0) {
+                severityV3 = getSeverityV3(scoreV3);
             }
 
             if (scoreV2 !== 0) {
-                $("#scoreText_" + target).text(scoreV2 + " (" + severity + ")").addClass("cvss-" + severity);
+                $("#scoreText_" + target).text(scoreV2 + " (" + severityV2 + ")").addClass("cvss-" + severityV2);
             } else {
                 $("#scoreText_" + target).text("None").addClass("cvss-None");
             }
 
             if (scoreV3 !== 0) {
-                $("#scoreText_" + target + "V3").text(scoreV3 + " (" + severity + ")").addClass("cvss-" + severity);
+                $("#scoreText_" + target + "V3").text(scoreV3 + " (" + severityV3 + ")").addClass("cvss-" + severityV3);
             } else {
                 $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
             }
@@ -1075,15 +1118,19 @@ const displayDetail = function(cveID) {
         addLink("#Link", i_val.url, i_val.disp);
     });
 
-    addLink("#typeName_nvd", detailLink.nvd.url + data.cveID, detailLink.nvd.disp);
+    addLink("#typeName_nvd", detailLink.nvd.url + data.cveID, detailLink.nvd.disp + " (v2)");
+    addLink("#typeName_nvdV3", detailLink.nvd.url + data.cveID, detailLink.nvd.disp + " (v3)");
     if (data.cveContents.jvn !== undefined) {
         if (data.cveContents.jvn.jvnLink === "") {
-            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN</a>");
+            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v2)</a>");
+            $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v3)</a>");
         } else {
-            $("#typeName_jvn").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN</a>");
+            $("#typeName_jvn").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN (v2)</a>");
+            $("#typeName_jvnV3").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN (v3)</a>");
         }
     } else {
-        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN</a>");
+        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v2)</a>");
+        $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v3)</a>");
     }
     addLink("#typeName_redhat", detailLink.rhel.url + data.cveID, "RedHat (v2)");
     addLink("#typeName_redhatV3", detailLink.rhel.url + data.cveID, "RedHat (v3)");

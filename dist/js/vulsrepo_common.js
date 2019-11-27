@@ -423,7 +423,7 @@ const displayHelpMesScore = function() {
 const isHelpHTMLScore = function() {
     return `
     <div class="col-xs-2">
-        <div> NVD, JVN</div>
+        <div> NVD(v2), JVN(v2)</div>
         <table class="cvss_tooltip">
             <tbody>
                 <tr>
@@ -433,6 +433,37 @@ const isHelpHTMLScore = function() {
                 <tr>
                     <td class="cvss-High">High</td>
                     <td>7.0 ～ 10.0</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Medium">Medium</td>
+                    <td>4.0 ～ 6.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-Low">Low</td>
+                    <td>0.1 ～ 3.9</td>
+                </tr>
+                <tr>
+                    <td class="cvss-None">None</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-2">
+        <div> NVD(v3), JVN(v3)</div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-Critical">Critical</td>
+                    <td>9.0 ～ 10.0</td>
+                </tr>
+                <tr>
+                    <td class="cvss-High">High</td>
+                    <td>7.0 ～ 8.9</td>
                 </tr>
                 <tr>
                     <td class="cvss-Medium">Medium</td>
