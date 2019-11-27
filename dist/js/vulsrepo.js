@@ -1338,8 +1338,8 @@ const displayChangelogDetail = function(ankerData) {
     $("#changelog-cveid").append(cveid);
     $("#changelog-servername").append(server);
     $("#changelog-containername").append(container);
-    $("#changelog-method").append(changelogInfo.cveidInfo.confidences.detectionMethod);
-    $("#changelog-score").append(changelogInfo.cveidInfo.confidences.score);
+    $("#changelog-method").append(changelogInfo.cveidInfo.confidences[0].detectionMethod);
+    $("#changelog-score").append(changelogInfo.cveidInfo.confidences[0].score);
 
     let getPkg = function() {
         let result;
