@@ -798,7 +798,7 @@ const addCveIDLink = function() {
     let doms = $("#pivot_base").find("th:contains('CHK-cveid-')");
     doms.each(function() {
         let cveid = $(this).text().replace("CHK-cveid-", "");
-        $(this).text("").append('<a class="cveid">' + cveid + '<a>');
+        $(this).text("").append('<a class="cveid">' + cveid + '</a>');
     });
 
     $('.cveid').on('click', function() {
