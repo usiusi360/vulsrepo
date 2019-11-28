@@ -621,6 +621,10 @@ const detailLink = {
         url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?name=",
         disp: "CVSS Calculator V3"
     },
+    cvssV3CalculatorJvn: {
+        url: "https://jvndb.jvn.jp/cvss/ja/v3.html",
+        disp: "CVSS Calculator V3 (JVN)"
+    },
     rhel: {
         url: "https://access.redhat.com/security/cve/",
         disp: "RHEL"
