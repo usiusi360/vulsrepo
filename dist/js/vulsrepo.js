@@ -1042,7 +1042,9 @@ const displayDetail = function(cveID) {
 
     // ---ChartRadar
     let radarData_nvd
+    let radarData_nvdV3
     let radarData_jvn
+    let radarData_jvnV3
     let radarData_redhatV2
     let radarData_redhatV3
 
@@ -1051,9 +1053,11 @@ const displayDetail = function(cveID) {
         switch (i_val) {
             case "nvd":
                 radarData_nvd = r[0];
+                radarData_nvdV3 = r[1];
                 break;
             case "jvn":
                 radarData_jvn = r[0];
+                radarData_jvnV3 = r[1];
                 break;
             case "redhat":
                 radarData_redhatV2 = r[0];
@@ -1137,6 +1141,28 @@ const displayDetail = function(cveID) {
         data: {
             labels: ["Access Vector(AV)", "Access Complexity(AC)", "Privileges Required(PR)", "User Interaction(UI)", "Scope(S)", "Confidentiality Impact(C)", "Integrity Impact(I)", "Availability Impact(A)"],
             datasets: [{
+                label: "NVD v3",
+                backgroundColor: "rgba(179,181,198,0.2)",
+                borderColor: "rgba(179,181,198,1)",
+                pointBackgroundColor: "rgba(179,181,198,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(179,181,198,1)",
+                hitRadius: 5,
+                data: radarData_nvdV3
+                },
+                {
+                label: "JVN v3",
+                backgroundColor: "rgba(255,99,132,0.2)",
+                borderColor: "rgba(255,99,132,1)",
+                pointBackgroundColor: "rgba(255,99,132,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(255,99,132,1)",
+                hitRadius: 5,
+                data: radarData_jvnV3
+                },
+                {
                 label: "RedHatV3",
                 backgroundColor: "rgba(102,102,255,0.2)",
                 borderColor: "rgba(102,102,255,1)",
