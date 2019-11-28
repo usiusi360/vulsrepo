@@ -1134,6 +1134,10 @@ const displayDetail = function(cveID) {
     addLink("#Link", detailLink.cvssV2Calculator.url + data.cveID, detailLink.cvssV2Calculator.disp);
     $("#Link").append("<span> / </span>");
     addLink("#Link", detailLink.cvssV3Calculator.url + data.cveID, detailLink.cvssV3Calculator.disp);
+    if (data.cveContents.jvn.cvss3Vector !== undefined) {
+        $("#Link").append("<span> / </span>");
+        addLink("#Link", detailLink.cvssV3CalculatorJvn.url + "#" + data.cveContents.jvn.cvss3Vector, detailLink.cvssV3CalculatorJvn.disp);
+    }
     $("#Link").append("<span> / </span>");
     $.each(getDistroAdvisoriesArray(data.DistroAdvisories), function(i, i_val) {
         addLink("#Link", i_val.url, i_val.disp);
