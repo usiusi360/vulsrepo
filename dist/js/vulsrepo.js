@@ -789,6 +789,7 @@ const displayPivot = function(array) {
             $("#pivot_base").find("th:contains('CveID')").css("minWidth", "110px");
             $("#pivot_base").find("th:contains('Reboot Required')").css("color", "#da0b00");
             addAdvisoryIDLink();
+            addCertLink();
             addCveIDLink();
             addChangelogLink();
         }
@@ -848,6 +849,14 @@ const addAdvisoryIDLink = function() {
         // TODO RHSA
         // TODO ELSA
         // TODO OVMSA
+    });
+};
+
+const addCertLink = function() {
+    let doms = $("#pivot_base").find("th:contains('CHK-CERT-')");
+    doms.each(function() {
+        let cert = $(this).text().replace("CHK-CERT-", "");
+        $(this).text("").append("<a href=\"" + cert + "\" target='_blank'>JPCERT</a>");
     });
 };
 
