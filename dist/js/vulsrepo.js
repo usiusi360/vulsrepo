@@ -462,6 +462,8 @@ const createPivotData = function(resultArray) {
                 "AdvisoryID": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
+                "Published": "healthy",
+                "Last Modified": "healthy",
             };
 
             if (x_val.data.runningKernel.rebootRequired === true) {
@@ -642,6 +644,23 @@ const createPivotData = function(resultArray) {
                                 result["CVSS (I)"] = "Unknown";
                                 result["CVSS (A)"] = "Unknown";
                             }
+                            // 年月日表示
+                            let getDateStr = function(datetime) {
+                                let d = new Date(datetime);
+                                const year = d.getFullYear();
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const day = String(d.getDate()).padStart(2, '0');
+
+                                let str = `${year}-${month}-${day}`
+                                if (Date.now() - d.getTime() < 86400000 * 15) {
+                                    // 15日以内は new
+                                    str += " [New!]";
+                                }
+
+                                return str;
+                            };
+                            result["Published"] = getDateStr(y_val.cveContents[target].published);
+                            result["Last Modified"] = getDateStr(y_val.cveContents[target].lastModified);
                         }
 
                         return true;
@@ -673,6 +692,8 @@ const createPivotData = function(resultArray) {
                         result["CVSS (C)"] = "Unknown";
                         result["CVSS (I)"] = "Unknown";
                         result["CVSS (A)"] = "Unknown";
+                        result["Published"] = "Unknown";
+                        result["Last Modified"] = "Unknown";
                     }
 
                     array.push(result);
