@@ -797,6 +797,27 @@ const displayPivot = function(array) {
             db.set("vulsrepo_pivot_conf_tmp", config);
             $("#pivot_base").find(".pvtVal[data-value='null']").css("background-color", "#b2f3b2");
 
+            $("#pivot_base").find("th:contains('Critical')").each(function() {
+                if ($(this).text() === "Critical") {
+                    $(this).addClass("pvt-cvss-Critical");
+                }
+            });
+            $("#pivot_base").find("th:contains('High')").each(function() {
+                if ($(this).text() === "High") {
+                    $(this).addClass("pvt-cvss-High");
+                }
+            });
+            $("#pivot_base").find("th:contains('Medium')").each(function() {
+                if ($(this).text() === "Medium") {
+                    $(this).addClass("pvt-cvss-Medium");
+                }
+            });
+            $("#pivot_base").find("th:contains('Low')").each(function() {
+                if ($(this).text() === "Low") {
+                    $(this).addClass("pvt-cvss-Low");
+                }
+            });
+
             $("#pivot_base").find("th:contains('true')").each(function() {
                 if ($(this).text() === "true") {
                     $(this).addClass("notfixyet-true");

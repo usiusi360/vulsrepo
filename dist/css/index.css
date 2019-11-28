@@ -11,6 +11,22 @@ body {
     background-color: #ddd
 }
 
+.pvt-cvss-Critical {
+    background-color: #CB4829 !important;
+}
+
+.pvt-cvss-High {
+    background-color: #D59533 !important;
+}
+
+.pvt-cvss-Medium {
+    background-color: #DFD238 !important;
+}
+
+.pvt-cvss-Low {
+    background-color: #93B447 !important;
+}
+
 .notfixyet-true {
     color: #CB4829;
     font-weight: bold;
