@@ -461,6 +461,7 @@ const createPivotData = function(resultArray) {
                 "CVSS (A)": "healthy",
                 "AdvisoryID": "healthy",
                 "CERT": "healthy",
+                "PoC": "healthy",
                 "Changelog": "healthy",
                 "DetectionMethod": "healthy",
                 "Published": "healthy",
@@ -548,6 +549,12 @@ const createPivotData = function(resultArray) {
                         result["CERT"] = "CHK-CERT-" + y_val.alertDict.ja[0].url;
                     } else {
                         result["CERT"] = "";
+                    }
+
+                    if (y_val.exploits !== undefined) {
+                        result["PoC"] = "PoC(" + y_val.exploits.length + ")";
+                    } else {
+                        result["PoC"] = "";
                     }
 
                     if (y_val.distroAdvisories !== undefined) {
