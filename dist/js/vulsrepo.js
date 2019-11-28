@@ -528,7 +528,15 @@ const createPivotData = function(resultArray) {
                     }
 
                     if (y_val.cveContents.nvd !== undefined) {
-                        result["CweID"] = y_val.cveContents.nvd.cweIDs;
+                        let cweIds = y_val.cveContents.nvd.cweIDs;
+                        let cweIdStr = "";
+                        for(var j = 0; j < cweIds.length; j++) {
+                            cweIdStr = cweIdStr + cweIds[j];
+                            if (j < cweIds.length - 1) {
+                                cweIdStr = cweIdStr + ",";
+                            }
+                        }
+                        result["CweID"] = "CHK-cweid-" + cweIdStr;
                     } else {
                         result["CweID"] = "None";
                     }
@@ -836,6 +844,7 @@ const displayPivot = function(array) {
             addAdvisoryIDLink();
             addCertLink();
             addCveIDLink();
+            addCweIDLink();
             addChangelogLink();
         }
 
@@ -877,6 +886,24 @@ const addCveIDLink = function() {
 
     $('.cveid').on('click', function() {
         displayDetail(this.text);
+    });
+};
+
+const addCweIDLink = function() {
+    let doms = $("#pivot_base").find("th:contains('CHK-cweid-')");
+    doms.each(function() {
+        let cveid = $(this).text();
+        cveid = cveid.replace("CHK-cweid-", "");
+        let cveids = cveid.split(',');
+        let generated = "";
+        for (var i = 0; i < cveids.length; i++) {
+            // JVN 決め打ち
+            generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i] + ".html\" target='_blank'>" + cveids[i] + "</a>";
+            if (i < cveids.length - 1) {
+                generated = generated + ",";
+            }
+        }
+        $(this).text("").append(generated);
     });
 };
 
