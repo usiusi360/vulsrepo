@@ -747,6 +747,7 @@ const displayPivot = function(array) {
     var renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
     var dateFormat = $.pivotUtilities.derivers.dateFormat;
     var sortAs = $.pivotUtilities.sortAs;
+    var naturalSort = $.pivotUtilities.naturalSort;
 
     var pivot_attr = {
         renderers: renderers,
@@ -766,15 +767,31 @@ const displayPivot = function(array) {
                 }
             }
         },
-        sorters: function(attr) {
-            if (attr == "CVSS Severity") {
-                return sortAs(["healthy", "Low", "Medium", "High", "Unknown"]);
-            }
-
-            if (attr == "CveID" || attr == "CweID" || attr == "Packages" || attr == "CVSS Score" || attr == "Summary" || attr == "CVSS (AV)" || attr == "CVSS (AC)" || attr == "CVSS (Au)" || attr == "CVSS (C)" || attr == "CVSS (I)" || attr == "CVSS(I)") {
-                return sortAs(["healthy"]);
-            }
-
+        sorters: {
+            "CVSS Severity": sortAs(["healthy", "Unknown", "Critical", "High", "Medium", "Low"]),
+            "CveID": sortAs(["healthy"]),
+            "CweID": sortAs(["healthy"]),
+            "Packages": sortAs(["healthy"]),
+            "CVSS Score": function (a, b) { return -naturalSort(a, b); }, // sort backwards
+            "Summary": sortAs(["healthy"]),
+            "CVSSv3 (AV)": sortAs(["healthy"]),
+            "CVSSv3 (AC)": sortAs(["healthy"]),
+            "CVSSv3 (PR)": sortAs(["healthy"]),
+            "CVSSv3 (UI)": sortAs(["healthy"]),
+            "CVSSv3 (S)": sortAs(["healthy"]),
+            "CVSSv3 (C)": sortAs(["healthy"]),
+            "CVSSv3 (I)": sortAs(["healthy"]),
+            "CVSSv3 (A)": sortAs(["healthy"]),
+            "CVSS (AV)": sortAs(["healthy"]),
+            "CVSS (AC)": sortAs(["healthy"]),
+            "CVSS (Au)": sortAs(["healthy"]),
+            "CVSS (C)": sortAs(["healthy"]),
+            "CVSS (I)": sortAs(["healthy"]),
+            "CVSS(I)": sortAs(["healthy"]),
+            "CERT": function (a, b) { return -naturalSort(a, b); }, // sort backwards
+            "PoC": function (a, b) { return -naturalSort(a, b); }, // sort backwards
+            "Published": function (a, b) { return -naturalSort(a, b); }, // sort backwards
+            "Last Modified": function (a, b) { return -naturalSort(a, b); } // sort backwards
         },
         onRefresh: function(config) {
             db.set("vulsrepo_pivot_conf_tmp", config);
