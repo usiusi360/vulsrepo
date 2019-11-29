@@ -866,6 +866,7 @@ const displayPivot = function(array) {
         pivot_attr["rendererName"] = pivot_obj["rendererName"];
         pivot_attr["rowOrder"] = pivot_obj["rowOrder"];
         pivot_attr["colOrder"] = pivot_obj["colOrder"];
+        pivot_attr["rendererOptions"] = pivot_obj["rendererOptions"];
         filterDisp.on("#label_pivot_conf");
     } else {
         filterDisp.off("#label_pivot_conf");
