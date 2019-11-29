@@ -530,8 +530,21 @@ const createPivotData = function(resultArray) {
                     if (y_val.cveContents.nvd !== undefined) {
                         let cweIds = y_val.cveContents.nvd.cweIDs;
                         let cweIdStr = "";
+                        // 安全なウェブサイトの作り方で言及されているものはマークを付ける
+                        let marks = ["113", "119", "22", "255", "264", "284", "287", "330", "352", "384", "425", "522", "548", "601", "614", "77", "78", "79", "89", "93"];
                         for(var j = 0; j < cweIds.length; j++) {
-                            cweIdStr = cweIdStr + cweIds[j];
+                            let match = false;
+                            for(var i = 0; i < marks.length; i++) {
+                                if(cweIds[j].indexOf(marks[i]) !== -1) {
+                                    match = true;
+                                    break;
+                                }
+                            }
+                            if (match === true) {
+                                cweIdStr = cweIdStr + cweIds[j] + "[!!]";
+                            } else {
+                                cweIdStr = cweIdStr + cweIds[j];
+                            }
                             if (j < cweIds.length - 1) {
                                 cweIdStr = cweIdStr + ",";
                             }
@@ -899,7 +912,7 @@ const addCweIDLink = function() {
         let generated = "";
         for (var i = 0; i < cveids.length; i++) {
             // JVN 決め打ち
-            generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i] + ".html\" target='_blank'>" + cveids[i] + "</a>";
+            generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" target='_blank'>" + cveids[i] + "</a>";
             if (i < cveids.length - 1) {
                 generated = generated + ",";
             }
