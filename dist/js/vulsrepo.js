@@ -531,27 +531,34 @@ const createPivotData = function(resultArray) {
                         let cweIds = y_val.cveContents.nvd.cweIDs;
                         let cweIdStr = "";
                         if (cweIds !== undefined) {
-                            // 安全なウェブサイトの作り方で言及されているものはマークを付ける
-                            let marks = ["113", "119", "22", "255", "264", "284", "287", "330", "352", "384", "425", "522", "548", "601", "614", "77", "78", "79", "89", "93"];
-                            for(var j = 0; j < cweIds.length; j++) {
-                                let match = false;
-                                for(var i = 0; i < marks.length; i++) {
-                                    if(cweIds[j].indexOf(marks[i]) !== -1) {
-                                        match = true;
-                                        break;
+                            // NVD-CWE-Other and NVD-CWE-noinfo
+                            if(cweIds[0].indexOf("NVD-CWE-") !== -1) {
+                                result["CweID"] = cweIds[0];
+                            } else {
+                                // 安全なウェブサイトの作り方で言及されているものはマークを付ける
+                                let marks = ["113", "119", "22", "255", "264", "284", "287", "330", "352", "384", "425", "522", "548", "601", "614", "77", "78", "79", "89", "93"];
+                                for(var j = 0; j < cweIds.length; j++) {
+                                    let match = false;
+                                    for(var i = 0; i < marks.length; i++) {
+                                        if(cweIds[j].indexOf(marks[i]) !== -1) {
+                                            match = true;
+                                            break;
+                                        }
+                                    }
+                                    if (match === true) {
+                                        cweIdStr = cweIdStr + cweIds[j] + "[!!]";
+                                    } else {
+                                        cweIdStr = cweIdStr + cweIds[j];
+                                    }
+                                    if (j < cweIds.length - 1) {
+                                        cweIdStr = cweIdStr + ",";
                                     }
                                 }
-                                if (match === true) {
-                                    cweIdStr = cweIdStr + cweIds[j] + "[!!]";
-                                } else {
-                                    cweIdStr = cweIdStr + cweIds[j];
-                                }
-                                if (j < cweIds.length - 1) {
-                                    cweIdStr = cweIdStr + ",";
-                                }
+                                result["CweID"] = "CHK-cweid-" + cweIdStr;
                             }
+                        } else {
+                            result["CweID"] = "None";
                         }
-                        result["CweID"] = "CHK-cweid-" + cweIdStr;
                     } else {
                         result["CweID"] = "None";
                     }
