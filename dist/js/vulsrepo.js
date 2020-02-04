@@ -1271,7 +1271,7 @@ const displayDetail = function(cveID) {
     addLink("#Link", detailLink.cvssV2Calculator.url + data.cveID, detailLink.cvssV2Calculator.disp);
     $("#Link").append("<span> / </span>");
     addLink("#Link", detailLink.cvssV3Calculator.url + data.cveID, detailLink.cvssV3Calculator.disp);
-    if (data.cveContents.jvn.cvss3Vector !== undefined) {
+    if (data.cveContents.jvn  !== undefined && data.cveContents.jvn.cvss3Vector !== undefined) {
         $("#Link").append("<span> / </span>");
         addLink("#Link", detailLink.cvssV3CalculatorJvn.url + "#" + data.cveContents.jvn.cvss3Vector, detailLink.cvssV3CalculatorJvn.disp);
     }
