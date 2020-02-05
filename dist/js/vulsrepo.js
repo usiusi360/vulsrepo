@@ -535,7 +535,7 @@ const createPivotData = function(resultArray) {
                             if(cweIds[0].indexOf("NVD-CWE-") !== -1) {
                                 result["CweID"] = cweIds[0];
                             } else {
-                                // 安全なウェブサイトの作り方で言及されているものはマークを付ける
+                                // see https://www.ipa.go.jp/security/vuln/websecurity.html
                                 let marks = ["113", "119", "22", "255", "264", "284", "287", "330", "352", "384", "425", "522", "548", "601", "614", "77", "78", "79", "89", "93"];
                                 for(var j = 0; j < cweIds.length; j++) {
                                     let match = false;
@@ -688,7 +688,7 @@ const createPivotData = function(resultArray) {
                                 result["CVSS (I)"] = "Unknown";
                                 result["CVSS (A)"] = "Unknown";
                             }
-                            // 年月日表示
+                            // yyyy-mm-dd
                             let getDateStr = function(datetime) {
                                 let d = new Date(datetime);
                                 const year = d.getFullYear();
@@ -697,7 +697,7 @@ const createPivotData = function(resultArray) {
 
                                 let str = `${year}-${month}-${day}`
                                 if (Date.now() - d.getTime() < 86400000 * 15) {
-                                    // 15日以内は new
+                                    // Last 15 days
                                     str += " [New!]";
                                 }
 
@@ -920,7 +920,8 @@ const addCweIDLink = function() {
         let cveids = cveid.split(',');
         let generated = "";
         for (var i = 0; i < cveids.length; i++) {
-            // JVN 決め打ち
+            // TODO NVD
+            // JVN
             generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" target='_blank'>" + cveids[i] + "</a>";
             if (i < cveids.length - 1) {
                 generated = generated + ",";
@@ -934,12 +935,12 @@ const addAdvisoryIDLink = function() {
     let doms = $("#pivot_base").find("th:contains('CHK-advisoryid-')");
     doms.each(function() {
         let advisoryid = $(this).text().replace("CHK-advisoryid-", "");
-        // アドバイザリーに応じたページを開く
+        // Open Advisory page
         if (advisoryid.indexOf('ALAS2-') != -1) {
-            // ALAS2- なら
+            // ALAS2
             $(this).text("").append("<a href=\"" + detailLink.amazon.url + "AL2/" + advisoryid.replace("ALAS2-", "ALAS-") + ".html\" target='_blank'>" + advisoryid + '</a>');
         } else if (advisoryid.indexOf('ALAS-') != -1) {
-            // TODO ALAS- なら
+            // TODO ALAS
         }
         // TODO RHSA
         // TODO ELSA
