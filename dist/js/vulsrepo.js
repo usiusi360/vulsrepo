@@ -535,12 +535,14 @@ const createPivotData = function(resultArray) {
                             if(cweIds[0].indexOf("NVD-CWE-") !== -1) {
                                 result["CweID"] = cweIds[0];
                             } else {
-                                // see https://www.ipa.go.jp/security/vuln/websecurity.html
-                                let marks = ["113", "119", "22", "255", "264", "284", "287", "330", "352", "384", "425", "522", "548", "601", "614", "77", "78", "79", "89", "93"];
+                                // TODO OWASP Top Ten 2017 https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_Top_10.html
+                                // CWE Top25 https://cwe.mitre.org/top25/archive/2019/2019_cwe_top25.html
+                                let cweTop25 = ["119", "79", "20", "200", "125", "89", "416", "190", "352", "22", "78", "787", "287", "476", "732", "434", "611", "94", "798", "400", "772", "426", "502", "269", "295"]
+                                // TODO SANS Top25 https://www.sans.org/top25-software-errors/
                                 for(var j = 0; j < cweIds.length; j++) {
                                     let match = false;
-                                    for(var i = 0; i < marks.length; i++) {
-                                        if(cweIds[j].indexOf(marks[i]) !== -1) {
+                                    for(var i = 0; i < cweTop25.length; i++) {
+                                        if(cweIds[j].indexOf(cweTop25[i]) !== -1) {
                                             match = true;
                                             break;
                                         }
