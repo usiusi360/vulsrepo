@@ -913,6 +913,10 @@ const addCveIDLink = function() {
 };
 
 const addCweIDLink = function() {
+    const prioltyFlag = db.get("vulsrepo_pivotPriority");
+    let nvd = prioltyFlag.indexOf("nvd");
+    let jvn = prioltyFlag.indexOf("jvn");
+
     let doms = $("#pivot_base").find("th:contains('CHK-cweid-')");
     doms.each(function() {
         let cveid = $(this).text();
@@ -920,9 +924,18 @@ const addCweIDLink = function() {
         let cveids = cveid.split(',');
         let generated = "";
         for (var i = 0; i < cveids.length; i++) {
-            // TODO NVD
-            // JVN
-            generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" target='_blank'>" + cveids[i] + "</a>";
+            if (cveids[i].indexOf("NVD-CWE-") !== -1) {
+                // NVD-CWE-Other and NVD-CWE-noinfo
+                generated = generated + cveids[i];
+            } else {
+                if (nvd < jvn) {
+                    // NVD
+                    generated = generated + "<a href=\"" + detailLink.cwe_nvd.url + cveids[i].replace(/\[!!\]/, "").replace(/CWE-/, "") + "\" target='_blank'>" + cveids[i] + "</a>";
+                } else {
+                    // JVN
+                    generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" target='_blank'>" + cveids[i] + "</a>";
+                }
+            }
             if (i < cveids.length - 1) {
                 generated = generated + ",";
             }
