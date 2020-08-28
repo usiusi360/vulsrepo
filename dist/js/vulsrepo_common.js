@@ -481,7 +481,7 @@ const isHelpHTMLScore = function() {
         </table>
     </div>
     <div class="col-xs-8">
-        <div> Amazon</div>
+        <div>Amazon <a href="https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html#asff-severity" target="_blank" rel="noopener noreferrer">AWS Security Finding Format (ASFF)</a></div>
         <table class="cvss_tooltip">
             <tbody>
                 <tr>
@@ -513,7 +513,7 @@ const isHelpHTMLScore = function() {
     </div>
     <div class="col-xs-12">&nbsp;</div>
     <div class="col-xs-6">
-        <div>RedHat(v2), RedHat(v3) <a href="https://access.redhat.com/security/updates/classification" target="_blank">Understanding Red Hat security ratings</a></div>
+        <div>RedHat(v2), RedHat(v3) <a href="https://access.redhat.com/security/updates/classification" target="_blank" rel="noopener noreferrer">Understanding Red Hat security ratings</a></div>
         <table class="cvss_tooltip">
             <tbody>
                 <tr>
@@ -544,7 +544,7 @@ const isHelpHTMLScore = function() {
         </table>
     </div>
         <div class="col-xs-6">
-        <div>Ubuntu, Debian <a href="https://people.canonical.com/~ubuntu-security/cve/priority.html" target="_blank">Ubuntu priority</a></div>
+        <div>Ubuntu, Debian <a href="https://people.canonical.com/~ubuntu-security/cve/priority.html" target="_blank" rel="noopener noreferrer">Ubuntu priority</a></div>
         <table class="cvss_tooltip">
             <tbody>
                 <tr>
