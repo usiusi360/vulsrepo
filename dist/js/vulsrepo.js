@@ -1341,6 +1341,11 @@ const displayDetail = function(cveID) {
         }
     }
 
+    const prioltyFlag = db.get("vulsrepo_pivotPriority");
+    $.each(prioltyFlag, function(i, i_val) {
+        addRef(i_val);
+    });
+
     var addExploit = function() {
         if (data.exploits !== undefined) {
             $("#References").append("<div>===Exploits===</div>");
@@ -1350,14 +1355,6 @@ const displayDetail = function(cveID) {
            });
         }
     }
-
-    addRef("nvd");
-    addRef("jvn");
-    addRef("redhat");
-    addRef("ubuntu");
-    addRef("debian");
-    addRef("oracle");
-    addRef("amazon");
     addExploit();
     $("#count-References").text(countRef);
 
