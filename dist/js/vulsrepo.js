@@ -987,6 +987,7 @@ const createDetailData = function(cveID) {
         if (tmpCve !== undefined) {
             targetObj["cveID"] = cveID;
             targetObj["DistroAdvisories"] = tmpCve.distroAdvisories;
+            targetObj["exploits"] = tmpCve.exploits;
             $.each(vulsrepo.detailTaget, function(i, i_val) {
                 if (tmpCve.cveContents[i_val] !== undefined) {
                     targetObj.cveContents[i_val] = tmpCve.cveContents[i_val];
@@ -1340,6 +1341,16 @@ const displayDetail = function(cveID) {
         }
     }
 
+    var addExploit = function() {
+        if (data.exploits !== undefined) {
+            $("#References").append("<div>===Exploits===</div>");
+           $.each(data.exploits, function(x, x_val) {
+               $("#References").append("<div>[" + x_val.exploitType + "]<a href=\"" + x_val.url + "\" target='_blank'> (" + x_val.url + ")</a> " + x_val.description + "</div>");
+               countRef++;
+           });
+        }
+    }
+
     addRef("nvd");
     addRef("jvn");
     addRef("redhat");
@@ -1347,6 +1358,7 @@ const displayDetail = function(cveID) {
     addRef("debian");
     addRef("oracle");
     addRef("amazon");
+    addExploit();
     $("#count-References").text(countRef);
 
     // ---Tab Package
