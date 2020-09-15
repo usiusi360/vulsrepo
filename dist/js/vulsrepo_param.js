@@ -3,7 +3,7 @@ var vulsrepo = {
     detailPivotData: null,
     timeOut: 300 * 1000,
     demoFlag: false,
-    detailTaget: ["nvd", "jvn", "amazon", "redhat", "ubuntu", "debian", "oracle"]
+    detailTaget: ["nvd", "jvn", "amazon", "redhat", "ubuntu", "debian", "debian_security_tracker", "oracle"]
 };
 
 
