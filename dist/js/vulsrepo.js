@@ -65,6 +65,7 @@ const db = {
                 array.push(localStorage.key(i).replace(/vulsrepo_pivot_conf_user_/g, ''));
             }
         }
+        array.sort();
         return array;
     }
 };
