@@ -995,7 +995,7 @@ const createDetailData = function(cveID) {
             targetObj["DistroAdvisories"] = tmpCve.distroAdvisories;
             targetObj["exploits"] = tmpCve.exploits;
             $.each(vulsrepo.detailTaget, function(i, i_val) {
-                if (tmpCve.cveContents[i_val] !== undefined) {
+                if (tmpCve.cveContents !== undefined && tmpCve.cveContents[i_val] !== undefined) {
                     targetObj.cveContents[i_val] = tmpCve.cveContents[i_val];
                 }
             });
