@@ -782,12 +782,9 @@ const createPivotData = function(resultArray) {
 };
 
 const isNotFixedYet = function(val, pkg) {
+    var result = false;
     if (val.notFixedYet !== undefined) {
         result = val.notFixedYet;
-    } else {
-        // "debian" don't have notFixedYet
-        // compare version, release, newVersion and newRelease
-        result = pkg.version === pkg.newVersion && pkg.release === pkg.newRelease;
     }
     return result;
 };
