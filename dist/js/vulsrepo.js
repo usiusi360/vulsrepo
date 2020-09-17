@@ -627,6 +627,52 @@ const createPivotData = function(resultArray) {
                         result["NewPackageVer"] = "Unknown";
                     }
 
+                    var getSummaryAndDate = function(target) {
+                        if (y_val.cveContents === undefined || y_val.cveContents[target] === undefined) {
+                            return false;
+                        }
+
+                        if (summaryFlag !== "false") {
+                            result["Summary"] = y_val.cveContents[target].summary;
+                        }
+                        // yyyy-mm-dd
+                        let getDateStr = function(datetime) {
+                            var str = "";
+                            if (datetime !== "0001-01-01T00:00:00Z") {
+                                var d = new Date(datetime);
+                                const year = d.getFullYear();
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const day = String(d.getDate()).padStart(2, '0');
+
+                                str = `${year}-${month}-${day}`
+                                if (Date.now() - d.getTime() < 86400000 * 15) {
+                                    // Last 15 days
+                                    str += " [New!]";
+                                }
+                            } else {
+                                str = "------";
+                            }
+
+                            return str;
+                        };
+                        result["Published"] = getDateStr(y_val.cveContents[target].published);
+                        result["Last Modified"] = getDateStr(y_val.cveContents[target].lastModified);
+
+                        return true;
+                    };
+
+                    var sumFlag = false;
+                    $.each(prioltyFlag, function(i, i_val) {
+                        if (sumFlag !== true) {
+                            sumFlag = getSummaryAndDate(i_val);
+                        }
+                    });
+
+                    if (sumFlag === false) {
+                        result["Summary"] = "Unknown";
+                        result["Published"] = "Unknown";
+                        result["Last Modified"] = "Unknown";
+                    }
 
                     let getCvss = function(target) {
                         if (y_val.cveContents === undefined || y_val.cveContents[target] === undefined) {
@@ -645,10 +691,6 @@ const createPivotData = function(resultArray) {
                             result["CVSS Score"] = y_val.cveContents[target].cvss2Score;
                             result["CVSS Severity"] = getSeverityV2(y_val.cveContents[target].cvss2Score);
                             result["CVSS Score Type"] = target;
-                        }
-
-                        if (summaryFlag !== "false") {
-                            result["Summary"] = y_val.cveContents[target].summary;
                         }
 
                         if (cvssFlag !== "false") {
@@ -696,23 +738,6 @@ const createPivotData = function(resultArray) {
                                 result["CVSS (I)"] = "Unknown";
                                 result["CVSS (A)"] = "Unknown";
                             }
-                            // yyyy-mm-dd
-                            let getDateStr = function(datetime) {
-                                let d = new Date(datetime);
-                                const year = d.getFullYear();
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const day = String(d.getDate()).padStart(2, '0');
-
-                                let str = `${year}-${month}-${day}`
-                                if (Date.now() - d.getTime() < 86400000 * 15) {
-                                    // Last 15 days
-                                    str += " [New!]";
-                                }
-
-                                return str;
-                            };
-                            result["Published"] = getDateStr(y_val.cveContents[target].published);
-                            result["Last Modified"] = getDateStr(y_val.cveContents[target].lastModified);
                         }
 
                         return true;
@@ -726,7 +751,6 @@ const createPivotData = function(resultArray) {
                     });
 
                     if (flag === false) {
-                        result["Summary"] = "Unknown";
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
@@ -744,8 +768,6 @@ const createPivotData = function(resultArray) {
                         result["CVSS (C)"] = "Unknown";
                         result["CVSS (I)"] = "Unknown";
                         result["CVSS (A)"] = "Unknown";
-                        result["Published"] = "Unknown";
-                        result["Last Modified"] = "Unknown";
                     }
 
                     array.push(result);
