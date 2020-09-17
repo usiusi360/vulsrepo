@@ -509,9 +509,6 @@ const createPivotData = function(resultArray) {
                     }
 
                     let pkgInfo = x_val.data.packages[pkgName];
-                    if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
-                        return;
-                    }
 
                     let result = {
                         "ScanTime": x_val.scanTime,
