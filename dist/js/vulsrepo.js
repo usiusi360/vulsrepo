@@ -606,13 +606,21 @@ const createPivotData = function(resultArray) {
 
                     if (pkgInfo !== undefined) {
                         if (pkgInfo.Version !== "") {
-                            result["PackageVer"] = pkgInfo.version + "-" + pkgInfo.release;
+                            if (pkgInfo.release !== "") {
+                                result["PackageVer"] = pkgInfo.version + "-" + pkgInfo.release;
+                            } else {
+                                result["PackageVer"] = pkgInfo.version;
+                            }
                         } else {
                             result["PackageVer"] = "None";
                         }
 
                         if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.newVersion + "-" + pkgInfo.newRelease;
+                            if (pkgInfo.newRelease !== "") {
+                                result["NewPackageVer"] = pkgInfo.newVersion + "-" + pkgInfo.newRelease;
+                            } else {
+                                result["NewPackageVer"] = pkgInfo.newVersion;
+                            }
                         } else {
                             result["NewPackageVer"] = "None";
                         }
@@ -1547,7 +1555,15 @@ const displayChangelogDetail = function(ankerData) {
     }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
-        $("#changelog-packagename").append(pkgContents.name + "-" + pkgContents.version + "." + pkgContents.release + " => " + pkgContents.newVersion + "." + pkgContents.newRelease);
+        var packageInfo = pkgContents.name + "-" + pkgContents.version;
+        if (pkgContents.release !== "") {
+            packageInfo = packageInfo + "." + pkgContents.release;
+        }
+        packageInfo = packageInfo + " => " + pkgContents.newVersion;
+        if (pkgContents.newRelease !== "") {
+            packageInfo = packageInfo + "." + pkgContents.newRelease
+        }
+        $("#changelog-packagename").append(packageInfo);
         if (changelogInfo.pkgContents.changelog.contents === "") {
             $("#changelog-contents").append("NO DATA");
         } else {
