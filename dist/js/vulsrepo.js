@@ -348,7 +348,7 @@ const setEvents = function() {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
-    if (priority != null && priority.length !== 7) {
+    if (priority != null && priority.length !== 8) {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
@@ -1047,7 +1047,7 @@ const displayDetail = function(cveID) {
                 $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
             }
 
-            if (target === "ubuntu" || target === "debian" || target === "amazon") {
+            if (target === "ubuntu" || target === "debian" || target === "debian_security_tracker" || target === "amazon") {
                 severity = data.cveContents[target].cvss2Severity;
                 $("#scoreText_" + target).removeClass();
                 $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
