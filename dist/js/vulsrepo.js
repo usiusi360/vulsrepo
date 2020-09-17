@@ -505,7 +505,7 @@ const createPivotData = function(resultArray) {
                         NotFixedYet = "Unknown";
                     } else {
                         pkgName = p_val.name;
-                        NotFixedYet = p_val.notFixedYet;
+                        NotFixedYet = isNotFixedYet(p_val, x_val.data.packages[pkgName]);
                     }
 
                     let pkgInfo = x_val.data.packages[pkgName];
@@ -779,6 +779,17 @@ const createPivotData = function(resultArray) {
     console.info("CveidCount: " + cveid_count);
     console.info("PivotDataCount: " + array.length);
     return array;
+};
+
+const isNotFixedYet = function(val, pkg) {
+    if (val.notFixedYet !== undefined) {
+        result = val.notFixedYet;
+    } else {
+        // "debian" don't have notFixedYet
+        // compare version, release, newVersion and newRelease
+        result = pkg.version === pkg.newVersion && pkg.release === pkg.newRelease;
+    }
+    return result;
 };
 
 const displayPivot = function(array) {
@@ -1506,7 +1517,7 @@ const createDetailPackageData = function(cveID) {
                         NotFixedYet = "None";
                     } else {
                         pkgName = z_val.name;
-                        NotFixedYet = z_val.notFixedYet;
+                        NotFixedYet = isNotFixedYet(z_val, x_val.data.packages[pkgName]);
                     }
 
                     let tmp_Map = {
@@ -1560,7 +1571,7 @@ const displayChangelogDetail = function(ankerData) {
         let result;
         $.each(changelogInfo.cveidInfo.affectedPackages, function (i, i_val) {
             if (i_val.Name = package) {
-                result = i_val.notFixedYet;
+                result = isNotFixedYet(i_val, changelogInfo.pkgContents);
             };
         });
         return result;
