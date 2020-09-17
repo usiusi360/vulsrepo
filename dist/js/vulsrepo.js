@@ -525,7 +525,7 @@ const createPivotData = function(resultArray) {
                         result["ServerName"] = x_val.data.serverName;
                     }
 
-                    if (y_val.cveContents.nvd !== undefined) {
+                    if (y_val.cveContents !== undefined && y_val.cveContents.nvd !== undefined) {
                         let cweIds = y_val.cveContents.nvd.cweIDs;
                         let cweIdStr = "";
                         if (cweIds !== undefined) {
@@ -629,7 +629,7 @@ const createPivotData = function(resultArray) {
 
 
                     let getCvss = function(target) {
-                        if (y_val.cveContents[target] === undefined) {
+                        if (y_val.cveContents === undefined || y_val.cveContents[target] === undefined) {
                             return false;
                         }
 
