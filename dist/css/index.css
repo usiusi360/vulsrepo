@@ -156,6 +156,32 @@ a {
     color: black
 }
 
+/*for Debian Security Tracker https://security-team.debian.org/security_tracker.html#severity-levels */
+
+.cvss-high {
+    background-color: #D59533;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-medium {
+    background-color: #DFD238;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-low {
+    background-color: #93B447;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-unimportant {
+    background-color: #61C1BE;
+    text-transform: capitalize;
+    color: black
+}
+
 .detailTitle {
     margin-top: 10px;
     margin-bottom: 10px;

@@ -411,7 +411,7 @@ const displayHelpMesScore = function() {
         offsetY: -350,
         css: {
             fontSize: '80%',
-            width: '1024',
+            width: '1280',
             opacity: 0.95,
             minLifetime: 2000
         },
@@ -512,7 +512,7 @@ const isHelpHTMLScore = function() {
         </table>
     </div>
     <div class="col-xs-12">&nbsp;</div>
-    <div class="col-xs-6">
+    <div class="col-xs-4">
         <div>RedHat(v2), RedHat(v3) <a href="https://access.redhat.com/security/updates/classification" target="_blank" rel="noopener noreferrer">Understanding Red Hat security ratings</a></div>
         <table class="cvss_tooltip">
             <tbody>
@@ -543,7 +543,7 @@ const isHelpHTMLScore = function() {
             </tbody>
         </table>
     </div>
-        <div class="col-xs-6">
+    <div class="col-xs-4">
         <div>Ubuntu, Debian <a href="https://people.canonical.com/~ubuntu-security/cve/priority.html" target="_blank" rel="noopener noreferrer">Ubuntu priority</a></div>
         <table class="cvss_tooltip">
             <tbody>
@@ -582,6 +582,33 @@ const isHelpHTMLScore = function() {
                 <tr>
                     <td class="cvss-NotVulnerable">Not Vulnerable</td>
                     <td>Packages which do not exist (DNE) in the archive, are not affected by the vulnerability or have a fix applied in the archive.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-4">
+        <div>Debian Security Tracker <a href="https://security-team.debian.org/security_tracker.html#severity-levels" target="_blank" rel="noopener noreferrer">Debian Security Tracker - Severity levels</a></div>
+        <table class="cvss_tooltip">
+            <tbody>
+                <tr>
+                    <th>Severity</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td class="cvss-high">High</td>
+                    <td>A typical, exploitable security problem, which you'll really like to fix or at least implement a workaround. This could be because the vulnerable code is very broadly used, because an exploit is in the wild or because the attack vector is very wide. Should be put into that category anything that permits an attacker to execute arbitrary code on the vulnerable system (with or without root privileges) and high-impact denial-of-service bugs (for instance, an IPv4 forwarding path vulnerability which requires only very few packets to exploit). Significant defects in security software can be rated "high" as well (for instance, a vulnerability in a piece of cryptographic software which flags forged digital signatures as genuine).</td>
+                </tr>
+                <tr>
+                    <td class="cvss-medium">Medium</td>
+                    <td>For anything which permits code execution after user interaction. Local privilege escalation vulnerabilities are in this category as well, or remote privilege escalation if it's constrained to the application (i.e., no shell access to the underlying system, such as simple cross-site scripting). Most remote DoS vulnerabilities fall into this category, too.</td>
+                </tr>
+                <tr>
+                    <td class="cvss-low">Low</td>
+                    <td>A security problem, which has only mild security implications (local DoS, /tmp file races and so on).</td>
+                </tr>
+                <tr>
+                    <td class="cvss-unimportant">Unimportant</td>
+                    <td>This problem does not affect the Debian binary package, e.g., a vulnerable source file, which is not built, a vulnerable file in doc/foo/examples/, PHP Safe mode bugs, path disclosure (doesn't matter on Debian). All "non-issues in practice" fall also into this category, like issues only "exploitable" if the code in question is setuid root, exploits which only work if someone already has administrative privileges or similar. This severity is also used for vulnerabilities in packages which are not covered by security support.</td>
                 </tr>
             </tbody>
         </table>
