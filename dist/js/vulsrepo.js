@@ -595,13 +595,13 @@ const createPivotData = function(resultArray) {
 
                     DetectionMethod = y_val.confidences[0].detectionMethod;
                     result["DetectionMethod"] = DetectionMethod;
-                    if (DetectionMethod === "ChangelogExactMatch") {
-                        result["Changelog"] = "CHK-changelog-" + y_val.cveID + "," + x_val.scanTime + "," + x_val.data.serverName + "," + x_val.data.container.name + "," + pkgName;
-                    } else {
-                        result["Changelog"] = "None";
-                    }
-
                     if (pkgInfo !== undefined) {
+                        if (pkgInfo.changelog !== undefined && pkgInfo.changelog.contents !== "") {
+                            result["Changelog"] = "CHK-changelog-" + y_val.cveID + "," + x_val.scanTime + "," + x_val.data.serverName + "," + x_val.data.container.name + "," + pkgName;
+                        } else {
+                            result["Changelog"] = "None";
+                        }
+
                         if (pkgInfo.Version !== "") {
                             if (pkgInfo.release !== "") {
                                 result["PackageVer"] = pkgInfo.version + "-" + pkgInfo.release;
@@ -625,6 +625,7 @@ const createPivotData = function(resultArray) {
                         // ===for cpe
                         result["PackageVer"] = "Unknown";
                         result["NewPackageVer"] = "Unknown";
+                        result["Changelog"] = "None";
                     }
 
                     var getSummaryAndDate = function(target) {
