@@ -156,6 +156,32 @@ a {
     color: black
 }
 
+/*for Debian Security Tracker https://security-team.debian.org/security_tracker.html#severity-levels */
+
+.cvss-high {
+    background-color: #D59533;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-medium {
+    background-color: #DFD238;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-low {
+    background-color: #93B447;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-unimportant {
+    background-color: #61C1BE;
+    text-transform: capitalize;
+    color: black
+}
+
 .detailTitle {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -316,7 +342,7 @@ body.noscroll {
     list-style-type: none;
     margin: 0px 0px 0px 15px;
     padding: 0;
-    width: 150px;
+    width: 260px;
 }
 
 #pivot-priority li {
@@ -327,11 +353,12 @@ body.noscroll {
     cursor: move;
     background-color: #31b0d5;
     color: white;
+    text-align: center;
 }
 
 #pivot-priority li span {
-    padding-left: 10px;
-    padding-right: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 #pivot-priority .placeholder {

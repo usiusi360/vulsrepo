@@ -348,7 +348,7 @@ const setEvents = function() {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
-    if (priority != null && priority.length !== 7) {
+    if (priority != null && priority.length !== 8) {
         db.set("vulsrepo_pivotPriority", vulsrepo.detailTaget);
     }
 
@@ -505,13 +505,10 @@ const createPivotData = function(resultArray) {
                         NotFixedYet = "Unknown";
                     } else {
                         pkgName = p_val.name;
-                        NotFixedYet = p_val.notFixedYet;
+                        NotFixedYet = isNotFixedYet(p_val, x_val.data.packages[pkgName]);
                     }
 
                     let pkgInfo = x_val.data.packages[pkgName];
-                    if (pkgName.indexOf('cpe:/') === -1 && pkgInfo === undefined) {
-                        return;
-                    }
 
                     let result = {
                         "ScanTime": x_val.scanTime,
@@ -528,7 +525,7 @@ const createPivotData = function(resultArray) {
                         result["ServerName"] = x_val.data.serverName;
                     }
 
-                    if (y_val.cveContents.nvd !== undefined) {
+                    if (y_val.cveContents !== undefined && y_val.cveContents.nvd !== undefined) {
                         let cweIds = y_val.cveContents.nvd.cweIDs;
                         let cweIdStr = "";
                         if (cweIds !== undefined) {
@@ -606,13 +603,21 @@ const createPivotData = function(resultArray) {
 
                     if (pkgInfo !== undefined) {
                         if (pkgInfo.Version !== "") {
-                            result["PackageVer"] = pkgInfo.version + "-" + pkgInfo.release;
+                            if (pkgInfo.release !== "") {
+                                result["PackageVer"] = pkgInfo.version + "-" + pkgInfo.release;
+                            } else {
+                                result["PackageVer"] = pkgInfo.version;
+                            }
                         } else {
                             result["PackageVer"] = "None";
                         }
 
                         if (pkgInfo.NewVersion !== "") {
-                            result["NewPackageVer"] = pkgInfo.newVersion + "-" + pkgInfo.newRelease;
+                            if (pkgInfo.newRelease !== "") {
+                                result["NewPackageVer"] = pkgInfo.newVersion + "-" + pkgInfo.newRelease;
+                            } else {
+                                result["NewPackageVer"] = pkgInfo.newVersion;
+                            }
                         } else {
                             result["NewPackageVer"] = "None";
                         }
@@ -622,9 +627,55 @@ const createPivotData = function(resultArray) {
                         result["NewPackageVer"] = "Unknown";
                     }
 
+                    var getSummaryAndDate = function(target) {
+                        if (y_val.cveContents === undefined || y_val.cveContents[target] === undefined) {
+                            return false;
+                        }
+
+                        if (summaryFlag !== "false") {
+                            result["Summary"] = y_val.cveContents[target].summary;
+                        }
+                        // yyyy-mm-dd
+                        let getDateStr = function(datetime) {
+                            var str = "";
+                            if (datetime !== "0001-01-01T00:00:00Z") {
+                                var d = new Date(datetime);
+                                const year = d.getFullYear();
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const day = String(d.getDate()).padStart(2, '0');
+
+                                str = `${year}-${month}-${day}`
+                                if (Date.now() - d.getTime() < 86400000 * 15) {
+                                    // Last 15 days
+                                    str += " [New!]";
+                                }
+                            } else {
+                                str = "------";
+                            }
+
+                            return str;
+                        };
+                        result["Published"] = getDateStr(y_val.cveContents[target].published);
+                        result["Last Modified"] = getDateStr(y_val.cveContents[target].lastModified);
+
+                        return true;
+                    };
+
+                    var sumFlag = false;
+                    $.each(prioltyFlag, function(i, i_val) {
+                        if (sumFlag !== true) {
+                            sumFlag = getSummaryAndDate(i_val);
+                        }
+                    });
+
+                    if (sumFlag === false) {
+                        result["Summary"] = "Unknown";
+                        result["Published"] = "Unknown";
+                        result["Last Modified"] = "Unknown";
+                    }
 
                     let getCvss = function(target) {
-                        if (y_val.cveContents[target] === undefined) {
+                        if (y_val.cveContents === undefined || y_val.cveContents[target] === undefined) {
                             return false;
                         }
 
@@ -640,10 +691,6 @@ const createPivotData = function(resultArray) {
                             result["CVSS Score"] = y_val.cveContents[target].cvss2Score;
                             result["CVSS Severity"] = getSeverityV2(y_val.cveContents[target].cvss2Score);
                             result["CVSS Score Type"] = target;
-                        }
-
-                        if (summaryFlag !== "false") {
-                            result["Summary"] = y_val.cveContents[target].summary;
                         }
 
                         if (cvssFlag !== "false") {
@@ -691,23 +738,6 @@ const createPivotData = function(resultArray) {
                                 result["CVSS (I)"] = "Unknown";
                                 result["CVSS (A)"] = "Unknown";
                             }
-                            // yyyy-mm-dd
-                            let getDateStr = function(datetime) {
-                                let d = new Date(datetime);
-                                const year = d.getFullYear();
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const day = String(d.getDate()).padStart(2, '0');
-
-                                let str = `${year}-${month}-${day}`
-                                if (Date.now() - d.getTime() < 86400000 * 15) {
-                                    // Last 15 days
-                                    str += " [New!]";
-                                }
-
-                                return str;
-                            };
-                            result["Published"] = getDateStr(y_val.cveContents[target].published);
-                            result["Last Modified"] = getDateStr(y_val.cveContents[target].lastModified);
                         }
 
                         return true;
@@ -721,7 +751,6 @@ const createPivotData = function(resultArray) {
                     });
 
                     if (flag === false) {
-                        result["Summary"] = "Unknown";
                         result["CVSS Score"] = "Unknown";
                         result["CVSS Severity"] = "Unknown";
                         result["CVSS Score Type"] = "Unknown";
@@ -739,8 +768,6 @@ const createPivotData = function(resultArray) {
                         result["CVSS (C)"] = "Unknown";
                         result["CVSS (I)"] = "Unknown";
                         result["CVSS (A)"] = "Unknown";
-                        result["Published"] = "Unknown";
-                        result["Last Modified"] = "Unknown";
                     }
 
                     array.push(result);
@@ -752,6 +779,14 @@ const createPivotData = function(resultArray) {
     console.info("CveidCount: " + cveid_count);
     console.info("PivotDataCount: " + array.length);
     return array;
+};
+
+const isNotFixedYet = function(val, pkg) {
+    var result = false;
+    if (val.notFixedYet !== undefined) {
+        result = val.notFixedYet;
+    }
+    return result;
 };
 
 const displayPivot = function(array) {
@@ -990,7 +1025,7 @@ const createDetailData = function(cveID) {
             targetObj["DistroAdvisories"] = tmpCve.distroAdvisories;
             targetObj["exploits"] = tmpCve.exploits;
             $.each(vulsrepo.detailTaget, function(i, i_val) {
-                if (tmpCve.cveContents[i_val] !== undefined) {
+                if (tmpCve.cveContents !== undefined && tmpCve.cveContents[i_val] !== undefined) {
                     targetObj.cveContents[i_val] = tmpCve.cveContents[i_val];
                 }
             });
@@ -1047,7 +1082,7 @@ const displayDetail = function(cveID) {
                 $("#scoreText_" + target + "V3").text("None").addClass("cvss-None");
             }
 
-            if (target === "ubuntu" || target === "debian" || target === "amazon") {
+            if (target === "ubuntu" || target === "debian" || target === "debian_security_tracker" || target === "amazon") {
                 severity = data.cveContents[target].cvss2Severity;
                 $("#scoreText_" + target).removeClass();
                 $("#scoreText_" + target).text(severity).addClass("cvss-" + severity);
@@ -1479,7 +1514,7 @@ const createDetailPackageData = function(cveID) {
                         NotFixedYet = "None";
                     } else {
                         pkgName = z_val.name;
-                        NotFixedYet = z_val.notFixedYet;
+                        NotFixedYet = isNotFixedYet(z_val, x_val.data.packages[pkgName]);
                     }
 
                     let tmp_Map = {
@@ -1533,7 +1568,7 @@ const displayChangelogDetail = function(ankerData) {
         let result;
         $.each(changelogInfo.cveidInfo.affectedPackages, function (i, i_val) {
             if (i_val.Name = package) {
-                result = i_val.notFixedYet;
+                result = isNotFixedYet(i_val, changelogInfo.pkgContents);
             };
         });
         return result;
@@ -1547,7 +1582,15 @@ const displayChangelogDetail = function(ankerData) {
     }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
-        $("#changelog-packagename").append(pkgContents.name + "-" + pkgContents.version + "." + pkgContents.release + " => " + pkgContents.newVersion + "." + pkgContents.newRelease);
+        var packageInfo = pkgContents.name + "-" + pkgContents.version;
+        if (pkgContents.release !== "") {
+            packageInfo = packageInfo + "." + pkgContents.release;
+        }
+        packageInfo = packageInfo + " => " + pkgContents.newVersion;
+        if (pkgContents.newRelease !== "") {
+            packageInfo = packageInfo + "." + pkgContents.newRelease
+        }
+        $("#changelog-packagename").append(packageInfo);
         if (changelogInfo.pkgContents.changelog.contents === "") {
             $("#changelog-contents").append("NO DATA");
         } else {
