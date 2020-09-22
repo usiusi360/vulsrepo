@@ -596,6 +596,8 @@ const createPivotData = function(resultArray) {
                         result["AdvisoryID"] = "None";
                     }
 
+                    DetectionMethod = y_val.confidences[0].detectionMethod;
+                    result["DetectionMethod"] = DetectionMethod;
                     if (pkgInfo !== undefined) {
                         if (pkgInfo.changelog !== undefined && pkgInfo.changelog.contents !== "") {
                             result["Changelog"] = "CHK-changelog-" + y_val.cveID + "," + x_val.scanTime + "," + x_val.data.serverName + "," + x_val.data.container.name + "," + pkgName;
