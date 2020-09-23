@@ -783,9 +783,9 @@ const createPivotData = function(resultArray) {
 };
 
 const isNotFixedYet = function(val, pkg) {
-    var result = false;
+    var result = "Fixed";
     if (val.notFixedYet !== undefined) {
-        result = val.notFixedYet;
+        result = val.notFixedYet === true ? "Unfixed" : "Fixed";
     }
     return result;
 };
@@ -887,14 +887,14 @@ const displayPivot = function(array) {
                 }
             });
 
-            $("#pivot_base").find("th:contains('true')").each(function() {
-                if ($(this).text() === "true") {
+            $("#pivot_base").find("th:contains('Unfixed')").each(function() {
+                if ($(this).text() === "Unfixed") {
                     $(this).addClass("notfixyet-true");
                 }
             });
 
-            $("#pivot_base").find("th:contains('false')").each(function() {
-                if ($(this).text() === "false") {
+            $("#pivot_base").find("th:contains('Fixed')").each(function() {
+                if ($(this).text() === "Fixed") {
                     $(this).addClass("notfixyet-false");
                 }
             });
@@ -1427,8 +1427,8 @@ const displayDetail = function(cveID) {
             }]
         });
 
-    $("#table-package").find("td:contains('true')").addClass("notfixyet-true");
-    $("#table-package").find("td:contains('false')").addClass("notfixyet-false");
+    $("#table-package").find("td:contains('Fixed')").removeClass("notfixyet-true").addClass("notfixyet-false");
+    $("#table-package").find("td:contains('Unfixed')").removeClass("notfixyet-false").addClass("notfixyet-true");
 
     // ---package changelog event
     addEventDisplayChangelog();
@@ -1576,10 +1576,10 @@ const displayChangelogDetail = function(ankerData) {
     };
 
     let notFixedYet = getPkg();
-    if (notFixedYet === true) {
-        $("#changelog-notfixedyet").append("true").addClass("notfixyet-true");
-    } else if (notFixedYet === false) {
-        $("#changelog-notfixedyet").append("false").addClass("notfixyet-false");
+    if (notFixedYet === "Unfixed") {
+        $("#changelog-notfixedyet").append("Unfixed").removeClass("notfixyet-false").addClass("notfixyet-true");
+    } else if (notFixedYet === "Fixed") {
+        $("#changelog-notfixedyet").append("Fixed").removeClass("notfixyet-true").addClass("notfixyet-false");
     }
 
     if (isCheckNull(changelogInfo.pkgContents) !== true) {
