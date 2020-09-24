@@ -978,10 +978,10 @@ const addCweIDLink = function() {
             } else {
                 if (nvd < jvn) {
                     // NVD
-                    generated = generated + "<a href=\"" + detailLink.cwe_nvd.url + cveids[i].replace(/\[!!\]/, "").replace(/CWE-/, "") + "\" target='_blank'>" + cveids[i] + "</a>";
+                    generated = generated + "<a href=\"" + detailLink.cwe_nvd.url + cveids[i].replace(/\[!!\]/, "").replace(/CWE-/, "") + "\" rel='noopener noreferrer' target='_blank'>" + cveids[i] + "</a>";
                 } else {
                     // JVN
-                    generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" target='_blank'>" + cveids[i] + "</a>";
+                    generated = generated + "<a href=\"" + detailLink.cwe_jvn.url + cveids[i].replace(/\[!!\]/, "") + ".html\" rel='noopener noreferrer' target='_blank'>" + cveids[i] + "</a>";
                 }
             }
             if (i < cveids.length - 1) {
@@ -999,7 +999,7 @@ const addAdvisoryIDLink = function() {
         // Open Advisory page
         if (advisoryid.indexOf('ALAS2-') != -1) {
             // ALAS2
-            $(this).text("").append("<a href=\"" + detailLink.amazon.url + "AL2/" + advisoryid.replace("ALAS2-", "ALAS-") + ".html\" target='_blank'>" + advisoryid + '</a>');
+            $(this).text("").append("<a href=\"" + detailLink.amazon.url + "AL2/" + advisoryid.replace("ALAS2-", "ALAS-") + ".html\" rel='noopener noreferrer' target='_blank'>" + advisoryid + '</a>');
         } else if (advisoryid.indexOf('ALAS-') != -1) {
             // TODO ALAS
         }
@@ -1020,7 +1020,7 @@ const addCertLink = function() {
             if (certs[i].indexOf("jpcert") != -1) {
                 team = "JPCERT";
             }
-            generated = generated +"<a href=\"" + certs[i] + "\" target='_blank'>" + team + "</a>";
+            generated = generated +"<a href=\"" + certs[i] + "\" rel='noopener noreferrer' target='_blank'>" + team + "</a>";
             if (i < certs.length - 1) {
                 generated = generated + "<br>";
             }
@@ -1318,9 +1318,9 @@ const displayDetail = function(cveID) {
     if (data.cveContents.nvd !== undefined) {
         if (data.cveContents.nvd.cweIDs) {
             $("#CweID").append("<span>NVD:[" + data.cveContents.nvd.cweIDs + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.nvd.cweIDs[0].split("-")[1] + "\" target='_blank'>MITRE</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.nvd.cweIDs[0].split("-")[1] + "\" rel='noopener noreferrer' target='_blank'>MITRE</a>");
             $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.nvd.cweIDs[0] + ".html\" target='_blank'>JVN)</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.nvd.cweIDs[0] + ".html\" rel='noopener noreferrer' target='_blank'>JVN)</a>");
             $("#CweID").append("<span>&emsp;</span>");
         }
     }
@@ -1328,15 +1328,15 @@ const displayDetail = function(cveID) {
     if (data.cveContents.redhat !== undefined) {
         if (data.cveContents.redhat.cweIDs !== "") {
             $("#CweID").append("<span>RedHat:[" + data.cveContents.redhat.cweIDs + "] (</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.redhat.cweIDs[0].split("-")[1] + "\" target='_blank'>MITRE</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_nvd.url + data.cveContents.redhat.cweIDs[0].split("-")[1] + "\" rel='noopener noreferrer' target='_blank'>MITRE</a>");
             $("#CweID").append("<span>&nbsp;/&nbsp;</span>");
-            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.redhat.cweIDs[0] + ".html\" target='_blank'>JVN)</a>");
+            $("#CweID").append("<a href=\"" + detailLink.cwe_jvn.url + data.cveContents.redhat.cweIDs[0] + ".html\" rel='noopener noreferrer' target='_blank'>JVN)</a>");
         }
     }
 
     // ---Link---
     var addLink = function(target, url, disp) {
-        $(target).append("<a href=\"" + url + "\" target='_blank'>" + disp + " </a>");
+        $(target).append("<a href=\"" + url + "\" rel='noopener noreferrer' target='_blank'>" + disp + " </a>");
     };
 
     addLink("#Link", detailLink.mitre.url + "?name=" + data.cveID, detailLink.mitre.disp);
@@ -1359,15 +1359,15 @@ const displayDetail = function(cveID) {
     addLink("#typeName_nvdV3", detailLink.nvd.url + data.cveID, detailLink.nvd.disp + " (v3)");
     if (data.cveContents.jvn !== undefined) {
         if (data.cveContents.jvn.jvnLink === "") {
-            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v2)</a>");
-            $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v3)</a>");
+            $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" rel='noopener noreferrer' target='_blank'>JVN (v2)</a>");
+            $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" rel='noopener noreferrer' target='_blank'>JVN (v3)</a>");
         } else {
-            $("#typeName_jvn").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN (v2)</a>");
-            $("#typeName_jvnV3").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" target='_blank'>JVN (v3)</a>");
+            $("#typeName_jvn").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" rel='noopener noreferrer' target='_blank'>JVN (v2)</a>");
+            $("#typeName_jvnV3").append("<a href=\"" + data.cveContents.jvn.sourceLink + "\" rel='noopener noreferrer' target='_blank'>JVN (v3)</a>");
         }
     } else {
-        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v2)</a>");
-        $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" target='_blank'>JVN (v3)</a>");
+        $("#typeName_jvn").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" rel='noopener noreferrer' target='_blank'>JVN (v2)</a>");
+        $("#typeName_jvnV3").append("<a href=\"" + detailLink.jvn.url + data.cveID + "\" rel='noopener noreferrer' target='_blank'>JVN (v3)</a>");
     }
     addLink("#typeName_redhat", detailLink.rhel.url + data.cveID, "RedHat (v2)");
     addLink("#typeName_redhatV3", detailLink.rhel.url + data.cveID, "RedHat (v3)");
@@ -1376,7 +1376,7 @@ const displayDetail = function(cveID) {
     addLink("#typeName_oracle", detailLink.oracle.url + data.cveID + ".html", detailLink.oracle.disp);
     if (data.cveContents.amazon !== undefined) {
         if (data.cveContents.amazon.title.indexOf('ALAS2-') != -1) {
-            $("#typeName_amazon").append("<a href=\"" + detailLink.amazon.url + "AL2/" + data.cveContents.amazon.title.replace("ALAS2-", "ALAS-") + ".html\" target='_blank'>Amazon</a>");
+            $("#typeName_amazon").append("<a href=\"" + detailLink.amazon.url + "AL2/" + data.cveContents.amazon.title.replace("ALAS2-", "ALAS-") + ".html\" rel='noopener noreferrer' target='_blank'>Amazon</a>");
         } else {
             // TODO Amazon Linux 1
         }
@@ -1392,7 +1392,7 @@ const displayDetail = function(cveID) {
             if (isCheckNull(data.cveContents[target].references) === false) {
                 $("#References").append("<div>===" + target + "===</div>");
                 $.each(data.cveContents[target].references, function(x, x_val) {
-                    $("#References").append("<div>[" + x_val.source + "]<a href=\"" + x_val.link + "\" target='_blank'> (" + x_val.link + ")</a></div>");
+                    $("#References").append("<div>[" + x_val.source + "]<a href=\"" + x_val.link + "\" rel='noopener noreferrer' target='_blank'> (" + x_val.link + ")</a></div>");
                     countRef++;
                 });
             }
@@ -1408,7 +1408,7 @@ const displayDetail = function(cveID) {
         if (data.exploits !== undefined) {
             $("#References").append("<div>===Exploits===</div>");
            $.each(data.exploits, function(x, x_val) {
-               $("#References").append("<div>[" + x_val.exploitType + "]<a href=\"" + x_val.url + "\" target='_blank'> (" + x_val.url + ")</a> " + x_val.description + "</div>");
+               $("#References").append("<div>[" + x_val.exploitType + "]<a href=\"" + x_val.url + "\" rel='noopener noreferrer' target='_blank'> (" + x_val.url + ")</a> " + x_val.description + "</div>");
                countRef++;
            });
         }
