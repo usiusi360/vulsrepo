@@ -575,11 +575,20 @@ const createPivotData = function(resultArray) {
                         result["Container"] = "None";
                     }
 
-                    if (y_val.alertDict.ja != null) {
-                        result["CERT"] = "CHK-CERT-" + y_val.alertDict.ja[0].url;
-                    } else {
-                        result["CERT"] = "";
+                    var cert = "";
+                    if (y_val.alertDict.en != null) {
+                        cert = y_val.alertDict.en[0].url;
                     }
+                    if (y_val.alertDict.ja != null) {
+                        if (cert !== "") {
+                            cert = cert + ",";
+                        }
+                        cert = cert + y_val.alertDict.ja[0].url;
+                    }
+                    if (cert !== "") {
+                        cert = "CHK-CERT-" + cert;
+                    }
+                    result["CERT"] = cert;
 
                     if (y_val.exploits !== undefined) {
                         result["PoC"] = "PoC(" + y_val.exploits.length + ")";
@@ -1004,7 +1013,19 @@ const addCertLink = function() {
     let doms = $("#pivot_base").find("th:contains('CHK-CERT-')");
     doms.each(function() {
         let cert = $(this).text().replace("CHK-CERT-", "");
-        $(this).text("").append("<a href=\"" + cert + "\" target='_blank'>JPCERT</a>");
+        let certs = cert.split(',');
+        let generated = "";
+        for (var i = 0; i < certs.length; i++) {
+            let team = "USCERT";
+            if (certs[i].indexOf("jpcert") != -1) {
+                team = "JPCERT";
+            }
+            generated = generated +"<a href=\"" + certs[i] + "\" target='_blank'>" + team + "</a>";
+            if (i < certs.length - 1) {
+                generated = generated + "<br>";
+            }
+        }
+        $(this).text("").append(generated);
     });
 };
 
