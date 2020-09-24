@@ -630,11 +630,13 @@ const createPivotData = function(resultArray) {
                         } else {
                             result["NewPackageVer"] = "None";
                         }
+                        result["Repository"] = pkgInfo.repository;
                     } else {
                         // ===for cpe
                         result["PackageVer"] = "Unknown";
                         result["NewPackageVer"] = "Unknown";
                         result["Changelog"] = "None";
+                        result["Repository"] = ""
                     }
 
                     var getSummaryAndDate = function(target) {
@@ -1444,6 +1446,8 @@ const displayDetail = function(cveID) {
             }, {
                 data: "PackageNewRelease"
             }, {
+                data: "Repository"
+            }, {
                 data: "NotFixedYet"
             }]
         });
@@ -1551,6 +1555,7 @@ const createDetailPackageData = function(cveID) {
                         tmp_Map["PackageRelease"] = "";
                         tmp_Map["PackageNewVersion"] = "";
                         tmp_Map["PackageNewRelease"] = "";
+                        tmp_Map["Repository"] = "";
                         tmp_Map["NotFixedYet"] = "";
                     } else if (x_val.data.packages[pkgName] !== undefined) {
                         tmp_Map["PackageName"] = '<a href="#contents" class="lightbox" data-cveid="' + cveID + '" data-scantime="' + x_val.scanTime + '" data-server="' + x_val.data.serverName + '" data-container="' + x_val.data.container.name + '" data-package="' + pkgName + '">' + pkgName + '</a>';
@@ -1558,6 +1563,7 @@ const createDetailPackageData = function(cveID) {
                         tmp_Map["PackageRelease"] = x_val.data.packages[pkgName].release;
                         tmp_Map["PackageNewVersion"] = x_val.data.packages[pkgName].newVersion;
                         tmp_Map["PackageNewRelease"] = x_val.data.packages[pkgName].newRelease;
+                        tmp_Map["Repository"] = x_val.data.packages[pkgName].repository;
                         tmp_Map["NotFixedYet"] = NotFixedYet;
                     } else {
                         return;
@@ -1611,6 +1617,9 @@ const displayChangelogDetail = function(ankerData) {
         packageInfo = packageInfo + " => " + pkgContents.newVersion;
         if (pkgContents.newRelease !== "") {
             packageInfo = packageInfo + "." + pkgContents.newRelease
+        }
+        if (pkgContents.repository !== "") {
+            packageInfo = packageInfo + " (" + pkgContents.repository + ")";
         }
         $("#changelog-packagename").append(packageInfo);
         if (changelogInfo.pkgContents.changelog.contents === "") {
