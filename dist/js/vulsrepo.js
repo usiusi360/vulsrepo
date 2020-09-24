@@ -469,11 +469,7 @@ const createPivotData = function(resultArray) {
                 "Last Modified": "healthy",
             };
 
-            if (x_val.data.runningKernel.rebootRequired === true) {
-                result["ServerName"] = x_val.data.serverName + " [Reboot Required]";
-            } else {
-                result["ServerName"] = x_val.data.serverName;
-            }
+            result["ServerName"] = getServerName(x_val.data);
 
             if (x_val.data.platform.name !== "") {
                 result["Platform"] = x_val.data.platform.name;
@@ -519,11 +515,7 @@ const createPivotData = function(resultArray) {
                         "NotFixedYet": NotFixedYet,
                     };
 
-                    if (x_val.data.runningKernel.rebootRequired === true) {
-                        result["ServerName"] = x_val.data.serverName + " [Reboot Required]";
-                    } else {
-                        result["ServerName"] = x_val.data.serverName;
-                    }
+                    result["ServerName"] = getServerName(x_val.data);
 
                     if (y_val.cveContents !== undefined && y_val.cveContents.nvd !== undefined) {
                         let cweIds = y_val.cveContents.nvd.cweIDs;
@@ -799,6 +791,17 @@ const isNotFixedYet = function(val, pkg) {
         result = val.notFixedYet === true ? "Unfixed" : "Fixed";
     }
     return result;
+};
+
+const getServerName = function(data) {
+    let servername = data.serverName;
+    if (data.warnings.length > 0) {
+        servername = "[Warn] " + servername;
+    }
+    if (data.runningKernel.rebootRequired === true) {
+        servername = "[Reboot Required] " + servername;
+    }
+    return servername;
 };
 
 const displayPivot = function(array) {
