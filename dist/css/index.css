@@ -11,6 +11,22 @@ body {
     background-color: #ddd
 }
 
+.pvt-cvss-Critical {
+    background-color: #CB4829 !important;
+}
+
+.pvt-cvss-High {
+    background-color: #D59533 !important;
+}
+
+.pvt-cvss-Medium {
+    background-color: #DFD238 !important;
+}
+
+.pvt-cvss-Low {
+    background-color: #93B447 !important;
+}
+
 .notfixyet-true {
     color: #CB4829;
     font-weight: bold;
@@ -80,6 +96,30 @@ a {
     color: black
 }
 
+/*for Amazon Linux */
+.cvss-critical {
+    text-transform: capitalize;
+    background-color: #CB4829;
+    color: black
+}
+
+.cvss-important {
+    text-transform: capitalize;
+    background-color: #D59533;
+    color: black
+}
+
+.cvss-medium {
+    text-transform: capitalize;
+    background-color: #DFD238;
+    color: black
+}
+
+.cvss-low {
+    text-transform: capitalize;
+    background-color: #93B447;
+    color: black
+}
 
 /*for redhat https://access.redhat.com/security/updates/classification/*/
 
@@ -113,6 +153,32 @@ a {
 
 .cvss-NotVulnerable {
     background-color: #BA79B1;
+    color: black
+}
+
+/*for Debian Security Tracker https://security-team.debian.org/security_tracker.html#severity-levels */
+
+.cvss-high {
+    background-color: #D59533;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-medium {
+    background-color: #DFD238;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-low {
+    background-color: #93B447;
+    text-transform: capitalize;
+    color: black
+}
+
+.cvss-unimportant {
+    background-color: #61C1BE;
+    text-transform: capitalize;
     color: black
 }
 
@@ -276,7 +342,7 @@ body.noscroll {
     list-style-type: none;
     margin: 0px 0px 0px 15px;
     padding: 0;
-    width: 150px;
+    width: 260px;
 }
 
 #pivot-priority li {
@@ -287,11 +353,12 @@ body.noscroll {
     cursor: move;
     background-color: #31b0d5;
     color: white;
+    text-align: center;
 }
 
 #pivot-priority li span {
-    padding-left: 10px;
-    padding-right: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 #pivot-priority .placeholder {

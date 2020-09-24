@@ -2,7 +2,7 @@ FROM golang:alpine as builder
 
 RUN apk --no-cache add git
 
-ENV REPOSITORY github.com/usiusi360/vulsrepo
+ENV REPOSITORY github.com/ishiDACo/vulsrepo
 
 COPY . $GOPATH/src/$REPOSITORY
 RUN cd $GOPATH/src/$REPOSITORY/server \
@@ -18,9 +18,9 @@ RUN mkdir /vulsrepo \
     && sed -i -e 's/home\/vuls-user/vulsrepo/g' /vulsrepo/vulsrepo-config.toml \
     && sed -i -e 's/\/opt//g' /vulsrepo/vulsrepo-config.toml
 
-FROM alpine:3.7
+FROM alpine:3.10
 
-MAINTAINER hikachan sadayuki-matsuno usiusi360
+LABEL maintainer="hikachan sadayuki-matsuno usiusi360 ishiDACo"
 
 COPY --from=builder /go/bin/vulsrepo-server /usr/local/bin/
 COPY --from=builder /vulsrepo /vulsrepo
