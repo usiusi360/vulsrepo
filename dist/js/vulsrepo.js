@@ -442,6 +442,7 @@ const createPivotData = function(resultArray) {
                 "NotFixedYet": "healthy",
                 "PackageVer": "healthy",
                 "NewPackageVer": "healthy",
+                "Repository": "healthy",
                 "CweID": "healthy",
                 "Summary": "healthy",
                 "CVSS Score": "healthy",
